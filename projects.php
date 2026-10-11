@@ -3,13 +3,7 @@ require __DIR__.'/includes/bootstrap.php';
 require __DIR__.'/includes/listings.php';
 $pageTitle='Projects'; $activePage='projects'; $mainClass='listing-page projects-page';
 $extraCss=['./assets/projects.css']; $extraJs=['./assets/listings.js'];
-$projects=[
-['Royal Gardens','Ahmedabad','Residential','Under construction',65,'sunrise-3bhk-apartment'],
-['Lakeview Residences','Ahmedabad','Residential','Completed',100,'lakeview-2bhk-flat'],
-['Seaside Living','Mumbai','Residential','Upcoming',0,'bandra-sea-view-apartment'],
-['Parkside Villas','Bengaluru','Villas','Under construction',40,'whitefield-tech-park-flat'],
-['Garden Enclave','Delhi','Villas','Upcoming',0,'chattarpur-farmhouse-plot'],
-['Skyline Suites','New York','Residential','Completed',100,'manhattan-modern-loft']];
+$projects=require __DIR__.'/Config/projects.php';
 function projectQuery(string $key): string {return is_string($_GET[$key]??null)?mb_substr(trim($_GET[$key]),0,150):'';}
 $q=projectQuery('q'); $status=projectQuery('status'); $type=projectQuery('type'); $city=projectQuery('city'); $sort=projectQuery('sort');
 $statuses=['Upcoming','Under construction','Completed']; $types=['Residential','Villas']; $cities=array_values(array_unique(array_column($projects,1)));
