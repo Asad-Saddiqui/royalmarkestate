@@ -9,5 +9,5 @@ if(document.readyState==='complete')finish();else window.addEventListener('load'
 window.addEventListener('pageshow',event=>{if(event.persisted)hide();});
 function destination(value){const url=new URL(value,location.href);return url.origin===location.origin&&url.pathname.includes('/admin')?url:null;}
 document.addEventListener('click',event=>{if(event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const link=event.target.closest('a[href]');if(!link||link.hasAttribute('download')||(link.target&&link.target!=='_self'))return;const url=destination(link.href);if(!url||url.href===location.href||url.pathname===location.pathname&&url.search===location.search)return;show(link.textContent.trim()||'dashboard');});
-document.addEventListener('submit',event=>{if(event.target.method.toLowerCase()!=='post'&&!event.defaultPrevented&&destination(event.target.action||location.href))show(loader.dataset.initial);});
+document.addEventListener('submit',event=>{if(event.target.method.toLowerCase()!=='post'&&!event.defaultPrevented&&destination(event.target.getAttribute('action')||location.href))show(loader.dataset.initial);});
 })();
