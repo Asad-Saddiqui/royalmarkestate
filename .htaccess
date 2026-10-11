@@ -1,0 +1,8 @@
+# Keep legacy menu URLs working after the PHP page migration.
+RewriteEngine On
+RewriteRule ^property-listing/?$ properties.php [END]
+RewriteRule ^about-us/?$ /Royalmarkestate/about.php [R=302,L]
+RewriteRule ^blog/?$ /Royalmarkestate/blog.php [R=302,L]
+RewriteRule ^projects/?$ /Royalmarkestate/projects.php [R=302,L]
+RewriteRule ^contact-us/?$ /Royalmarkestate/contact.php [R=302,L]
+RewriteRule ^property-listing/([a-z0-9-]+)/?$ property.php?slug=$1 [END,QSA]

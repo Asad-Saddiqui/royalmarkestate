@@ -17,8 +17,8 @@
     const icon = name => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + paths[name] + '</svg>';
     const routes = [
         ['home', './', 'Home'], ['properties', './property-listing', 'Properties'],
-        ['projects', './#projects', 'Projects'], ['contact', './#contact-us', 'Contact Us'],
-        ['about', './about-us', 'About'], ['blog', './blog', 'Blog']
+        ['projects', './projects.php', 'Projects'], ['contact', './contact.php', 'Contact Us'],
+        ['about', './about.php', 'About'], ['blog', './blog.php', 'Blog']
     ];
     const dialog = document.createElement('dialog');
     dialog.id = 'rm-mobile-drawer';
@@ -33,7 +33,7 @@
     document.body.appendChild(dialog);
     const themeControl = dialog.querySelector('.rm-drawer-theme');
     function sourceThemeButton() {
-        const buttons = [...document.querySelectorAll('.framer-nzj1qu-container button[title]')].filter(button => /Switch to (dark|light) mode/i.test(button.title));
+        const buttons = [...document.querySelectorAll('.framer-nzj1qu-container button[title],.rm-page-theme[title]')].filter(button => /Switch to (dark|light) mode/i.test(button.title));
         return buttons.find(button => {
             const variant = button.closest('.framer-w5B6s');
             return variant && variant.getBoundingClientRect().width > 0;
@@ -53,7 +53,7 @@
         if (original) original.click();
         requestAnimationFrame(syncTheme);
     });
-    const themeHeader = document.querySelector('.framer-nzj1qu-container');
+    const themeHeader = document.querySelector('.framer-nzj1qu-container,.rm-page-header');
     if (themeHeader) new MutationObserver(syncTheme).observe(themeHeader, { childList: true, subtree: true, attributes: true, attributeFilter: ['title'] });
     syncTheme();
     let opener = null;
@@ -73,9 +73,11 @@
         if (location.hash === '#projects') return 'projects';
         if (location.hash === '#contact-us') return 'contact';
         const path = location.pathname.replace(/\/$/, '');
-        if (path.includes('/property-listing')) return 'properties';
-        if (path.endsWith('/about-us')) return 'about';
-        if (path.endsWith('/blog')) return 'blog';
+        if (path.endsWith('/projects.php')) return 'projects';
+        if (path.endsWith('/contact.php')) return 'contact';
+        if ((path.includes('/property-listing') || path.endsWith('/properties.php'))) return 'properties';
+        if ((path.endsWith('/about-us') || path.endsWith('/about.php'))) return 'about';
+        if ((path.endsWith('/blog') || path.endsWith('/blog.php'))) return 'blog';
         return 'home';
     }
     function updateActive() {
