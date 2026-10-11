@@ -6,3 +6,5 @@ modal.addEventListener('click',event=>{if(event.target!==modal)return;const rect
 modal.addEventListener('close',()=>{document.body.classList.remove('user-modal-open');opener.focus();});
 if(modal.dataset.reopen==='true')open();
 })();
+
+(()=>{document.querySelectorAll('.delete-user-form').forEach(form=>form.addEventListener('submit',event=>{if(!confirm('Delete '+form.dataset.userEmail+'? This permanently removes the account and stops its login access.'))event.preventDefault();}));document.querySelectorAll('.notification-close').forEach(button=>button.addEventListener('click',()=>button.closest('.user-notification').remove()));})();
