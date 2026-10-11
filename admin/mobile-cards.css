@@ -1,0 +1,36 @@
+/* Keep desktop tables; present each record as a readable card on phones. */
+@media (max-width:767px){
+ .table-scroll:has(.mobile-card-table){overflow:visible;border-radius:0;padding:0 16px 18px}
+ .mobile-card-table{display:block;white-space:normal;border:0}
+ .mobile-card-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ .mobile-card-table tbody{display:grid;gap:16px}
+ .mobile-card-table tbody tr{display:block;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 3px 12px #00000005}
+ .mobile-card-table tbody td{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;min-width:0;padding:11px 0;border:0;border-bottom:1px solid var(--line);text-align:right;font-size:13px;overflow-wrap:anywhere;white-space:normal}
+ .mobile-card-table tbody td[data-label]::before{content:attr(data-label);font-size:12px;font-weight:500;color:var(--muted);flex-shrink:0;text-align:left}
+ .mobile-card-table tbody td:first-child{padding-top:0;color:var(--ink);font-size:15px;font-weight:600}
+ .mobile-card-table tbody td:last-child{border-bottom:0;padding-bottom:0}
+ .mobile-card-table .property-cell{width:100%;align-items:flex-start;text-align:left;min-width:0}
+ .mobile-card-table .property-cell img{width:76px;height:68px;flex-shrink:0;border-radius:8px}
+ .mobile-card-table .property-cell>div{min-width:0}
+ .mobile-card-table .property-cell strong{font-size:15px;line-height:1.5;overflow-wrap:anywhere}
+ .mobile-card-table .property-cell span{font-size:12px;line-height:1.6}
+ .mobile-card-table .price-cell{flex-wrap:wrap;color:var(--brand);font-weight:600}
+ .mobile-card-table .table-progress{max-width:100%;margin-left:auto}
+ .mobile-card-table .mobile-card-actions{display:block;text-align:left}
+ .mobile-card-table .mobile-card-actions::before{display:block;margin-bottom:12px}
+ .mobile-card-table .user-action-row,.mobile-card-table .user-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;width:100%}
+ .mobile-card-table .user-action-row button{height:38px;padding:8px 11px;font-size:12px}
+ .mobile-card-table .protected-account-badge{white-space:normal;line-height:1.5;font-size:11px}
+ .mobile-card-table td[colspan]{display:block;text-align:center;padding:20px 0!important}
+ .page-heading{flex-wrap:wrap;align-items:flex-start}
+ .page-heading>.primary-button{max-width:100%}
+ .panel-title{flex-wrap:wrap}
+ .table-toolbar .search-field{max-width:none;width:100%;flex-basis:100%;min-width:0}
+ .table-toolbar .search-field input{width:100%;min-width:0}
+ .admin-footer{flex-wrap:wrap;gap:10px;overflow-wrap:anywhere}
+ .catalog-panel .catalog-rows{display:grid;gap:12px}
+ .catalog-panel .catalog-row{background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:16px;flex-wrap:wrap;align-items:flex-start}
+ .catalog-panel .catalog-row>span{flex-basis:100%;font-size:15px;font-weight:600}
+ .catalog-panel .catalog-row>div{width:100%;justify-content:flex-end}
+ .catalog-panel .catalog-row button{min-height:38px}
+}
