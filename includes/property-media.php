@@ -1,4 +1,5 @@
 <?php
+require __DIR__.'/property-extra-details.php';
 require_once dirname(__DIR__).'/Config/blog.php';
 $mediaImages=array_values(array_unique(array_filter($gallery,'is_string')));
 $mediaVideos=[];
@@ -9,7 +10,7 @@ foreach(is_array($property['videos']??null)?$property['videos']:[] as $video){
     $mediaVideos[]=['id'=>$id,'short'=>is_array($video)?($video['type']??'')==='short':str_contains($url,'/shorts/'),'title'=>is_array($video)&&is_string($video['title']??null)?$video['title']:'Property video'];
 }
 ?>
-<section class="pd-section pd-media-section" aria-labelledby="pd-images-title"><h2 id="pd-images-title">Property Images</h2>
+<section class="pd-section pd-media-section" aria-labelledby="pd-images-title"><h2 id="pd-images-title">Gallery</h2>
 <div id="pd-images-panel" class="pd-media-grid"><?php foreach($mediaImages as $index=>$photo): ?><button type="button" class="pd-media-photo" data-gallery-index="<?= $index ?>" data-gallery-src="<?= e($photo) ?>" aria-label="Open <?= e($property['title']) ?> photo <?= $index+1 ?>"><img src="<?= e($photo) ?>" alt="<?= e($property['title']) ?> — photo <?= $index+1 ?>" loading="lazy" width="600" height="400"><span>View photo &nearr;</span></button><?php endforeach; ?></div>
 </section>
 <section class="pd-section pd-media-section" aria-labelledby="pd-videos-title"><h2 id="pd-videos-title">Property Videos</h2><div id="pd-videos-panel" class="pd-media-grid"><?php foreach($mediaVideos as $video): ?><article class="pd-media-video <?= $video['short']?'is-short':'' ?>"><iframe src="https://www.youtube-nocookie.com/embed/<?= e($video['id']) ?>" title="<?= e($video['title']) ?>" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe><h3><?= e($video['title']) ?></h3></article><?php endforeach; ?><?php if(!$mediaVideos): ?><div class="pd-media-empty"><h3>Videos coming soon</h3><p>No video has been added for this property yet. Explore the photos or contact Royalmark Estate for more details.</p></div><?php endif; ?></div></section>
