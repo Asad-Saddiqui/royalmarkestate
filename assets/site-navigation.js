@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
     'use strict';
     const root = document.getElementById('main');
     if (!root) return;
@@ -24,6 +24,30 @@
                     host.appendChild(link);
                 }
             });
+            const mobileList = header.querySelector('.framer-g36uf7');
+            if (mobileList) {
+                const properties = mobileList.querySelector('a[href="./property-listing"]');
+                const template = properties && properties.closest('[data-highlight]');
+                let previous = template;
+                if (template) ['projects', 'contact'].forEach(route => {
+                    let item = mobileList.querySelector('.rm-mobile-item[data-route="' + route + '"]');
+                    if (!item) {
+                        item = template.cloneNode(true);
+                        item.classList.add('rm-mobile-item');
+                        item.dataset.route = route;
+                        item.removeAttribute('id');
+                        item.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+                        const link = item.querySelector('a');
+                        link.href = route === 'projects' ? '#projects' : '#contact-us';
+                        link.textContent = route === 'projects' ? 'Projects' : 'Contact Us';
+                        link.classList.add('rm-menu-link');
+                        link.dataset.route = route;
+                        link.removeAttribute('data-framer-page-link-current');
+                        previous.after(item);
+                    }
+                    previous = item;
+                });
+            }
             header.querySelectorAll('.rm-menu-link').forEach(link => {
                 if (link.hash === location.hash) link.setAttribute('aria-current', 'location');
                 else link.removeAttribute('aria-current');

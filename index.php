@@ -133,6 +133,8 @@ a:has(> [data-framer-name="Logo Text"]) > svg { display:none!important; }
 <link rel="stylesheet" href="./assets/menu-icons.css">
 <link rel="stylesheet" href="./assets/site-layout.css">
 <script src="./assets/site-navigation.js" defer></script>
+<link rel="stylesheet" href="./assets/mobile-drawer.css">
+<script src="./assets/mobile-drawer.js" defer></script>
 </head>
 <body>
 	<script async src="https://events.framer.com/script?v=2" data-fid="8438ada0f6cd920efad290157a9735fcb38d516004ac28c3d867106b244a260f" data-no-nt></script>

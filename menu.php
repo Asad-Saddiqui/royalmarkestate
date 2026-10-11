@@ -3,6 +3,8 @@
 </style>
 <link rel="stylesheet" href="./assets/menu-icons.css">
 <link rel="stylesheet" href="./assets/site-layout.css">
+<link rel="stylesheet" href="./assets/mobile-drawer.css">
+<script src="./assets/mobile-drawer.js" defer></script>
 <header class="rm-header" data-style="light" id="rm-header">
 <div class="rm-wrap">
 <a class="rm-logo" href="./" aria-label="Royalmark Estate home"><img src="./assets/royalmark-logo.png" alt="Royalmark Estate" width="136" height="80"></a>

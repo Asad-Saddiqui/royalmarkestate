@@ -1,0 +1,51 @@
+/* Mobile/tablet side drawer. Desktop navigation remains in its existing layout. */
+.rm-mobile-drawer {
+    position:fixed;inset:0 auto 0 0;margin:0;border:0;padding:0;
+    width:min(86vw,360px);max-width:100vw;height:100vh;height:100dvh;max-height:none;
+    box-sizing:border-box;overflow:hidden;background:#fff;color:#303030;
+    box-shadow:12px 0 40px #0002;font:400 16px/1.4 Inter,Arial,sans-serif;
+    transform:translateX(-102%);transition:transform 260ms ease;
+}
+.rm-mobile-drawer * {box-sizing:border-box}
+.rm-mobile-drawer.rm-drawer-open {transform:translateX(0)}
+.rm-mobile-drawer::backdrop {background:rgba(11,17,20,.58);backdrop-filter:blur(2px)}
+.rm-drawer-inner {height:100%;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;padding:24px;padding-top:max(20px,env(safe-area-inset-top));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+.rm-drawer-top {display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:18px;border-bottom:1px solid #ededed;flex-shrink:0}
+.rm-drawer-brand {display:block;line-height:0}
+.rm-drawer-brand img {width:126px;height:74px;object-fit:contain}
+.rm-drawer-close {display:grid;place-items:center;width:40px;height:40px;padding:0;flex-shrink:0;border:1px solid #e5e5e5;border-radius:8px;background:#fff;color:#303030;cursor:pointer}
+.rm-mobile-drawer svg {width:20px;height:20px;flex-shrink:0;pointer-events:none}
+.rm-drawer-title {font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#777;margin:26px 12px 12px}
+.rm-drawer-nav {display:flex;flex-direction:column;gap:5px}
+.rm-drawer-nav a {display:flex;align-items:center;gap:13px;text-decoration:none;color:#454545;border-radius:9px;padding:14px 12px;min-height:48px;font:inherit;transition:background-color .18s,color .18s}
+.rm-drawer-nav a:hover,.rm-drawer-nav a:focus-visible,.rm-drawer-nav a[aria-current] {background:#fff0f0;color:#d70000}
+.rm-drawer-nav a[aria-current] {font-weight:600}
+.rm-drawer-actions {margin-top:auto;padding-top:28px;display:grid;gap:10px}
+.rm-drawer-actions a {display:flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:12px;border:1px solid #d70000;border-radius:7px;text-decoration:none;color:#d70000;font-weight:600;font-size:14px}
+.rm-drawer-actions a:last-child {background:#d70000;color:#fff}
+.rm-drawer-actions a:hover {background:#fff0f0}
+.rm-drawer-actions a:last-child:hover {background:#b80000}
+.rm-drawer-close:hover {background:#fff0f0;color:#d70000;border-color:#d70000}
+.rm-mobile-drawer :focus-visible {outline:2px solid #d70000;outline-offset:3px}
+@media(min-width:1200px){.rm-mobile-drawer{display:none!important}}
+@media(prefers-reduced-motion:reduce){.rm-mobile-drawer,.rm-mobile-drawer *{transition:none!important}}
+
+/* Mobile header controls live inside the drawer. */
+@media(max-width:1199.98px){
+ .framer-nzj1qu-container [data-code-component-plugin-id="mcp001"],
+ .framer-nzj1qu-container :has(> [data-code-component-plugin-id="mcp001"]),
+ .framer-nzj1qu-container a[href="./sign-in"],
+ .framer-nzj1qu-container :has(> a[href="./sign-in"]),
+ .rm-header .rm-switch{display:none!important}
+}
+.rm-drawer-close,.rm-drawer-close:hover{border:0;border-radius:0;background:transparent;box-shadow:none}
+.rm-drawer-theme{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;padding:12px 4px;border:0;background:transparent;color:inherit;font:500 14px/1.4 Inter,Arial,sans-serif;cursor:pointer;text-align:left}
+.rm-theme-icon{font-size:23px;color:#d70000;line-height:1}
+.rm-theme-label{margin-right:auto}
+.rm-drawer-theme:hover{color:#d70000}
+.rm-mobile-drawer[data-theme="dark"]{background:#252525;color:#f5f5f5}
+.rm-mobile-drawer[data-theme="dark"] .rm-drawer-top{border-color:#444}
+.rm-mobile-drawer[data-theme="dark"] .rm-drawer-close,.rm-mobile-drawer[data-theme="dark"] .rm-drawer-nav a{color:#f5f5f5}
+.rm-mobile-drawer[data-theme="dark"] .rm-drawer-nav a:hover,.rm-mobile-drawer[data-theme="dark"] .rm-drawer-nav a[aria-current]{background:#402626;color:#ff7777}
+.rm-mobile-drawer[data-theme="dark"] .rm-drawer-title{color:#aaa}
+.rm-mobile-drawer[data-theme="dark"] .rm-drawer-brand{background:white;border-radius:4px}
