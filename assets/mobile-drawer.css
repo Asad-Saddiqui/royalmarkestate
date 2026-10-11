@@ -48,4 +48,4 @@
 .rm-mobile-drawer[data-theme="dark"] .rm-drawer-close,.rm-mobile-drawer[data-theme="dark"] .rm-drawer-nav a{color:#f5f5f5}
 .rm-mobile-drawer[data-theme="dark"] .rm-drawer-nav a:hover,.rm-mobile-drawer[data-theme="dark"] .rm-drawer-nav a[aria-current]{background:#402626;color:#ff7777}
 .rm-mobile-drawer[data-theme="dark"] .rm-drawer-title{color:#aaa}
-.rm-mobile-drawer[data-theme="dark"] .rm-drawer-brand{background:white;border-radius:4px}
+.rm-mobile-drawer[data-theme="dark"] .rm-drawer-brand{background:transparent;border-radius:0}
