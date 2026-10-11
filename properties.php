@@ -7,7 +7,8 @@ $properties=listingData(); $priceCeiling=max(58000000,...array_column($propertie
 function queryText(string $key, string $fallback=''): string { return is_string($_GET[$key]??null)?trim($_GET[$key]):$fallback; }
 $q=mb_substr(queryText('q'),0,150);
 $purpose=ucfirst(strtolower(queryText('purpose',queryText('listing-purpose')))); if(!in_array($purpose,['Rent','Sell'],true))$purpose='';
-$types=$_GET['types']??[]; if(!is_array($types))$types=[]; $types=array_values(array_intersect(array_filter($types, 'is_string'),['Apartment','Villa','Duplex','House','Studio','Penthouse','Shop/Retail']));
+$availableTypes=array_values(array_unique(array_merge(['Apartment','Villa','Duplex','House','Studio','Penthouse','Shop/Retail'],array_column($properties,'type'))));
+$types=$_GET['types']??[]; if(!is_array($types))$types=[]; $types=array_values(array_intersect(array_filter($types, 'is_string'),$availableTypes));
 $legacyType=queryText('type',queryText('property-types')); $aliases=['apartment'=>'Apartment','independent-house'=>'House','house'=>'House','villa'=>'Villa','penthouse'=>'Penthouse']; if(!$types&&isset($aliases[strtolower($legacyType)]))$types=[$aliases[strtolower($legacyType)]];
 $featured=queryText('featured')==='1'; $beds=max(0,min(20,(int)queryText('beds'))); $baths=max(0,min(20,(int)queryText('baths')));
 $min=max(0,min($priceCeiling,(float)queryText('min_price'))); $max=queryText('max_price')!==''?max(0,min($priceCeiling,(float)queryText('max_price'))):$priceCeiling;
@@ -17,6 +18,7 @@ $view=queryText('view',queryText('current_view'))==='map'?'map':'grid';
 $visible=array_values(array_filter($properties,function($p)use($q,$purpose,$types,$featured,$beds,$baths,$min,$max,$city){return ($q===''||mb_stripos($p['title'].' '.$p['city'].' '.$p['type'],$q)!==false)&&($purpose===''||$p['purpose']===$purpose)&&(!$types||in_array($p['type'],$types,true))&&(!$featured||$p['featured'])&&($beds===0||$p['beds']>=$beds)&&($baths===0||$p['baths']>=$baths)&&$p['price']>=$min&&$p['price']<=$max&&($city===''||$p['city']===$city); }));
 if($sort!=='recommended')usort($visible,fn($a,$b)=>$sort==='price-desc'?$b['price']<=>$a['price']:($sort==='area-desc'?$b['area']<=>$a['area']:$a['price']<=>$b['price']));
 $typeIcons=['Apartment'=>'building','Villa'=>'house','Duplex'=>'layers','House'=>'house','Studio'=>'studio','Penthouse'=>'crown','Shop/Retail'=>'shop'];
+foreach($availableTypes as $availableType)$typeIcons[$availableType]=$typeIcons[$availableType]??'building';
 require __DIR__.'/includes/header.php';
 ?>
 <h1 class="visually-hidden">Properties</h1>
