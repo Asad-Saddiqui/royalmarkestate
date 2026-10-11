@@ -10,6 +10,8 @@
         contact: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
         about: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
         blog: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/>',
+        sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
+        moon: '<path d="M20.5 14A9 9 0 0 1 10 3.5 9 9 0 1 0 20.5 14Z"/>',
         close: '<path d="m6 6 12 12M18 6 6 18"/>',
         plus: '<path d="M12 5v14M5 12h14"/>',
         login: '<path d="M14 3h6v18h-6M3 12h12m-4-4 4 4-4 4"/>'
@@ -34,6 +36,11 @@
     const account=document.querySelector('.page-account'),logout=document.querySelector('.page-logout');
     if(account&&logout){const actions=dialog.querySelector('.rm-drawer-actions');actions.querySelector('a[href="./admin/login"]')?.remove();actions.append(account.cloneNode(true));const logoutCopy=logout.cloneNode(true);const label=document.createElement('span');label.textContent='Logout';logoutCopy.querySelector('button').append(label);actions.append(logoutCopy);const add=actions.querySelector('a[href="./admin/login"]');if(add)add.href=document.querySelector('.page-add').href;}
 
+    const drawerActions=dialog.querySelector('.rm-drawer-actions');
+    drawerActions.querySelectorAll('a').forEach(a=>{if(a.classList.contains('page-account'))return;if(a.textContent.includes('Add Properties'))a.classList.add('rm-drawer-primary');else a.classList.add('rm-drawer-signin');});
+    const drawerAccount=drawerActions.querySelector('.page-account');if(drawerAccount)drawerActions.prepend(drawerAccount);
+    const primary=drawerActions.querySelector('.rm-drawer-primary');if(primary)drawerActions.append(primary);
+    const tagline=document.createElement('span');tagline.className='rm-drawer-brand-caption';tagline.textContent='Your next address starts here';dialog.querySelector('.rm-drawer-brand').append(tagline);
     const themeControl = dialog.querySelector('.rm-drawer-theme');
     function sourceThemeButton() {
         const buttons = [...document.querySelectorAll('.framer-nzj1qu-container button[title],.rm-page-theme[title]')].filter(button => /Switch to (dark|light) mode/i.test(button.title));
@@ -49,7 +56,7 @@
         themeControl.setAttribute('aria-pressed', String(dark));
         themeControl.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
         themeControl.querySelector('.rm-theme-label').textContent = dark ? 'Dark mode' : 'Light mode';
-        themeControl.querySelector('.rm-theme-icon').textContent = dark ? '☾' : '☀';
+        themeControl.querySelector('.rm-theme-icon').innerHTML = icon(dark ? 'moon' : 'sun');
     }
     themeControl.addEventListener('click', () => {
         const original = sourceThemeButton();
@@ -81,6 +88,7 @@
         if ((path.includes('/property-listing') || path.endsWith('/properties.php'))) return 'properties';
         if ((path.endsWith('/about-us') || path.endsWith('/about.php'))) return 'about';
         if ((path.endsWith('/blog') || path.endsWith('/blog.php'))) return 'blog';
+        if(path.includes('/property.php')||path.includes('/property-listing/'))return 'properties';
         return 'home';
     }
     function updateActive() {
