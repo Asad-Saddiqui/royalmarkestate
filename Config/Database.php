@@ -63,6 +63,7 @@ final class Database
         }
         self::initializeDefaultAdministrator($connection);
         self::initializeDefaultBlogs($connection);
+        self::initializeDefaultProperties($connection);
     }
 
     private static function initializeDefaultAdministrator(PDO $connection): void
@@ -114,6 +115,23 @@ final class Database
             if($connection->inTransaction())$connection->rollBack();
             throw $exception;
         }
+    }
+
+    private static function initializeDefaultProperties(PDO $connection): void
+    {
+        $migration='default_complete_properties_v1';
+        $check=$connection->prepare('SELECT 1 FROM app_migrations WHERE name=?');$check->execute([$migration]);if($check->fetchColumn())return;
+        $items=json_decode(file_get_contents(__DIR__.'/properties.json'),true,512,JSON_THROW_ON_ERROR);
+        $connection->beginTransaction();
+        try{
+            $mark=$connection->prepare('INSERT IGNORE INTO app_migrations (name) VALUES (?)');$mark->execute([$migration]);
+            if($mark->rowCount()===1){
+                $insert=$connection->prepare('INSERT IGNORE INTO properties (slug,payload) VALUES (?,?)');
+                $catalog=$connection->prepare('INSERT IGNORE INTO catalog_entries (kind,name) VALUES (?,?)');
+                foreach($items as $item){$insert->execute([$item['slug'],json_encode($item,JSON_THROW_ON_ERROR)]);$catalog->execute(['property_type',$item['type']]);$catalog->execute(['location',$item['city']]);}
+            }
+            $connection->commit();
+        }catch(Throwable $exception){if($connection->inTransaction())$connection->rollBack();throw $exception;}
     }
 
 }

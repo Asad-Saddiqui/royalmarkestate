@@ -19,8 +19,8 @@
     ],
     "pricing_documents": [
       {
-        "url": "./assets/documents/sunrise-sample-pricing.pdf",
-        "name": "Sunrise pricing guide (sample)",
+        "url": "./assets/documents/sunrise-3bhk-apartment-sample-pricing.pdf",
+        "name": "Sunrise 3BHK Apartment pricing (sample)",
         "type": "pdf"
       }
     ],
@@ -59,7 +59,17 @@
         "title": "Inside Liv Tyler's Gut-Renovated NYC Brownstone | Open Door | Architectural Digest"
       }
     ],
-    "videos_are_inspiration": true
+    "videos_are_inspiration": true,
+    "is_sample": true,
+    "subtitle": "Apartment in Ahmedabad",
+    "description": "Illustrative 3 bedroom apartment in Ahmedabad with 1,850 sq.ft of space. This complete sample listing demonstrates property details and media; contact Royalmark Estate for current verified availability.",
+    "state": "Gujarat",
+    "zip": "Sample postcode",
+    "address": "Sample address, Ahmedabad",
+    "balconies": "2",
+    "floors": "3",
+    "parking": "1 space",
+    "amenities": "Parking\nSecurity\nBalcony\nWater Supply\nPower Backup"
   },
   {
     "slug": "lakeview-2bhk-flat",
@@ -72,7 +82,66 @@
     "purpose": "Sell",
     "type": "Apartment",
     "featured": true,
-    "image": "./assets/properties/lakeview-2bhk-flat.png"
+    "image": "./assets/properties/lakeview-2bhk-flat.png",
+    "is_sample": true,
+    "subtitle": "Apartment in Ahmedabad",
+    "description": "Illustrative 2 bedroom apartment in Ahmedabad with 1,200 sq.ft of space. This complete sample listing demonstrates property details and media; contact Royalmark Estate for current verified availability.",
+    "state": "Gujarat",
+    "zip": "Sample postcode",
+    "address": "Sample address, Ahmedabad",
+    "balconies": "2",
+    "floors": "3",
+    "parking": "1 space",
+    "amenities": "Parking\nSecurity\nBalcony\nWater Supply\nPower Backup",
+    "gallery": [
+      "./assets/property-detail/KQC5o89PexdYygCl1MvfIiS9UM.png",
+      "./assets/property-detail/BgI1UEIkgT3D16BuA0ge4Ea4.png",
+      "./assets/property-detail/0GVdq8VobYhBNWR9VauEFqRxO5c.png",
+      "./assets/property-detail/DmCMfj7Mx81fe1d1qB7YOezrBuU.png"
+    ],
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=HphRKCxIK_Q",
+        "type": "video",
+        "title": "Inside Alessandra Ambrosio's Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=mmMG_56bEFQ",
+        "type": "video",
+        "title": "Inside Kendall Jenner’s Cozy Mountain Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=7Z76MiQv0zg",
+        "type": "video",
+        "title": "Inside Liv Tyler's Gut-Renovated NYC Brownstone | Open Door | Architectural Digest"
+      }
+    ],
+    "videos_are_inspiration": true,
+    "nearest_locations": [
+      {
+        "name": "School (sample)",
+        "distance": "Example distance: 1 km"
+      },
+      {
+        "name": "Hospital (sample)",
+        "distance": "Example distance: 2 km"
+      },
+      {
+        "name": "Shopping centre (sample)",
+        "distance": "Example distance: 1.5 km"
+      },
+      {
+        "name": "Public transport (sample)",
+        "distance": "Example distance: 500 m"
+      }
+    ],
+    "pricing_documents": [
+      {
+        "url": "./assets/documents/lakeview-2bhk-flat-sample-pricing.pdf",
+        "name": "Lakeview 2BHK Flat pricing (sample)",
+        "type": "pdf"
+      }
+    ]
   },
   {
     "slug": "bandra-sea-view-apartment",
@@ -85,7 +154,66 @@
     "purpose": "Rent",
     "type": "Apartment",
     "featured": true,
-    "image": "./assets/properties/bandra-sea-view-apartment.png"
+    "image": "./assets/properties/bandra-sea-view-apartment.png",
+    "is_sample": true,
+    "subtitle": "Apartment in Mumbai",
+    "description": "Illustrative 3 bedroom apartment in Mumbai with 1,650 sq.ft of space. This complete sample listing demonstrates property details and media; contact Royalmark Estate for current verified availability.",
+    "state": "Maharashtra",
+    "zip": "Sample postcode",
+    "address": "Sample address, Mumbai",
+    "balconies": "2",
+    "floors": "3",
+    "parking": "1 space",
+    "amenities": "Parking\nSecurity\nBalcony\nWater Supply\nPower Backup",
+    "gallery": [
+      "./assets/property-detail/KQC5o89PexdYygCl1MvfIiS9UM.png",
+      "./assets/property-detail/BgI1UEIkgT3D16BuA0ge4Ea4.png",
+      "./assets/property-detail/0GVdq8VobYhBNWR9VauEFqRxO5c.png",
+      "./assets/property-detail/DmCMfj7Mx81fe1d1qB7YOezrBuU.png"
+    ],
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=HphRKCxIK_Q",
+        "type": "video",
+        "title": "Inside Alessandra Ambrosio's Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=mmMG_56bEFQ",
+        "type": "video",
+        "title": "Inside Kendall Jenner’s Cozy Mountain Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=7Z76MiQv0zg",
+        "type": "video",
+        "title": "Inside Liv Tyler's Gut-Renovated NYC Brownstone | Open Door | Architectural Digest"
+      }
+    ],
+    "videos_are_inspiration": true,
+    "nearest_locations": [
+      {
+        "name": "School (sample)",
+        "distance": "Example distance: 1 km"
+      },
+      {
+        "name": "Hospital (sample)",
+        "distance": "Example distance: 2 km"
+      },
+      {
+        "name": "Shopping centre (sample)",
+        "distance": "Example distance: 1.5 km"
+      },
+      {
+        "name": "Public transport (sample)",
+        "distance": "Example distance: 500 m"
+      }
+    ],
+    "pricing_documents": [
+      {
+        "url": "./assets/documents/bandra-sea-view-apartment-sample-pricing.pdf",
+        "name": "Bandra Sea View Apartment pricing (sample)",
+        "type": "pdf"
+      }
+    ]
   },
   {
     "slug": "whitefield-tech-park-flat",
@@ -98,7 +226,66 @@
     "purpose": "Sell",
     "type": "Apartment",
     "featured": false,
-    "image": "./assets/properties/whitefield-tech-park-flat.png"
+    "image": "./assets/properties/whitefield-tech-park-flat.png",
+    "is_sample": true,
+    "subtitle": "Apartment in Bengaluru",
+    "description": "Illustrative 2 bedroom apartment in Bengaluru with 1,150 sq.ft of space. This complete sample listing demonstrates property details and media; contact Royalmark Estate for current verified availability.",
+    "state": "Karnataka",
+    "zip": "Sample postcode",
+    "address": "Sample address, Bengaluru",
+    "balconies": "2",
+    "floors": "3",
+    "parking": "1 space",
+    "amenities": "Parking\nSecurity\nBalcony\nWater Supply\nPower Backup",
+    "gallery": [
+      "./assets/property-detail/KQC5o89PexdYygCl1MvfIiS9UM.png",
+      "./assets/property-detail/BgI1UEIkgT3D16BuA0ge4Ea4.png",
+      "./assets/property-detail/0GVdq8VobYhBNWR9VauEFqRxO5c.png",
+      "./assets/property-detail/DmCMfj7Mx81fe1d1qB7YOezrBuU.png"
+    ],
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=HphRKCxIK_Q",
+        "type": "video",
+        "title": "Inside Alessandra Ambrosio's Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=mmMG_56bEFQ",
+        "type": "video",
+        "title": "Inside Kendall Jenner’s Cozy Mountain Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=7Z76MiQv0zg",
+        "type": "video",
+        "title": "Inside Liv Tyler's Gut-Renovated NYC Brownstone | Open Door | Architectural Digest"
+      }
+    ],
+    "videos_are_inspiration": true,
+    "nearest_locations": [
+      {
+        "name": "School (sample)",
+        "distance": "Example distance: 1 km"
+      },
+      {
+        "name": "Hospital (sample)",
+        "distance": "Example distance: 2 km"
+      },
+      {
+        "name": "Shopping centre (sample)",
+        "distance": "Example distance: 1.5 km"
+      },
+      {
+        "name": "Public transport (sample)",
+        "distance": "Example distance: 500 m"
+      }
+    ],
+    "pricing_documents": [
+      {
+        "url": "./assets/documents/whitefield-tech-park-flat-sample-pricing.pdf",
+        "name": "Whitefield Tech Park Flat pricing (sample)",
+        "type": "pdf"
+      }
+    ]
   },
   {
     "slug": "chattarpur-farmhouse-plot",
@@ -111,7 +298,66 @@
     "purpose": "Sell",
     "type": "House",
     "featured": false,
-    "image": "./assets/properties/chattarpur-farmhouse-plot.png"
+    "image": "./assets/properties/chattarpur-farmhouse-plot.png",
+    "is_sample": true,
+    "subtitle": "House in Delhi",
+    "description": "Illustrative 4 bedroom house in Delhi with 5,000 sq.ft of space. This complete sample listing demonstrates property details and media; contact Royalmark Estate for current verified availability.",
+    "state": "Delhi",
+    "zip": "Sample postcode",
+    "address": "Sample address, Delhi",
+    "balconies": "2",
+    "floors": "3",
+    "parking": "1 space",
+    "amenities": "Parking\nSecurity\nBalcony\nWater Supply\nPower Backup",
+    "gallery": [
+      "./assets/property-detail/KQC5o89PexdYygCl1MvfIiS9UM.png",
+      "./assets/property-detail/BgI1UEIkgT3D16BuA0ge4Ea4.png",
+      "./assets/property-detail/0GVdq8VobYhBNWR9VauEFqRxO5c.png",
+      "./assets/property-detail/DmCMfj7Mx81fe1d1qB7YOezrBuU.png"
+    ],
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=HphRKCxIK_Q",
+        "type": "video",
+        "title": "Inside Alessandra Ambrosio's Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=mmMG_56bEFQ",
+        "type": "video",
+        "title": "Inside Kendall Jenner’s Cozy Mountain Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=7Z76MiQv0zg",
+        "type": "video",
+        "title": "Inside Liv Tyler's Gut-Renovated NYC Brownstone | Open Door | Architectural Digest"
+      }
+    ],
+    "videos_are_inspiration": true,
+    "nearest_locations": [
+      {
+        "name": "School (sample)",
+        "distance": "Example distance: 1 km"
+      },
+      {
+        "name": "Hospital (sample)",
+        "distance": "Example distance: 2 km"
+      },
+      {
+        "name": "Shopping centre (sample)",
+        "distance": "Example distance: 1.5 km"
+      },
+      {
+        "name": "Public transport (sample)",
+        "distance": "Example distance: 500 m"
+      }
+    ],
+    "pricing_documents": [
+      {
+        "url": "./assets/documents/chattarpur-farmhouse-plot-sample-pricing.pdf",
+        "name": "Chattarpur Farmhouse Plot pricing (sample)",
+        "type": "pdf"
+      }
+    ]
   },
   {
     "slug": "manhattan-modern-loft",
@@ -124,7 +370,66 @@
     "purpose": "Rent",
     "type": "Penthouse",
     "featured": false,
-    "image": "./assets/properties/manhattan-modern-loft.png"
+    "image": "./assets/properties/manhattan-modern-loft.png",
+    "is_sample": true,
+    "subtitle": "Penthouse in New York",
+    "description": "Illustrative 2 bedroom penthouse in New York with 1,100 sq.ft of space. This complete sample listing demonstrates property details and media; contact Royalmark Estate for current verified availability.",
+    "state": "New York",
+    "zip": "Sample postcode",
+    "address": "Sample address, New York",
+    "balconies": "2",
+    "floors": "3",
+    "parking": "1 space",
+    "amenities": "Parking\nSecurity\nBalcony\nWater Supply\nPower Backup",
+    "gallery": [
+      "./assets/property-detail/KQC5o89PexdYygCl1MvfIiS9UM.png",
+      "./assets/property-detail/BgI1UEIkgT3D16BuA0ge4Ea4.png",
+      "./assets/property-detail/0GVdq8VobYhBNWR9VauEFqRxO5c.png",
+      "./assets/property-detail/DmCMfj7Mx81fe1d1qB7YOezrBuU.png"
+    ],
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=HphRKCxIK_Q",
+        "type": "video",
+        "title": "Inside Alessandra Ambrosio's Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=mmMG_56bEFQ",
+        "type": "video",
+        "title": "Inside Kendall Jenner’s Cozy Mountain Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=7Z76MiQv0zg",
+        "type": "video",
+        "title": "Inside Liv Tyler's Gut-Renovated NYC Brownstone | Open Door | Architectural Digest"
+      }
+    ],
+    "videos_are_inspiration": true,
+    "nearest_locations": [
+      {
+        "name": "School (sample)",
+        "distance": "Example distance: 1 km"
+      },
+      {
+        "name": "Hospital (sample)",
+        "distance": "Example distance: 2 km"
+      },
+      {
+        "name": "Shopping centre (sample)",
+        "distance": "Example distance: 1.5 km"
+      },
+      {
+        "name": "Public transport (sample)",
+        "distance": "Example distance: 500 m"
+      }
+    ],
+    "pricing_documents": [
+      {
+        "url": "./assets/documents/manhattan-modern-loft-sample-pricing.pdf",
+        "name": "Manhattan Modern Loft pricing (sample)",
+        "type": "pdf"
+      }
+    ]
   },
   {
     "slug": "rainey-street-condo",
@@ -137,7 +442,66 @@
     "purpose": "Rent",
     "type": "Apartment",
     "featured": false,
-    "image": "./assets/properties/rainey-street-condo.png"
+    "image": "./assets/properties/rainey-street-condo.png",
+    "is_sample": true,
+    "subtitle": "Apartment in Austin",
+    "description": "Illustrative 1 bedroom apartment in Austin with 850 sq.ft of space. This complete sample listing demonstrates property details and media; contact Royalmark Estate for current verified availability.",
+    "state": "Texas",
+    "zip": "Sample postcode",
+    "address": "Sample address, Austin",
+    "balconies": "2",
+    "floors": "3",
+    "parking": "1 space",
+    "amenities": "Parking\nSecurity\nBalcony\nWater Supply\nPower Backup",
+    "gallery": [
+      "./assets/property-detail/KQC5o89PexdYygCl1MvfIiS9UM.png",
+      "./assets/property-detail/BgI1UEIkgT3D16BuA0ge4Ea4.png",
+      "./assets/property-detail/0GVdq8VobYhBNWR9VauEFqRxO5c.png",
+      "./assets/property-detail/DmCMfj7Mx81fe1d1qB7YOezrBuU.png"
+    ],
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=HphRKCxIK_Q",
+        "type": "video",
+        "title": "Inside Alessandra Ambrosio's Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=mmMG_56bEFQ",
+        "type": "video",
+        "title": "Inside Kendall Jenner’s Cozy Mountain Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=7Z76MiQv0zg",
+        "type": "video",
+        "title": "Inside Liv Tyler's Gut-Renovated NYC Brownstone | Open Door | Architectural Digest"
+      }
+    ],
+    "videos_are_inspiration": true,
+    "nearest_locations": [
+      {
+        "name": "School (sample)",
+        "distance": "Example distance: 1 km"
+      },
+      {
+        "name": "Hospital (sample)",
+        "distance": "Example distance: 2 km"
+      },
+      {
+        "name": "Shopping centre (sample)",
+        "distance": "Example distance: 1.5 km"
+      },
+      {
+        "name": "Public transport (sample)",
+        "distance": "Example distance: 500 m"
+      }
+    ],
+    "pricing_documents": [
+      {
+        "url": "./assets/documents/rainey-street-condo-sample-pricing.pdf",
+        "name": "Rainey Street Condo pricing (sample)",
+        "type": "pdf"
+      }
+    ]
   },
   {
     "slug": "coconut-grove-waterfront",
@@ -150,7 +514,66 @@
     "purpose": "Rent",
     "type": "House",
     "featured": false,
-    "image": "./assets/properties/coconut-grove-waterfront.png"
+    "image": "./assets/properties/coconut-grove-waterfront.png",
+    "is_sample": true,
+    "subtitle": "House in Miami",
+    "description": "Illustrative 5 bedroom house in Miami with 4,200 sq.ft of space. This complete sample listing demonstrates property details and media; contact Royalmark Estate for current verified availability.",
+    "state": "Florida",
+    "zip": "Sample postcode",
+    "address": "Sample address, Miami",
+    "balconies": "2",
+    "floors": "3",
+    "parking": "1 space",
+    "amenities": "Parking\nSecurity\nBalcony\nWater Supply\nPower Backup",
+    "gallery": [
+      "./assets/property-detail/KQC5o89PexdYygCl1MvfIiS9UM.png",
+      "./assets/property-detail/BgI1UEIkgT3D16BuA0ge4Ea4.png",
+      "./assets/property-detail/0GVdq8VobYhBNWR9VauEFqRxO5c.png",
+      "./assets/property-detail/DmCMfj7Mx81fe1d1qB7YOezrBuU.png"
+    ],
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=HphRKCxIK_Q",
+        "type": "video",
+        "title": "Inside Alessandra Ambrosio's Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=mmMG_56bEFQ",
+        "type": "video",
+        "title": "Inside Kendall Jenner’s Cozy Mountain Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=7Z76MiQv0zg",
+        "type": "video",
+        "title": "Inside Liv Tyler's Gut-Renovated NYC Brownstone | Open Door | Architectural Digest"
+      }
+    ],
+    "videos_are_inspiration": true,
+    "nearest_locations": [
+      {
+        "name": "School (sample)",
+        "distance": "Example distance: 1 km"
+      },
+      {
+        "name": "Hospital (sample)",
+        "distance": "Example distance: 2 km"
+      },
+      {
+        "name": "Shopping centre (sample)",
+        "distance": "Example distance: 1.5 km"
+      },
+      {
+        "name": "Public transport (sample)",
+        "distance": "Example distance: 500 m"
+      }
+    ],
+    "pricing_documents": [
+      {
+        "url": "./assets/documents/coconut-grove-waterfront-sample-pricing.pdf",
+        "name": "Coconut Grove Waterfront pricing (sample)",
+        "type": "pdf"
+      }
+    ]
   },
   {
     "slug": "fitzroy-terrace-house",
@@ -163,6 +586,65 @@
     "purpose": "Sell",
     "type": "House",
     "featured": false,
-    "image": "./assets/properties/fitzroy-terrace-house.png"
+    "image": "./assets/properties/fitzroy-terrace-house.png",
+    "is_sample": true,
+    "subtitle": "House in Melbourne",
+    "description": "Illustrative 4 bedroom house in Melbourne with 2,200 sq.ft of space. This complete sample listing demonstrates property details and media; contact Royalmark Estate for current verified availability.",
+    "state": "Victoria",
+    "zip": "Sample postcode",
+    "address": "Sample address, Melbourne",
+    "balconies": "2",
+    "floors": "3",
+    "parking": "1 space",
+    "amenities": "Parking\nSecurity\nBalcony\nWater Supply\nPower Backup",
+    "gallery": [
+      "./assets/property-detail/KQC5o89PexdYygCl1MvfIiS9UM.png",
+      "./assets/property-detail/BgI1UEIkgT3D16BuA0ge4Ea4.png",
+      "./assets/property-detail/0GVdq8VobYhBNWR9VauEFqRxO5c.png",
+      "./assets/property-detail/DmCMfj7Mx81fe1d1qB7YOezrBuU.png"
+    ],
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=HphRKCxIK_Q",
+        "type": "video",
+        "title": "Inside Alessandra Ambrosio's Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=mmMG_56bEFQ",
+        "type": "video",
+        "title": "Inside Kendall Jenner’s Cozy Mountain Home | Open Door | Architectural Digest"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=7Z76MiQv0zg",
+        "type": "video",
+        "title": "Inside Liv Tyler's Gut-Renovated NYC Brownstone | Open Door | Architectural Digest"
+      }
+    ],
+    "videos_are_inspiration": true,
+    "nearest_locations": [
+      {
+        "name": "School (sample)",
+        "distance": "Example distance: 1 km"
+      },
+      {
+        "name": "Hospital (sample)",
+        "distance": "Example distance: 2 km"
+      },
+      {
+        "name": "Shopping centre (sample)",
+        "distance": "Example distance: 1.5 km"
+      },
+      {
+        "name": "Public transport (sample)",
+        "distance": "Example distance: 500 m"
+      }
+    ],
+    "pricing_documents": [
+      {
+        "url": "./assets/documents/fitzroy-terrace-house-sample-pricing.pdf",
+        "name": "Fitzroy Terrace House pricing (sample)",
+        "type": "pdf"
+      }
+    ]
   }
 ]

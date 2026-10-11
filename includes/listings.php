@@ -1,8 +1,9 @@
 <?php
 function listingData(): array {
-    $items=json_decode(file_get_contents(dirname(__DIR__).'/Config/properties.json'), true, 512, JSON_THROW_ON_ERROR);
     require_once dirname(__DIR__).'/Config/Database.php';
-    try { foreach(Database::getConnection()->query('SELECT payload FROM properties ORDER BY id DESC') as $row)$items[]=json_decode($row['payload'],true,512,JSON_THROW_ON_ERROR); } catch (PDOException $exception) { if ($exception->getCode() !== '42S02') throw $exception; error_log('Royalmark: import Config/schema.sql to create the properties table.'); }
+    $items=[];
+    foreach(Database::getConnection()->query('SELECT payload FROM properties ORDER BY id DESC') as $row){$item=json_decode($row['payload'],true,512,JSON_THROW_ON_ERROR);$items[$item['slug']]=$item;}
+    $items=array_values($items);
     return $items;
 }
 function listingIcon(string $name): string {
@@ -24,7 +25,7 @@ function listingIcon(string $name): string {
     ];
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'.($paths[$name]??$paths['house']).'</svg>';
 }
-function listingPrice(array $property): string { return '$'.number_format($property['price'],2); }
+function listingPrice(array $property): string { return 'Rs '.number_format($property['price'],2); }
 function listingCard(array $property): void { ?>
 <article class="listing-card">
 <a class="listing-photo" href="./property.php?slug=<?= rawurlencode($property['slug']) ?>" aria-label="View <?= e($property['title']) ?>"><img src="<?= e($property['image']) ?>" alt="<?= e($property['title']) ?>" width="512" height="340" loading="lazy"><span class="listing-badge"><?= e($property['purpose']) ?></span></a>
