@@ -1,4 +1,4 @@
-<div class="pd-share" aria-label="Share property link"><span>Share</span>
+<div class="pd-share" aria-label="Share property link">
 <button type="button" data-property-share="facebook" aria-label="Share link on Facebook" title="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 21v-8h3l.5-4H14V7c0-1 .3-2 2-2h2V1h-3c-4 0-5 2-5 5v3H7v4h3v8z"/></svg></button>
 <button type="button" data-property-share="instagram" aria-label="Share link for Instagram" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></button>
 <button type="button" data-property-share="tiktok" aria-label="Share link for TikTok" title="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v12a5 5 0 1 1-4-4M14 3c0 4 3 6 6 6M14 7c2 3 4 3 6 3"/></svg></button>
