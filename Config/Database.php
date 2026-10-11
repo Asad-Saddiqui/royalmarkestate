@@ -62,6 +62,7 @@ final class Database
             $connection->exec('ALTER TABLE admin_users MODIFY id INT UNSIGNED NOT NULL AUTO_INCREMENT');
         }
         self::initializeDefaultAdministrator($connection);
+        self::initializeDefaultBlogs($connection);
     }
 
     private static function initializeDefaultAdministrator(PDO $connection): void
@@ -90,4 +91,29 @@ final class Database
             throw $exception;
         }
     }
+    private static function initializeDefaultBlogs(PDO $connection): void
+    {
+        $migration='default_dashboard_blogs_v1';
+        $check=$connection->prepare('SELECT 1 FROM app_migrations WHERE name=?');
+        $check->execute([$migration]);
+        if($check->fetchColumn())return;
+        $connection->beginTransaction();
+        try {
+            $mark=$connection->prepare('INSERT IGNORE INTO app_migrations (name) VALUES (?)');
+            $mark->execute([$migration]);
+            if($mark->rowCount()===1){
+                $insert=$connection->prepare('INSERT IGNORE INTO blog_posts (slug,payload) VALUES (?,?)');
+                foreach(require __DIR__.'/default-blogs.php' as $index=>$post){
+                    [$title,$slug,$category,$excerpt,$content,$image]=$post;
+                    $payload=['title'=>$title,'slug'=>$slug,'category'=>$category,'excerpt'=>$excerpt,'content'=>str_replace('\\n',"\n",$content),'image'=>'./assets/properties/'.$image.'.png','alt'=>$title,'author'=>'Royalmark Estate','tags'=>'property, real estate','type'=>'article','youtube'=>'','youtube_id'=>'','status'=>'draft','published_at'=>date('Y-m-d\TH:i'),'featured'=>$index===0?'1':'0','seo_title'=>'','seo_description'=>'','is_sample'=>true];
+                    $insert->execute([$slug,json_encode($payload,JSON_THROW_ON_ERROR)]);
+                }
+            }
+            $connection->commit();
+        }catch(Throwable $exception){
+            if($connection->inTransaction())$connection->rollBack();
+            throw $exception;
+        }
+    }
+
 }
