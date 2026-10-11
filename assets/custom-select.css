@@ -7,3 +7,4 @@
 .user-modal .rm-select-panel.in-dialog{position:absolute;top:calc(100% + 5px);left:0;width:100%;margin:0;z-index:10;max-height:220px;box-shadow:0 12px 28px #0003}
 .user-modal .user-fields{align-items:start}
 .user-modal .user-fields label{align-content:start}
+.user-modal .rm-select-panel.in-dialog[popover]{position:fixed;inset:auto;margin:0;z-index:50000;max-height:320px}.rm-select-panel[popover]::backdrop{background:transparent;pointer-events:none}
