@@ -16,6 +16,31 @@
       "./assets/property-detail/BgI1UEIkgT3D16BuA0ge4Ea4.png",
       "./assets/property-detail/0GVdq8VobYhBNWR9VauEFqRxO5c.png",
       "./assets/property-detail/DmCMfj7Mx81fe1d1qB7YOezrBuU.png"
+    ],
+    "pricing_documents": [
+      {
+        "url": "./assets/documents/sunrise-sample-pricing.pdf",
+        "name": "Sunrise pricing guide (sample)",
+        "type": "pdf"
+      }
+    ],
+    "nearest_locations": [
+      {
+        "name": "School (sample)",
+        "distance": "Example distance: 1 km"
+      },
+      {
+        "name": "Hospital (sample)",
+        "distance": "Example distance: 2 km"
+      },
+      {
+        "name": "Shopping centre (sample)",
+        "distance": "Example distance: 1.5 km"
+      },
+      {
+        "name": "Public transport (sample)",
+        "distance": "Example distance: 500 m"
+      }
     ]
   },
   {
