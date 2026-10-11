@@ -1,7 +1,13 @@
 <?php
 require __DIR__.'/auth.php';
 require dirname(__DIR__).'/includes/bootstrap.php';
-$hasAccount=(int)adminDb()->query('SELECT COUNT(*) FROM admin_users')->fetchColumn()>0;
+try {
+ $hasAccount=(int)adminDb()->query('SELECT COUNT(*) FROM admin_users')->fetchColumn()>0;
+} catch (PDOException $exception) {
+ error_log('Royalmark admin login: '.$exception->getMessage());
+ http_response_code(503);
+ exit('Admin database setup is incomplete. Check the hosting .env credentials and import Config/schema.sql into that database. See the hosting PHP error log for the exact cause.');
+}
 if(!empty($_SESSION['admin_id'])){header('Location: ./');exit;}
 $error='';
 if($_SERVER['REQUEST_METHOD']==='POST'){
