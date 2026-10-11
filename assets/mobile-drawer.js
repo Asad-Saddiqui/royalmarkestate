@@ -31,6 +31,9 @@
         routes.map(([route, href, label]) => '<a href="' + href + '" data-route="' + route + '">' + icon(route) + '<span>' + label + '</span></a>').join('') + '</nav>' +
         '<div class="rm-drawer-actions"><button type="button" class="rm-drawer-theme" aria-pressed="false"><span class="rm-theme-icon">☀</span><span class="rm-theme-label">Light mode</span></button><a href="./admin/login">' + icon('login') + 'Login</a><a href="./admin/login">' + icon('plus') + 'Add Properties</a></div></div>';
     document.body.appendChild(dialog);
+    const account=document.querySelector('.page-account'),logout=document.querySelector('.page-logout');
+    if(account&&logout){const actions=dialog.querySelector('.rm-drawer-actions');actions.querySelector('a[href="./admin/login"]')?.remove();actions.append(account.cloneNode(true));const logoutCopy=logout.cloneNode(true);const label=document.createElement('span');label.textContent='Logout';logoutCopy.querySelector('button').append(label);actions.append(logoutCopy);const add=actions.querySelector('a[href="./admin/login"]');if(add)add.href=document.querySelector('.page-add').href;}
+
     const themeControl = dialog.querySelector('.rm-drawer-theme');
     function sourceThemeButton() {
         const buttons = [...document.querySelectorAll('.framer-nzj1qu-container button[title],.rm-page-theme[title]')].filter(button => /Switch to (dark|light) mode/i.test(button.title));

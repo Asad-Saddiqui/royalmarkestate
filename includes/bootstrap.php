@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/Config/Database.php';
 date_default_timezone_set('Asia/Karachi');
+if(session_status()!==PHP_SESSION_ACTIVE){$publicSessionPath=rtrim(str_replace('\\','/',dirname($_SERVER['SCRIPT_NAME']??'/index.php')),'/');if(str_ends_with($publicSessionPath,'/admin'))$publicSessionPath=dirname($publicSessionPath);session_set_cookie_params(['httponly'=>true,'samesite'=>'Lax','secure'=>!empty($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!=='off','path'=>($publicSessionPath?:'').'/']);session_start();}
 function e($value): string { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }
 $siteRoutes = [
     'home' => ['', 'Home'], 'properties' => ['property-listing', 'Properties'],
