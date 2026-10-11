@@ -12,8 +12,9 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
  $_SESSION['users_success']='User created successfully.';
   }elseif($action==='edit'){
  $id=filter_var($_POST['id']??null,FILTER_VALIDATE_INT);$name=is_string($_POST['name']??null)?trim($_POST['name']):'';$role=is_string($_POST['role']??null)?$_POST['role']:'';
- if(!$id||$name===''||mb_strlen($name)>100||!in_array($role,['admin','user'],true))throw new InvalidArgumentException('Enter a valid name and role.');
  if($id===(int)$_SESSION['admin_id']){$role=currentUser()['role'];unset($_POST['reset_password']);}
+ if(!$id||$name===''||mb_strlen($name)>100||!in_array($role,['admin','user'],true))throw new InvalidArgumentException('Enter a valid name and role.');
+ 
  $check=adminDb()->prepare('SELECT id FROM admin_users WHERE id=?');$check->execute([$id]);if(!$check->fetch())throw new InvalidArgumentException('User no longer exists.');
  if(($_POST['reset_password']??'')==='1'){
   $password='Rm!'.bin2hex(random_bytes(12));
