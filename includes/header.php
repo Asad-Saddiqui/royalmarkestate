@@ -6,7 +6,7 @@
 <script src="./assets/pages.js" defer></script><script src="./assets/mobile-drawer.js" defer></script>
 <?php foreach (($extraCss ?? []) as $asset): ?><link rel="stylesheet" href="<?= e($asset) ?>"><?php endforeach; ?>
 <?php foreach (($extraJs ?? []) as $asset): ?><script src="<?= e($asset) ?>" defer></script><?php endforeach; ?>
-</head><body>
+<link rel="stylesheet" href="./assets/custom-select.css"><script src="./assets/custom-select.js" defer></script></head><body>
 <a class="skip-link" href="#page-content">Skip to content</a>
 <header class="rm-header rm-page-header"><div class="page-header-inner">
 <a class="page-logo" href="./" aria-label="Royalmark Estate home"><img src="./assets/royalmark-logo.png" alt="Royalmark Estate" width="130" height="76"></a>
