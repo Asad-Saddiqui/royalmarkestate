@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<base href="/Royalmarkestate/"><title><?= e($pageTitle) ?> | Royalmark Estate</title>
+<base href="<?= e(rtrim(str_replace('\\','/',dirname($_SERVER['SCRIPT_NAME']??'/index.php')),'/').'/') ?>"><title><?= e($pageTitle) ?> | Royalmark Estate</title>
 <link rel="stylesheet" href="./assets/pages.css">
 <link rel="stylesheet" href="./assets/listings.css"><link rel="stylesheet" href="./assets/mobile-drawer.css">
 <script src="./assets/pages.js" defer></script><script src="./assets/mobile-drawer.js" defer></script>

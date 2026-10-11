@@ -1,0 +1,12 @@
+
+.env
+.env.*
+!.env.example
+
+# Local backups and runtime files
+*-backup*
+*-before-*
+index-sample-*
+assets/uploads/*
+!assets/uploads/.htaccess
+*.log

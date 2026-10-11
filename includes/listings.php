@@ -2,7 +2,7 @@
 function listingData(): array {
     $items=json_decode(file_get_contents(dirname(__DIR__).'/Config/properties.json'), true, 512, JSON_THROW_ON_ERROR);
     require_once dirname(__DIR__).'/Config/Database.php';
-    foreach(Database::getConnection()->query('SELECT payload FROM properties ORDER BY id DESC') as $row)$items[]=json_decode($row['payload'],true,512,JSON_THROW_ON_ERROR);
+    try { foreach(Database::getConnection()->query('SELECT payload FROM properties ORDER BY id DESC') as $row)$items[]=json_decode($row['payload'],true,512,JSON_THROW_ON_ERROR); } catch (PDOException $exception) { if ($exception->getCode() !== '42S02') throw $exception; error_log('Royalmark: import Config/schema.sql to create the properties table.'); }
     return $items;
 }
 function listingIcon(string $name): string {
