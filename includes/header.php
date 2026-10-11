@@ -3,7 +3,7 @@
 <base href="<?= e(rtrim(str_replace('\\','/',dirname($_SERVER['SCRIPT_NAME']??'/index.php')),'/').'/') ?>"><title><?= e($pageTitle) ?> | Royalmark Estate</title>
 <link rel="stylesheet" href="./assets/pages.css"><link rel="stylesheet" href="./assets/shared-header.css?v=1">
 <link rel="stylesheet" href="./assets/listings.css"><link rel="stylesheet" href="./assets/mobile-drawer.css">
-<script src="./assets/pages.js" defer></script><script src="./assets/mobile-drawer.js" defer></script>
+<script src="./assets/pages.js?v=login-route-2" defer></script><script src="./assets/mobile-drawer.js" defer></script>
 <?php foreach (($extraCss ?? []) as $asset): ?><link rel="stylesheet" href="<?= e($asset) ?>"><?php endforeach; ?>
 <?php foreach (($extraJs ?? []) as $asset): ?><script src="<?= e($asset) ?>" defer></script><?php endforeach; ?>
 <link rel="stylesheet" href="./assets/custom-select.css"><script src="./assets/custom-select.js" defer></script></head><body>

@@ -136,7 +136,7 @@ a:has(> [data-framer-name="Logo Text"]) > svg { display:none!important; }
 <script src="./assets/site-navigation.js" defer></script>
 <link rel="stylesheet" href="./assets/mobile-drawer.css">
 <script src="./assets/mobile-drawer.js" defer></script>
-<link rel="stylesheet" href="./assets/custom-select.css"><script src="./assets/custom-select.js" defer></script><link rel="stylesheet" href="./assets/shared-header.css?v=1"><script src="./assets/pages.js" defer></script>
+<link rel="stylesheet" href="./assets/custom-select.css"><script src="./assets/custom-select.js" defer></script><link rel="stylesheet" href="./assets/shared-header.css?v=1"><script src="./assets/pages.js?v=login-route-2" defer></script>
 <style>.framer-nzj1qu-container{display:none!important}</style></head>
 <body>
 <?php require __DIR__.'/includes/site-header.php'; ?>

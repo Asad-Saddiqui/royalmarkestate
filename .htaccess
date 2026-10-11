@@ -1,4 +1,7 @@
 RewriteEngine On
+# Legacy template login always opens the real login, under any install folder.
+RewriteCond %{REQUEST_URI} ^(.*)/sign-in(?:\.html)?/?$ [NC]
+RewriteRule ^sign-in(?:\.html)?/?$ %1/admin/login [R=302,L,NE]
 # Redirect only browser requests for PHP pages; internal rewrites remain internal.
 RewriteCond %{THE_REQUEST} \s/+(?:[^\s?]+/)?index\.php[?\s] [NC]
 RewriteRule ^index\.php$ ./ [R=302,L]
@@ -18,7 +21,6 @@ RewriteRule ^contact-us/?$ contact.php [END]
 RewriteRule ^about-us/?$ about.php [END]
 RewriteRule ^blog/?$ blog.php [END]
 RewriteRule ^property-listing/([a-z0-9-]+)/?$ property.php?slug=$1 [END,QSA]
-RewriteRule ^sign-in/?$ admin/login [R=302,L]
 
 # Prevent downloading environment secrets.
 <FilesMatch "^\.env(?:\..*)?$">
