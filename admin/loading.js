@@ -1,5 +1,5 @@
 (()=>{'use strict';const loader=document.getElementById('admin-page-loading');if(!loader)return;let shownAt=0,finishTimer,safetyTimer;
-function busy(value){document.documentElement.classList.toggle('admin-is-loading',value);const main=document.getElementById('main-content');if(main)main.setAttribute('aria-busy',String(value));}
+function busy(value){const main=document.getElementById('main-content');if(main)main.setAttribute('aria-busy',String(value));}
 function hide(){loader.hidden=true;busy(false);clearTimeout(finishTimer);clearTimeout(safetyTimer);}
 function show(label){clearTimeout(finishTimer);clearTimeout(safetyTimer);shownAt=performance.now();loader.querySelector('.admin-loading-text').textContent='Loading '+(label||'dashboard')+'...';loader.hidden=false;busy(true);safetyTimer=setTimeout(hide,12000);}
 function finish(){clearTimeout(finishTimer);finishTimer=setTimeout(hide,Math.max(0,650-(performance.now()-shownAt)));}
