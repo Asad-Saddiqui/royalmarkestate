@@ -1,6 +1,9 @@
 <?php
 function listingData(): array {
-    return json_decode(file_get_contents(dirname(__DIR__).'/Config/properties.json'), true, 512, JSON_THROW_ON_ERROR);
+    $items=json_decode(file_get_contents(dirname(__DIR__).'/Config/properties.json'), true, 512, JSON_THROW_ON_ERROR);
+    require_once dirname(__DIR__).'/Config/Database.php';
+    foreach(Database::getConnection()->query('SELECT payload FROM properties ORDER BY id DESC') as $row)$items[]=json_decode($row['payload'],true,512,JSON_THROW_ON_ERROR);
+    return $items;
 }
 function listingIcon(string $name): string {
     $paths=[

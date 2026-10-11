@@ -1,11 +1,11 @@
 <?php
-// End the local admin session and return to the public website.
+require __DIR__.'/auth.php';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Allow: POST');
     http_response_code(405);
     exit('Please use the Logout button.');
 }
-session_start();
+adminCsrf();
 $_SESSION = [];
 if (ini_get('session.use_cookies')) {
     $params = session_get_cookie_params();

@@ -1,0 +1,2 @@
+try{document.documentElement.dataset.theme=localStorage.getItem('royalmark-admin-theme')==='dark'?'dark':'light';}catch(e){}
+(()=>{const input=document.getElementById('property-photo'),image=document.getElementById('photo-preview');let url;input.addEventListener('change',()=>{if(url)URL.revokeObjectURL(url);const file=input.files[0];image.hidden=!file;if(file){url=URL.createObjectURL(file);image.src=url;}});})();

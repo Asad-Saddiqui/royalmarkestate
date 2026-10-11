@@ -1,4 +1,4 @@
 RewriteEngine On
-RewriteCond %{THE_REQUEST} \s/+Royalmarkestate/admin/(properties|projects)\.php[?\s] [NC]
-RewriteRule ^(properties|projects)\.php$ /Royalmarkestate/admin/$1 [R=302,L]
-RewriteRule ^(properties|projects)/?$ $1.php [END]
+RewriteCond %{THE_REQUEST} \s/+Royalmarkestate/admin/(properties|projects|login|create-property|logout)\.php[?\s] [NC]
+RewriteRule ^(properties|projects|login|create-property|logout)\.php$ /Royalmarkestate/admin/$1 [R=302,L]
+RewriteRule ^(properties|projects|login|create-property|logout)/?$ $1.php [END]

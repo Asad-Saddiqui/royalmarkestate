@@ -29,7 +29,7 @@
         '<button type="button" class="rm-drawer-close" aria-label="Close menu">' + icon('close') + '</button></div>' +
         '<h2 class="rm-drawer-title" id="rm-drawer-title">Menu</h2><nav class="rm-drawer-nav" aria-label="Mobile navigation">' +
         routes.map(([route, href, label]) => '<a href="' + href + '" data-route="' + route + '">' + icon(route) + '<span>' + label + '</span></a>').join('') + '</nav>' +
-        '<div class="rm-drawer-actions"><button type="button" class="rm-drawer-theme" aria-pressed="false"><span class="rm-theme-icon">☀</span><span class="rm-theme-label">Light mode</span></button><a href="./sign-in">' + icon('login') + 'Login</a><a href="./sign-in">' + icon('plus') + 'Add Properties</a></div></div>';
+        '<div class="rm-drawer-actions"><button type="button" class="rm-drawer-theme" aria-pressed="false"><span class="rm-theme-icon">☀</span><span class="rm-theme-label">Light mode</span></button><a href="./admin/login">' + icon('login') + 'Login</a><a href="./admin/login">' + icon('plus') + 'Add Properties</a></div></div>';
     document.body.appendChild(dialog);
     const themeControl = dialog.querySelector('.rm-drawer-theme');
     function sourceThemeButton() {
