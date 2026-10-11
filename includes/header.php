@@ -9,7 +9,7 @@
 </head><body>
 <a class="skip-link" href="#page-content">Skip to content</a>
 <header class="rm-header rm-page-header"><div class="page-header-inner">
-<a class="page-logo" href="./index.php" aria-label="Royalmark Estate home"><img src="./assets/royalmark-logo.png" alt="Royalmark Estate" width="130" height="76"></a>
+<a class="page-logo" href="./" aria-label="Royalmark Estate home"><img src="./assets/royalmark-logo.png" alt="Royalmark Estate" width="130" height="76"></a>
 <nav class="page-nav" aria-label="Main navigation">
 <?php foreach ($siteRoutes as $key => [$href, $label]): ?>
 <a href="./<?= e($href) ?>" <?= $activePage === $key ? 'aria-current="page"' : '' ?>><?= menuIcon($key) ?><?= e($label) ?></a>

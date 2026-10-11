@@ -3,9 +3,9 @@ require_once dirname(__DIR__) . '/Config/Database.php';
 date_default_timezone_set('Asia/Karachi');
 function e($value): string { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }
 $siteRoutes = [
-    'home' => ['index.php', 'Home'], 'properties' => ['property-listing', 'Properties'],
-    'projects' => ['projects.php', 'Projects'], 'contact' => ['contact.php', 'Contact Us'],
-    'about' => ['about.php', 'About'], 'blog' => ['blog.php', 'Blog'],
+    'home' => ['', 'Home'], 'properties' => ['property-listing', 'Properties'],
+    'projects' => ['projects', 'Projects'], 'contact' => ['contact-us', 'Contact Us'],
+    'about' => ['about-us', 'About'], 'blog' => ['blog', 'Blog'],
 ];
 function menuIcon(string $name): string {
     $paths = [

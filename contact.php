@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $statement=$db->prepare('INSERT INTO contact_messages (name,email,phone,interest,message) VALUES (:name,:email,:phone,:interest,:message)');
    $statement->execute($values);
    $_SESSION['contact_success']=true; $_SESSION['contact_csrf']=bin2hex(random_bytes(32));
-   header('Location: ./contact.php',true,303); exit;
+   header('Location: ./contact-us',true,303); exit;
   } catch (PDOException $exception) { error_log('Contact enquiry failed: '.$exception->getMessage()); http_response_code(503); $errors[]='We could not save your enquiry. Please try again shortly.'; }
  } elseif (http_response_code()!==403) http_response_code(422);
 }
@@ -29,7 +29,7 @@ require __DIR__ . '/includes/header.php';
 ?>
 <section class="page-intro"><span class="eyebrow">LET US TALK</span><h1>Your next move<br><em>starts here.</em></h1><p>Tell us what you have in mind. Use the form below to send a property or project enquiry.</p></section>
 <div class="contact-layout"><aside class="contact-aside"><h2>What are you looking for?</h2><p>A home, a plot or space for your business? Share the details that matter to you.</p><div class="contact-note"><strong>Include a few helpful details</strong><p>Property type, preferred area and any questions you would like to discuss.</p></div><a class="text-link" href="./property-listing">Explore properties &rarr;</a></aside>
-<form class="contact-form" method="post" action="./contact.php">
+<form class="contact-form" method="post" action="./contact-us">
 <?php if($success): ?><div class="notice success" role="status">Your enquiry has been saved. Thank you for contacting Royalmark Estate.</div><?php endif; ?>
 <?php if($errors): ?><div class="notice error" role="alert"><strong>Please check your enquiry:</strong><ul><?php foreach($errors as $error): ?><li><?= e($error) ?></li><?php endforeach; ?></ul></div><?php endif; ?>
 <input type="hidden" name="csrf_token" value="<?= e($_SESSION['contact_csrf']) ?>">

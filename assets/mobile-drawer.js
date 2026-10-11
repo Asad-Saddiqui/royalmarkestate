@@ -17,8 +17,8 @@
     const icon = name => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + paths[name] + '</svg>';
     const routes = [
         ['home', './', 'Home'], ['properties', './property-listing', 'Properties'],
-        ['projects', './projects.php', 'Projects'], ['contact', './contact.php', 'Contact Us'],
-        ['about', './about.php', 'About'], ['blog', './blog.php', 'Blog']
+        ['projects', './projects', 'Projects'], ['contact', './contact-us', 'Contact Us'],
+        ['about', './about-us', 'About'], ['blog', './blog', 'Blog']
     ];
     const dialog = document.createElement('dialog');
     dialog.id = 'rm-mobile-drawer';
@@ -73,8 +73,8 @@
         if (location.hash === '#projects') return 'projects';
         if (location.hash === '#contact-us') return 'contact';
         const path = location.pathname.replace(/\/$/, '');
-        if (path.endsWith('/projects.php')) return 'projects';
-        if (path.endsWith('/contact.php')) return 'contact';
+        if (path.endsWith('/projects') || path.endsWith('/projects.php')) return 'projects';
+        if (path.endsWith('/contact-us') || path.endsWith('/contact.php')) return 'contact';
         if ((path.includes('/property-listing') || path.endsWith('/properties.php'))) return 'properties';
         if ((path.endsWith('/about-us') || path.endsWith('/about.php'))) return 'about';
         if ((path.endsWith('/blog') || path.endsWith('/blog.php'))) return 'blog';

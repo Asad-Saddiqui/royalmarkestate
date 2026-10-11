@@ -18,7 +18,7 @@
                     const sample = header.querySelector('a[href="./property-listing"],a[href="./properties.php"]');
                     link.className = (sample ? sample.className : 'framer-text') + ' rm-menu-link';
                     if (sample && sample.dataset.stylesPreset) link.dataset.stylesPreset = sample.dataset.stylesPreset;
-                    link.href = route === 'projects' ? './projects.php' : './contact.php';
+                    link.href = route === 'projects' ? './projects' : './contact-us';
                     link.dataset.route = route;
                     link.textContent = route === 'projects' ? 'Projects' : 'Contact Us';
                     host.appendChild(link);
@@ -38,7 +38,7 @@
                         item.removeAttribute('id');
                         item.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
                         const link = item.querySelector('a');
-                        link.href = route === 'projects' ? './projects.php' : './contact.php';
+                        link.href = route === 'projects' ? './projects' : './contact-us';
                         link.textContent = route === 'projects' ? 'Projects' : 'Contact Us';
                         link.classList.add('rm-menu-link');
                         link.dataset.route = route;
@@ -62,7 +62,7 @@
                 header.querySelectorAll('a[href="./"]').forEach(link => link.setAttribute('data-framer-page-link-current', 'true'));
             }
         }
-        const pageRoutes = {'./properties.php':'./property-listing','./about-us':'./about.php','./blog':'./blog.php'};
+        const pageRoutes = {'./properties.php':'./property-listing','./about-us':'./about-us','./blog':'./blog'};
         root.querySelectorAll('a[href]').forEach(link => {const replacement=pageRoutes[link.getAttribute('href')];if(replacement)link.setAttribute('href',replacement);const href=link.getAttribute('href');const detail=href.match(/^\.\/property-listing\/([a-z0-9-]+)\/?$/);if(detail)link.setAttribute('href','./property.php?slug='+encodeURIComponent(detail[1]));});
         const projects = root.querySelector('[data-framer-name="Recommended Properties Section"]');
         if (projects) projects.id = 'projects';
