@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteCond %{THE_REQUEST} \s/+[^?\s]*admin/(properties|projects|login|create-property|logout|users|catalog)\.php[?\s] [NC]
-RewriteCond %{REQUEST_URI} ^(.*/admin)/(?:properties|projects|login|create-property|logout|users|catalog)\.php$
-RewriteRule ^(properties|projects|login|create-property|logout|users|catalog)\.php$ %1/$1 [R=302,L]
-RewriteRule ^(properties|projects|login|create-property|logout|users|catalog)/?$ $1.php [END]
+RewriteCond %{THE_REQUEST} \s/+[^?\s]*admin/(properties|projects|login|create-property|logout|users|catalog|settings)\.php[?\s] [NC]
+RewriteCond %{REQUEST_URI} ^(.*/admin)/(?:properties|projects|login|create-property|logout|users|catalog|settings)\.php$
+RewriteRule ^(properties|projects|login|create-property|logout|users|catalog|settings)\.php$ %1/$1 [R=302,L]
+RewriteRule ^(properties|projects|login|create-property|logout|users|catalog|settings)/?$ $1.php [END]
