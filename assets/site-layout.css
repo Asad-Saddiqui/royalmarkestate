@@ -1,0 +1,10 @@
+/* Desktop content shares an 85% container; section backgrounds remain full width. */
+@media(min-width:1200px){
+.framer-w5B6s .framer-19tr5qs,
+.framer-WsbYF :is(.framer-1sueb2c,.framer-1177e2l,.framer-1m6xcw7,.framer-1y67666,.framer-cbfyp8,.framer-yf722s,.framer-p539wm,.framer-1bgre6l,.framer-1sqdq9w,.framer-16mhyvn),
+.framer-wbbWc .framer-1608pgf{width:85%!important;max-width:none!important;padding-inline:0!important;margin-inline:auto!important}
+.framer-WsbYF .framer-r5f1mq{padding-inline:0!important}
+.framer-WsbYF .framer-p539wm{flex:none!important}
+.rm-wrap{width:85%;max-width:none;padding-inline:0}
+}
+#projects,#contact-us{scroll-margin-top:110px}
