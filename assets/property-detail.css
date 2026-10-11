@@ -5,3 +5,5 @@
 .pd-photo-stage{position:relative;aspect-ratio:1.46;overflow:hidden;border-radius:4px;background:transparent}.pd-photo-stage .pd-main-photo{display:block;width:100%;height:100%;aspect-ratio:auto;object-fit:contain}.pd-photo-transition-layer{position:absolute!important;inset:0;display:block;width:100%!important;height:100%!important;max-height:none!important;object-fit:contain!important;pointer-events:none;transform-origin:center}
 
 .pd-photo-stage .pd-main-photo{cursor:zoom-in;touch-action:manipulation}.pd-thumbnails button{cursor:pointer;touch-action:manipulation}
+
+.pd-photo-stage .pd-auto-outgoing{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform-origin:center;pointer-events:none;z-index:2;will-change:opacity}.pd-photo-stage .pd-main-photo{will-change:transform}
