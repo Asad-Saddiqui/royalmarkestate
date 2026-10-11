@@ -35,6 +35,8 @@ final class Database
     {
         // Probe first: normal requests do not need CREATE privileges or execute DDL.
         $tables = [
+            'password_reset_tokens' => 'CREATE TABLE IF NOT EXISTS password_reset_tokens (user_id INT UNSIGNED PRIMARY KEY, token_hash CHAR(64) NOT NULL UNIQUE, expires_at DATETIME NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
+            'password_reset_limits' => 'CREATE TABLE IF NOT EXISTS password_reset_limits (bucket CHAR(64) PRIMARY KEY, attempts INT UNSIGNED NOT NULL DEFAULT 1, window_start DATETIME NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'app_migrations' => 'CREATE TABLE IF NOT EXISTS app_migrations (name VARCHAR(100) PRIMARY KEY, applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'admin_users' => 'CREATE TABLE IF NOT EXISTS admin_users (id INT UNSIGNED PRIMARY KEY, email VARCHAR(254) NOT NULL UNIQUE, password_hash VARCHAR(255) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'properties' => 'CREATE TABLE IF NOT EXISTS properties (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(200) NOT NULL UNIQUE, payload LONGTEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
@@ -52,7 +54,7 @@ final class Database
             }
         }
         $columns = $connection->query('SHOW COLUMNS FROM admin_users')->fetchAll(PDO::FETCH_UNIQUE);
-        foreach (['name' => "VARCHAR(100) NOT NULL DEFAULT ''", 'role' => "VARCHAR(10) NOT NULL DEFAULT 'admin'", 'is_blocked' => 'TINYINT(1) NOT NULL DEFAULT 0'] as $column => $definition) {
+        foreach (['name' => "VARCHAR(100) NOT NULL DEFAULT ''", 'role' => "VARCHAR(10) NOT NULL DEFAULT 'admin'", 'is_blocked' => 'TINYINT(1) NOT NULL DEFAULT 0', 'session_version'=>'INT UNSIGNED NOT NULL DEFAULT 0'] as $column => $definition) {
             if (!isset($columns[$column])) {
                 try { $connection->exec('ALTER TABLE admin_users ADD COLUMN `' . $column . '` ' . $definition); }
                 catch (PDOException $exception) { if (($exception->errorInfo[1] ?? null) !== 1060) throw $exception; }

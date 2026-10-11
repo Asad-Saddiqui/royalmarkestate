@@ -1,0 +1,12 @@
+<?php
+require __DIR__.'/auth.php';require dirname(__DIR__).'/includes/bootstrap.php';require dirname(__DIR__).'/Config/password-reset.php';
+header('Cache-Control: no-store');header('Referrer-Policy: no-referrer');
+$token=is_string($_GET['token']??null)?$_GET['token']:'';$valid=passwordResetTokenValid(adminDb(),$token);$error='';
+if($_SERVER['REQUEST_METHOD']==='POST'){
+    adminCsrf();$password=is_string($_POST['password']??null)?$_POST['password']:'';$confirm=is_string($_POST['confirm_password']??null)?$_POST['confirm_password']:'';
+    if(!$valid)$error='This reset link has expired or has already been used.';
+    elseif(strlen($password)<12||strlen($password)>200)$error='Use a password between 12 and 200 characters.';
+    elseif($password!==$confirm)$error='Passwords do not match.';
+    else{try{if(completePasswordReset(adminDb(),$token,$password)){$_SESSION=[];session_regenerate_id(true);header('Location: ./login?reset=1',true,303);exit;}$valid=false;}catch(Throwable $e){$error='Unable to reset your password. Please try again.';}}
+}
+?><!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Reset password | Royalmark Estate</title><link rel="icon" href="../assets/royalmark-logo.png"><link rel="stylesheet" href="./admin.css"><link rel="stylesheet" href="./forms.css"></head><body class="login-page"><main class="login-card"><a href="../"><img src="../assets/royalmark-logo.png" alt="Royalmark Estate" width="140" height="82"></a><h1><?= $valid?'Set a new password':'Reset link unavailable' ?></h1><?php if($error): ?><p class="form-error" role="alert"><?= e($error) ?></p><?php endif; ?><?php if($valid): ?><p>Choose a new password with at least 12 characters.</p><form method="post"><input type="hidden" name="csrf" value="<?= e(adminToken()) ?>"><label>New password<input type="password" name="password" autocomplete="new-password" required minlength="12" maxlength="200"></label><label>Confirm password<input type="password" name="confirm_password" autocomplete="new-password" required minlength="12" maxlength="200"></label><button class="primary-button" type="submit">Save new password</button></form><?php else: ?><p>This link is invalid, expired or already used. Request a new link to continue.</p><a class="primary-button" href="./forgot-password">Request a new link</a><br><br><?php endif; ?><a class="text-link" href="./login">Back to login</a></main></body></html>

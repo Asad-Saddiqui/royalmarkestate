@@ -1,5 +1,5 @@
 <?php
-$headerUser=null;if(!empty($_SESSION['admin_id'])){$headerQuery=Database::getConnection()->prepare('SELECT name,email,role,is_blocked FROM admin_users WHERE id=?');$headerQuery->execute([$_SESSION['admin_id']]);$headerUser=$headerQuery->fetch(PDO::FETCH_ASSOC);if(!$headerUser||$headerUser['is_blocked'])$headerUser=null;}
+$headerUser=null;if(!empty($_SESSION['admin_id'])){$headerQuery=Database::getConnection()->prepare('SELECT name,email,role,is_blocked,session_version FROM admin_users WHERE id=?');$headerQuery->execute([$_SESSION['admin_id']]);$headerUser=$headerQuery->fetch(PDO::FETCH_ASSOC);if(!$headerUser||$headerUser['is_blocked']||(int)($_SESSION['admin_session_version']??0)!==(int)$headerUser['session_version'])$headerUser=null;}
 $headerCsrf=$_SESSION['admin_csrf']??=bin2hex(random_bytes(32));
 ?>
 <header class="rm-header rm-page-header"><div class="page-header-inner">

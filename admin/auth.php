@@ -8,9 +8,9 @@ function adminToken(): string {return $_SESSION['admin_csrf']??=bin2hex(random_b
 function adminCsrf(): void {if(!is_string($_POST['csrf']??null)||!hash_equals(adminToken(),$_POST['csrf'])){http_response_code(403);exit('Invalid form token. Reload and try again.');}}
 function currentUser(): ?array {
     if(empty($_SESSION['admin_id']))return null;
-    $statement=adminDb()->prepare('SELECT id,email,name,role,is_blocked FROM admin_users WHERE id=?');
+    $statement=adminDb()->prepare('SELECT id,email,name,role,is_blocked,session_version FROM admin_users WHERE id=?');
     $statement->execute([$_SESSION['admin_id']]);$user=$statement->fetch();
-    if(!$user||$user['is_blocked']){unset($_SESSION['admin_id']);return null;}
+    if(!$user||$user['is_blocked']||(int)($_SESSION['admin_session_version']??0)!==(int)$user['session_version']){unset($_SESSION['admin_id']);return null;}
     return $user;
 }
 function requireLogin(): array { $user=currentUser();if(!$user){global $adminBase;header('Location: '.$adminBase.'/login');exit;}return $user; }
