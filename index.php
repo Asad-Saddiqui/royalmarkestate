@@ -223,5 +223,5 @@ a:has(> [data-framer-name="Logo Text"]) > svg { display:none!important; }
 <!-- SnippetEnd: rrg017VZG -->
 
     <!-- End of bodyEnd -->
-</body>
+<?php require __DIR__.'/includes/contact-shortcuts.php'; ?></body>
 </html>
