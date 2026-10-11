@@ -1,8 +1,11 @@
-(()=>{'use strict';const loader=document.getElementById('admin-page-loading');if(!loader)return;let timer;const names={projects:'projects',catalog:'catalog'};
-function hide(){loader.hidden=true;clearTimeout(timer);}
-function show(page){loader.querySelector('.admin-loading-text').textContent='Loading '+names[page]+'…';loader.hidden=false;clearTimeout(timer);timer=setTimeout(hide,12000);}
-if(names[loader.dataset.initial]&&document.readyState!=='complete')show(loader.dataset.initial);
-window.addEventListener('load',hide,{once:true});window.addEventListener('pageshow',hide);
-document.addEventListener('click',event=>{if(event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const link=event.target.closest('a[href]');if(!link||link.hasAttribute('download')||(link.target&&link.target!=='_self'))return;const url=new URL(link.href,location.href);if(url.origin!==location.origin||url.href===location.href)return;const page=url.pathname.match(/\/admin\/(projects|catalog)(?:\.php)?\/?$/)?.[1];if(page)show(page);});
-document.addEventListener('submit',event=>{if(event.defaultPrevented)return;const form=event.target;const url=new URL(form.action||location.href,location.href);const page=url.pathname.match(/\/admin\/(projects|catalog)(?:\.php)?\/?$/)?.[1];if(page)show(page);});
+(()=>{'use strict';const loader=document.getElementById('admin-page-loading');if(!loader)return;let shownAt=0,finishTimer,safetyTimer;
+function hide(){loader.hidden=true;clearTimeout(finishTimer);clearTimeout(safetyTimer);}
+function show(label){clearTimeout(finishTimer);clearTimeout(safetyTimer);shownAt=performance.now();loader.querySelector('.admin-loading-text').textContent='Loading '+(label||'dashboard')+'...';loader.hidden=false;safetyTimer=setTimeout(hide,12000);}
+function finish(){clearTimeout(finishTimer);finishTimer=setTimeout(hide,Math.max(0,650-(performance.now()-shownAt)));}
+show(loader.dataset.initial);
+if(document.readyState==='complete')finish();else window.addEventListener('load',finish,{once:true});
+window.addEventListener('pageshow',event=>{if(event.persisted)hide();});
+function destination(value){const url=new URL(value,location.href);return url.origin===location.origin&&url.pathname.includes('/admin')?url:null;}
+document.addEventListener('click',event=>{if(event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const link=event.target.closest('a[href]');if(!link||link.hasAttribute('download')||(link.target&&link.target!=='_self'))return;const url=destination(link.href);if(!url||url.href===location.href||url.pathname===location.pathname&&url.search===location.search)return;show(link.textContent.trim()||'dashboard');});
+document.addEventListener('submit',event=>{if(!event.defaultPrevented&&destination(event.target.action||location.href))show(loader.dataset.initial);});
 })();
