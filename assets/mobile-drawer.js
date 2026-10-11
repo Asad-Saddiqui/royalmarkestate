@@ -20,14 +20,14 @@
     const routes = [
         ['home', './', 'Home'], ['properties', './property-listing', 'Properties'],
         ['projects', './projects', 'Projects'], ['contact', './contact-us', 'Contact Us'],
-        ['about', './about-us', 'About'], ['blog', './blog', 'Blog']
+        ['about', './about-us', 'About'], ['blog', './blog', 'Blog & Insights']
     ];
     const dialog = document.createElement('dialog');
     dialog.id = 'rm-mobile-drawer';
     dialog.className = 'rm-mobile-drawer';
     dialog.setAttribute('aria-labelledby', 'rm-drawer-title');
     dialog.innerHTML = '<div class="rm-drawer-inner"><div class="rm-drawer-top">' +
-        '<a href="./" class="rm-drawer-brand" aria-label="Royalmark Estate home"><img src="./assets/royalmark-logo.png" alt="Royalmark Estate" width="126" height="74"></a>' +
+        '<a href="./" class="rm-drawer-brand" aria-label="Royalmark Estate home"><img class="rm-drawer-logo" src="./assets/royalmark-logo.png" alt="Royalmark Estate" width="150" height="88"></a>' +
         '<button type="button" class="rm-drawer-close" aria-label="Close menu">' + icon('close') + '</button></div>' +
         '<h2 class="rm-drawer-title" id="rm-drawer-title">Menu</h2><nav class="rm-drawer-nav" aria-label="Mobile navigation">' +
         routes.map(([route, href, label]) => '<a href="' + href + '" data-route="' + route + '">' + icon(route) + '<span>' + label + '</span></a>').join('') + '</nav>' +
@@ -40,7 +40,10 @@
     drawerActions.querySelectorAll('a').forEach(a=>{if(a.classList.contains('page-account'))return;if(a.textContent.includes('Add Properties'))a.classList.add('rm-drawer-primary');else a.classList.add('rm-drawer-signin');});
     const drawerAccount=drawerActions.querySelector('.page-account');if(drawerAccount)drawerActions.prepend(drawerAccount);
     const primary=drawerActions.querySelector('.rm-drawer-primary');if(primary)drawerActions.append(primary);
-    const tagline=document.createElement('span');tagline.className='rm-drawer-brand-caption';tagline.textContent='Your next address starts here';dialog.querySelector('.rm-drawer-brand').append(tagline);
+    const tagline=document.createElement('span');tagline.className='rm-drawer-brand-caption';tagline.textContent='Your next address starts here';tagline.innerHTML=icon('about')+'<span>Your next address starts here</span>';dialog.querySelector('.rm-drawer-top').after(tagline);
+    const accountTitle=document.createElement('h2');accountTitle.className='rm-drawer-title rm-account-title';accountTitle.textContent='Account';drawerActions.prepend(accountTitle);
+    if(drawerAccount){const name=drawerAccount.querySelector('.account-name')?.textContent.trim()||'My account';const avatar=document.createElement('span');avatar.className='rm-account-avatar';avatar.textContent=name.split(/\s+/).slice(0,2).map(word=>word[0]).join('').toUpperCase();const details=document.createElement('span');details.className='rm-account-details';const title=document.createElement('strong');title.textContent=name;const email=document.createElement('small');email.textContent=account.dataset.userEmail||'Your Royalmark account';details.append(title,email);drawerAccount.replaceChildren(avatar,details);const settings=document.createElement('span');settings.className='rm-account-settings';settings.innerHTML=icon('properties');drawerAccount.append(settings);}
+    const footer=document.createElement('div');footer.className='rm-drawer-footer';if(primary)footer.append(primary);const footnote=document.createElement('small');footnote.textContent='Royalmark Estate \u00b7 Your property partner';footer.append(footnote);dialog.querySelector('.rm-drawer-inner').append(footer);
     const themeControl = dialog.querySelector('.rm-drawer-theme');
     function sourceThemeButton() {
         const buttons = [...document.querySelectorAll('.framer-nzj1qu-container button[title],.rm-page-theme[title]')].filter(button => /Switch to (dark|light) mode/i.test(button.title));
