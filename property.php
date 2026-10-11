@@ -1,7 +1,7 @@
 <?php
 session_start();require __DIR__.'/includes/bootstrap.php';require __DIR__.'/includes/listings.php';
 $slug=is_string($_GET['slug']??null)?$_GET['slug']:'';$all=listingData();$property=null;foreach($all as $item)if($item['slug']===$slug){$property=$item;break;}
-$activePage='properties';$pageTitle=$property?$property['title']:'Property not found';$extraCss=['./assets/property-detail.css?v=gallery-2'];$extraJs=['./assets/property-detail.js?v=gallery-2'];
+$activePage='properties';$pageTitle=$property?$property['title']:'Property not found';$extraCss=['./assets/property-detail.css','./assets/property-media.css'];$extraJs=['./assets/property-detail.js','./assets/property-media.js'];
 if(!$property)http_response_code(404);
 $_SESSION['property_csrf']??=bin2hex(random_bytes(32));$errors=[];$sent=false;$values=['name'=>'','email'=>'','phone'=>'','message'=>''];
 if($property&&$_SERVER['REQUEST_METHOD']==='POST'){
