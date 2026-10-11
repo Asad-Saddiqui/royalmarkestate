@@ -47,5 +47,15 @@ final class Database
                 $connection->exec($sql);
             }
         }
+        $columns = $connection->query('SHOW COLUMNS FROM admin_users')->fetchAll(PDO::FETCH_UNIQUE);
+        foreach (['name' => "VARCHAR(100) NOT NULL DEFAULT ''", 'role' => "VARCHAR(10) NOT NULL DEFAULT 'admin'", 'is_blocked' => 'TINYINT(1) NOT NULL DEFAULT 0'] as $column => $definition) {
+            if (!isset($columns[$column])) {
+                try { $connection->exec('ALTER TABLE admin_users ADD COLUMN `' . $column . '` ' . $definition); }
+                catch (PDOException $exception) { if (($exception->errorInfo[1] ?? null) !== 1060) throw $exception; }
+            }
+        }
+        if (!str_contains($columns['id']['Extra'] ?? '', 'auto_increment')) {
+            $connection->exec('ALTER TABLE admin_users MODIFY id INT UNSIGNED NOT NULL AUTO_INCREMENT');
+        }
     }
 }

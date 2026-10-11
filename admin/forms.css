@@ -5,3 +5,4 @@
 .property-form input[type=file]{padding:8px 11px;font-size:13px}
 .property-form textarea{padding:9px 11px;font-size:13px}
 .property-form input:focus,.property-form select:focus,.property-form textarea:focus,.property-form input:focus-visible,.property-form select:focus-visible,.property-form textarea:focus-visible{outline:none;box-shadow:none;border-color:var(--brand)}
+.user-fields label{display:grid;gap:8px;font-size:13px}.user-fields input,.user-fields select{width:100%;min-width:0;height:40px;padding:8px 11px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink)}.user-actions{display:flex;align-items:center;gap:8px}.user-actions form{margin:0}.user-actions .primary-button,.role-button{padding:8px 10px;font-size:11px}.role-button{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:6px;cursor:pointer}.user-fields input:focus{outline:none;border-color:var(--brand)}

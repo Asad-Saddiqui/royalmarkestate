@@ -8,7 +8,7 @@ try {
  http_response_code(503);
  exit('Admin database setup is incomplete. Check the hosting .env credentials and import Config/schema.sql into that database. See the hosting PHP error log for the exact cause.');
 }
-if(!empty($_SESSION['admin_id'])){header('Location: ./');exit;}
+if(currentUser()){header('Location: ./');exit;}
 $error='';
 if($_SERVER['REQUEST_METHOD']==='POST'){
  adminCsrf();$email=is_string($_POST['email']??null)?trim($_POST['email']):'';$password=is_string($_POST['password']??null)?$_POST['password']:'';
@@ -17,8 +17,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
  elseif(!$hasAccount){
   try{adminDb()->prepare('INSERT INTO admin_users (id,email,password_hash) VALUES (1,?,?)')->execute([$email,password_hash($password,PASSWORD_DEFAULT)]);session_regenerate_id(true);$_SESSION['admin_id']=1;header('Location: ./');exit;}catch(PDOException $e){$error='An administrator already exists. Reload to sign in.';}
  }else{
-  $statement=adminDb()->prepare('SELECT id,password_hash FROM admin_users WHERE email=?');$statement->execute([$email]);$user=$statement->fetch();
-  if($user&&password_verify($password,$user['password_hash'])){session_regenerate_id(true);$_SESSION['admin_id']=$user['id'];unset($_SESSION['login_failures'],$_SESSION['login_retry_after']);header('Location: ./');exit;}
+  $statement=adminDb()->prepare('SELECT id,password_hash,is_blocked FROM admin_users WHERE email=?');$statement->execute([$email]);$user=$statement->fetch();
+  if($user&&!$user['is_blocked']&&password_verify($password,$user['password_hash'])){session_regenerate_id(true);$_SESSION['admin_id']=$user['id'];unset($_SESSION['login_failures'],$_SESSION['login_retry_after']);header('Location: ./');exit;}
   $_SESSION['login_failures']=($_SESSION['login_failures']??0)+1;if($_SESSION['login_failures']>=5)$_SESSION['login_retry_after']=time()+300;$error='Email or password is incorrect.';
  }
 }
