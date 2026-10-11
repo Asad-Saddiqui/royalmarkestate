@@ -1,8 +1,8 @@
 <?php
-function listingData(): array {
+function listingData(bool $includeUnpublished=false): array {
     require_once dirname(__DIR__).'/Config/Database.php';
     $items=[];
-    foreach(Database::getConnection()->query('SELECT payload FROM properties ORDER BY id DESC') as $row){$item=json_decode($row['payload'],true,512,JSON_THROW_ON_ERROR);$items[$item['slug']]=$item;}
+    foreach(Database::getConnection()->query('SELECT payload FROM properties ORDER BY id DESC') as $row){$item=json_decode($row['payload'],true,512,JSON_THROW_ON_ERROR);if($includeUnpublished||($item['status']??'published')==='published')$items[$item['slug']]=$item;}
     $items=array_values($items);
     return $items;
 }

@@ -40,7 +40,7 @@ require __DIR__.'/includes/header.php';
 </form></aside>
 <section class="listing-results" aria-label="Property results">
 <?php if($view==='map'&&$visible): ?><section class="listing-map" aria-label="Location overview"><div><h2>City overview</h2><label>Location <select id="listing-map-city"><?php foreach(array_unique(array_column($visible,'city')) as $location): ?><option><?= e($location) ?></option><?php endforeach; ?></select></label></div><iframe id="listing-map-frame" title="Property city overview map" loading="lazy" referrerpolicy="no-referrer" src="about:blank"></iframe><p>Approximate city locations, not exact property addresses. Map requires internet.</p></section><?php endif; ?>
-<?php if(!$visible): ?><div class="listing-empty"><h2>No properties match these filters.</h2><p>Try a different location, price or property type.</p><a class="button" href="./property-listing">Reset filters</a></div><?php else: ?><div class="listing-grid"><?php foreach($visible as $property)listingCard($property); ?></div><?php endif; ?>
+<?php if(!$visible): ?><div class="listing-empty"><h2><?= !$properties?'No properties available right now.':'No properties match these filters.' ?></h2><p><?= !$properties?'Please check back soon for new listings.':'Try a different location, price or property type.' ?></p><a class="button" href="./property-listing">Reset filters</a></div><?php else: ?><div class="listing-grid"><?php foreach($visible as $property)listingCard($property); ?></div><?php endif; ?>
 <p class="listing-count"><?= count($visible) ?> <?= count($visible)===1?'property':'properties' ?> found <span>&middot; Property showcase</span></p>
 </section></div>
 <?php require __DIR__.'/includes/footer.php'; ?>
