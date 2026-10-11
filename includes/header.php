@@ -12,7 +12,7 @@ $versionAsset=static function(string $asset): string {
 <link rel="stylesheet" href="./assets/listings.css"><link rel="stylesheet" href="./assets/mobile-drawer.css">
 <script src="./assets/pages.js?v=login-route-2" defer></script><script src="./assets/mobile-drawer.js" defer></script>
 <?php foreach (($extraCss ?? []) as $asset): ?><link rel="stylesheet" href="<?= e($versionAsset($asset)) ?>"><?php endforeach; ?>
-<?php foreach (($extraJs ?? []) as $asset): ?><script src="<?= e($asset) ?>" defer></script><?php endforeach; ?>
+<?php foreach (($extraJs ?? []) as $asset): ?><script src="<?= e($versionAsset($asset)) ?>" defer></script><?php endforeach; ?>
 <link rel="stylesheet" href="./assets/custom-select.css"><script src="./assets/custom-select.js" defer></script></head><body>
 <a class="skip-link" href="#page-content">Skip to content</a>
 <?php require __DIR__.'/site-header.php'; ?>
