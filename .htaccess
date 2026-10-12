@@ -1,4 +1,6 @@
 RewriteEngine On
+# Separate user dashboard entry point.
+RewriteRule ^user/?$ admin/user-dashboard.php [END]
 # Legacy template login always opens the real login, under any install folder.
 RewriteCond %{REQUEST_URI} ^(.*)/sign-in(?:\.html)?/?$ [NC]
 RewriteRule ^sign-in(?:\.html)?/?$ %1/admin/login [R=302,L,NE]

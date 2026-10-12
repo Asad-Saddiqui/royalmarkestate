@@ -8,7 +8,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
  $db=adminDb();$db->beginTransaction();try{$q=$db->prepare('SELECT payload FROM properties WHERE slug=? FOR UPDATE');$q->execute([$slug]);$payload=$q->fetchColumn();if(!$payload)throw new RuntimeException('Property not found');$record=json_decode($payload,true,512,JSON_THROW_ON_ERROR);$record['status']=$status;$db->prepare('UPDATE properties SET payload=? WHERE slug=?')->execute([json_encode($record,JSON_THROW_ON_ERROR),$slug]);$db->commit();}catch(Throwable $e){if($db->inTransaction())$db->rollBack();http_response_code(400);exit('Unable to update property status.');}
  header('Location: ./properties?publication='.rawurlencode($status));exit;
 }
-$properties=listingData(true);
+if(currentUser()['role']==='user'&&!isset($adminPage)){header('Location: ../user');exit;}
+$properties=listingData(currentUser()['role']==='admin');
 $view=$adminPage ?? (is_string($_GET['view']??null)?$_GET['view']:'overview');
 if(!in_array($view,['overview','properties','projects'],true))$view='overview';
 $query=is_string($_GET['q']??null)?mb_substr(trim($_GET['q']),0,150):'';
