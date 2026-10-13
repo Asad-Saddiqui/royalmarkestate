@@ -1,11 +1,11 @@
-@font-face { font-family: "Mona Sans"; src: url("https://fonts.gstatic.com/s/monasans/v4/o-0mIpQmx24alC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyAjBN9Y41P6zHtY.woff2"); font-display: swap; font-style: normal; font-weight: 600 }
-@font-face { font-family: "Mona Sans"; src: url("https://fonts.gstatic.com/s/monasans/v4/o-0mIpQmx24alC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyBUBN9Y41P6zHtY.woff2"); font-style: normal; font-weight: 900 }
-@font-face { font-family: "Mona Sans"; src: url("https://fonts.gstatic.com/s/monasans/v4/o-0kIpQmx24alC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QJ4Z6VLYyWtY1rI.woff2"); font-style: italic; font-weight: 900 }
-@font-face { font-family: "Mona Sans"; src: url("https://fonts.gstatic.com/s/monasans/v4/o-0kIpQmx24alC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QOkZ6VLYyWtY1rI.woff2"); font-display: swap; font-style: italic; font-weight: 600 }
-@font-face { font-family: "Open Sans"; src: url("https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjr0C4iY1M2xLER.woff2"); font-display: swap; font-style: normal; font-weight: 500 }
-@font-face { font-family: "Open Sans"; src: url("https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0C4iY1M2xLER.woff2"); font-display: swap; font-style: normal; font-weight: 400 }
-@font-face { font-family: "Mona Sans"; src: url("https://fonts.gstatic.com/s/monasans/v4/o-0mIpQmx24alC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyAaBN9Y41P6zHtY.woff2"); font-display: swap; font-style: normal; font-weight: 700 }
-@font-face { font-family: "Mona Sans"; src: url("https://fonts.gstatic.com/s/monasans/v4/o-0kIpQmx24alC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QNAZ6VLYyWtY1rI.woff2"); font-display: swap; font-style: italic; font-weight: 700 }
+@font-face { font-family: "Mona Sans"; src: url("./site-media/f11f279ded7e94e58a.woff2"); font-display: swap; font-style: normal; font-weight: 600 }
+@font-face { font-family: "Mona Sans"; src: url("./site-media/e0d75a0b624810b7cd.woff2"); font-style: normal; font-weight: 900 }
+@font-face { font-family: "Mona Sans"; src: url("./site-media/6c1c758311e078ff30.woff2"); font-style: italic; font-weight: 900 }
+@font-face { font-family: "Mona Sans"; src: url("./site-media/6651e84d10b9d02e84.woff2"); font-display: swap; font-style: italic; font-weight: 600 }
+@font-face { font-family: "Open Sans"; src: url("./site-media/afbdde6d164e9c3476.woff2"); font-display: swap; font-style: normal; font-weight: 500 }
+@font-face { font-family: "Open Sans"; src: url("./site-media/440532c847bf1b1b2e.woff2"); font-display: swap; font-style: normal; font-weight: 400 }
+@font-face { font-family: "Mona Sans"; src: url("./site-media/53a96bc3c60820a79c.woff2"); font-display: swap; font-style: normal; font-weight: 700 }
+@font-face { font-family: "Mona Sans"; src: url("./site-media/41826b294b8bd343aa.woff2"); font-display: swap; font-style: italic; font-weight: 700 }
 @font-face { font-family: "Inter"; src: url("./site-media/d883ffa2482abbe7a1.woff2"); font-display: swap; font-style: normal; font-weight: 400; unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F }
 @font-face { font-family: "Inter"; src: url("./site-media/9ce363a79a4d962e2f.woff2"); font-display: swap; font-style: normal; font-weight: 400; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116 }
 @font-face { font-family: "Inter"; src: url("./site-media/4920be116795748d0c.woff2"); font-display: swap; font-style: normal; font-weight: 400; unicode-range: U+1F00-1FFF }
@@ -41,7 +41,7 @@
 @font-face { font-family: "Inter"; src: url("./site-media/eb3699f3974691c68a.woff2"); font-display: swap; font-style: normal; font-weight: 500; unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF }
 @font-face { font-family: "Inter"; src: url("./site-media/d321700bc1a469c09c.woff2"); font-display: swap; font-style: normal; font-weight: 500; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2070, U+2074-207E, U+2080-208E, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD }
 @font-face { font-family: "Inter"; src: url("./site-media/c01559eafb4940c59c.woff2"); font-display: swap; font-style: normal; font-weight: 500; unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB }
-@font-face { font-family: "General Sans"; src: url("https://framerusercontent.com/third-party-assets/fontshare/wf/3RZHWSNONLLWJK3RLPEKUZOMM56GO4LJ/BPDRY7AHVI3MCDXXVXTQQ76H3UXA63S3/SB2OEB6IKZPRR6JT4GFJ2TFT6HBB6AZN.woff2"); font-display: swap; font-style: normal; font-weight: 500 }
+@font-face { font-family: "General Sans"; src: url("./site-media/461980232c1b33ff23.woff2"); font-display: swap; font-style: normal; font-weight: 500 }
 @font-face { font-family: "Inter"; src: url("./site-media/dc06a5feccd00da7b8.woff2"); font-display: swap; font-style: italic; font-weight: 500; unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F }
 @font-face { font-family: "Inter"; src: url("./site-media/38a9fe620e647f99e3.woff2"); font-display: swap; font-style: italic; font-weight: 500; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116 }
 @font-face { font-family: "Inter"; src: url("./site-media/145a55aa2db5b3bc45.woff2"); font-display: swap; font-style: italic; font-weight: 500; unicode-range: U+1F00-1FFF }

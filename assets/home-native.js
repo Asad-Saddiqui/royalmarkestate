@@ -4,7 +4,7 @@
     const root = document.getElementById('main');
     if (!root) return;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-    const reveal = [...root.querySelectorAll('[data-framer-appear-id], [style*="will-change:transform"], .rm-native-heading, .rm-home-gallery-grid > a')].filter(el => !el.closest('.framer-nzj1qu-container'));
+    const reveal = [...root.querySelectorAll('[data-framer-appear-id], [style*="will-change:transform"], .rm-native-heading, .rm-home-gallery-grid > a, .rm-service-card, .rm-home-stories article, .rm-home-counts a')].filter(el => !el.closest('.framer-nzj1qu-container'));
     if (!reduced.matches && 'IntersectionObserver' in window) {
         const observer = new IntersectionObserver(entries => entries.forEach(entry => {
             if (entry.isIntersecting) { entry.target.classList.add('rm-revealed'); observer.unobserve(entry.target); }
@@ -12,18 +12,16 @@
         reveal.forEach(el => {el.classList.add('rm-reveal'); observer.observe(el);});
         reduced.addEventListener('change', () => {if(reduced.matches){reveal.forEach(el=>el.classList.add('rm-revealed'));observer.disconnect();}});
     }
-    // Static exported ticker content becomes a native, keyboard-scrollable rail.
-    root.querySelectorAll('[data-framer-name="Client Story"] ul').forEach(list => {
-        const seen = new Set();
-        [...list.children].forEach(item => {
-            const text = item.textContent.trim();
-            if (seen.has(text)) {item.remove();return;}
-            seen.add(text);item.removeAttribute('aria-hidden');item.style.cssText='';
-        });
-        const rail = list.parentElement;
-        rail.classList.add('rm-native-story-rail');rail.tabIndex=0;rail.setAttribute('role','region');rail.setAttribute('aria-label','Client stories. Scroll to explore.');
-        list.classList.add('rm-native-story-list');list.style.cssText='';
-    });
+    // Pause decorative video off screen; keep a poster visible while the video loads.
+    if ('IntersectionObserver' in window) {
+        const videos = new IntersectionObserver(entries => entries.forEach(entry => {
+            const video=entry.target;
+            if(entry.isIntersecting&&!reduced.matches&&!navigator.connection?.saveData)video.play().catch(()=>{});
+            else video.pause();
+        }), {threshold:.2});
+        root.querySelectorAll('video').forEach(video=>{video.controls=false;video.removeAttribute('controls');video.muted=true;if(reduced.matches||navigator.connection?.saveData){video.removeAttribute('autoplay');video.pause();}videos.observe(video);});
+        document.addEventListener('visibilitychange',()=>{if(document.hidden)root.querySelectorAll('video').forEach(video=>video.pause());});
+    }
     // All navigation uses standard links, including the old clean detail routes.
     root.querySelectorAll('a[href]').forEach(link => {
         const href=link.getAttribute('href');const detail=href.match(/^\.\/property-listing\/([a-z0-9-]+)\/?$/);
