@@ -5,7 +5,7 @@ if(session_status()!==PHP_SESSION_ACTIVE){$publicSessionPath=rtrim(str_replace('
 function e($value): string { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }
 $siteRoutes = [
     'home' => ['', 'Home'], 'properties' => ['property-listing', 'Properties'],
-    'projects' => ['projects', 'Projects'], 'contact' => ['contact-us', 'Contact Us'],
+    'projects' => ['projects', 'Projects'], 'agents' => ['agents', 'Agents'], 'contact' => ['contact-us', 'Contact Us'],
     'about' => ['about-us', 'About'], 'blog' => ['blog', 'Blog'],
 ];
 function menuIcon(string $name): string {
@@ -13,6 +13,7 @@ function menuIcon(string $name): string {
         'home'=>'<path d="m3 10 9-7 9 7v10H15v-7H9v7H3z"/>',
         'properties'=>'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
         'projects'=>'<path d="M3 21V7l6-3v17M9 21V3h8v18M17 9h4v12M2 21h20M12 7h2M12 11h2M12 15h2"/>',
+        'agents'=>'<circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M17 4a3 3 0 0 1 0 6M18 21v-3a6 6 0 0 0-2-4"/>',
         'contact'=>'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
         'about'=>'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
         'blog'=>'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/>',

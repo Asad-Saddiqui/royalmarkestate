@@ -57,7 +57,7 @@ try {
     <!-- End of headEnd -->
 	
 
-<link rel="stylesheet" href="./assets/menu-icons.css">
+
 <link rel="stylesheet" href="./assets/site-layout.css">
 
 <link rel="stylesheet" href="./assets/mobile-drawer.css?v=brand-logo-5">

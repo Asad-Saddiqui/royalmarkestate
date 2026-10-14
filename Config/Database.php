@@ -40,6 +40,7 @@ final class Database
             'app_migrations' => 'CREATE TABLE IF NOT EXISTS app_migrations (name VARCHAR(100) PRIMARY KEY, applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'admin_users' => 'CREATE TABLE IF NOT EXISTS admin_users (id INT UNSIGNED PRIMARY KEY, email VARCHAR(254) NOT NULL UNIQUE, password_hash VARCHAR(255) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'projects' => 'CREATE TABLE IF NOT EXISTS projects (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(200) NOT NULL UNIQUE, payload LONGTEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
+            'agents' => 'CREATE TABLE IF NOT EXISTS agents (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(180) NOT NULL UNIQUE, payload LONGTEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'properties' => 'CREATE TABLE IF NOT EXISTS properties (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(200) NOT NULL UNIQUE, payload LONGTEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'blog_posts' => 'CREATE TABLE IF NOT EXISTS blog_posts (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(180) NOT NULL UNIQUE, payload LONGTEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'company_profile' => 'CREATE TABLE IF NOT EXISTS company_profile (id TINYINT UNSIGNED PRIMARY KEY, payload LONGTEXT NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
@@ -69,6 +70,7 @@ final class Database
         self::initializeDefaultProperties($connection);
         self::initializeDefaultProjects($connection);
         self::completeDefaultProjectDetails($connection);
+        self::initializeDefaultAgents($connection);
     }
 
     private static function initializeDefaultAdministrator(PDO $connection): void
@@ -194,4 +196,25 @@ final class Database
         }catch(Throwable $exception){if($connection->inTransaction())$connection->rollBack();throw $exception;}
     }
 
+    private static function initializeDefaultAgents(PDO $connection): void
+    {
+        $migration = 'default_dashboard_agents_v1';
+        $check = $connection->prepare('SELECT 1 FROM app_migrations WHERE name=?');
+        $check->execute([$migration]);
+        if ($check->fetchColumn()) return;
+        $records = require __DIR__ . '/default-agents.php';
+        $connection->beginTransaction();
+        try {
+            $mark = $connection->prepare('INSERT IGNORE INTO app_migrations (name) VALUES (?)');
+            $mark->execute([$migration]);
+            if ($mark->rowCount() === 1) {
+                $insert = $connection->prepare('INSERT IGNORE INTO agents (slug,payload) VALUES (?,?)');
+                foreach ($records as $record) $insert->execute([$record['slug'], json_encode($record, JSON_THROW_ON_ERROR)]);
+            }
+            $connection->commit();
+        } catch (Throwable $exception) {
+            if ($connection->inTransaction()) $connection->rollBack();
+            throw $exception;
+        }
+    }
 }
