@@ -1,46 +1,66 @@
 <?php
 require __DIR__.'/includes/bootstrap.php';
 require __DIR__.'/includes/listings.php';
-$pageTitle='Properties'; $activePage='properties';
-$extraJs=['./assets/listings.js']; $mainClass='listing-page';
-$properties=listingData(); $priceCeiling=max(58000000,...array_column($properties,'price'));
-function queryText(string $key, string $fallback=''): string { return is_string($_GET[$key]??null)?trim($_GET[$key]):$fallback; }
-$q=mb_substr(queryText('q'),0,150);
-$purpose=ucfirst(strtolower(queryText('purpose',queryText('listing-purpose')))); if(!in_array($purpose,['Rent','Sell'],true))$purpose='';
-$availableTypes=array_values(array_unique(array_merge(['Apartment','Villa','Duplex','House','Studio','Penthouse','Shop/Retail'],array_column($properties,'type'))));
-$types=$_GET['types']??[]; if(!is_array($types))$types=[]; $types=array_values(array_intersect(array_filter($types, 'is_string'),$availableTypes));
-$legacyType=queryText('type',queryText('property-types')); $aliases=['apartment'=>'Apartment','independent-house'=>'House','house'=>'House','villa'=>'Villa','penthouse'=>'Penthouse']; if(!$types&&isset($aliases[strtolower($legacyType)]))$types=[$aliases[strtolower($legacyType)]];
-$featured=queryText('featured')==='1'; $beds=max(0,min(20,(int)queryText('beds'))); $baths=max(0,min(20,(int)queryText('baths')));
-$min=max(0,min($priceCeiling,(float)queryText('min_price'))); $max=queryText('max_price')!==''?max(0,min($priceCeiling,(float)queryText('max_price'))):$priceCeiling;
-$city=queryText('city'); $cities=array_values(array_unique(array_column($properties,'city'))); if(!in_array($city,$cities,true))$city='';
-$sort=queryText('sort','recommended'); if(!in_array($sort,['recommended','price-asc','price-desc','area-desc'],true))$sort='recommended';
-$view=queryText('view',queryText('current_view'))==='map'?'map':'grid';
-$visible=array_values(array_filter($properties,function($p)use($q,$purpose,$types,$featured,$beds,$baths,$min,$max,$city){return ($q===''||mb_stripos($p['title'].' '.$p['city'].' '.$p['type'],$q)!==false)&&($purpose===''||$p['purpose']===$purpose)&&(!$types||in_array($p['type'],$types,true))&&(!$featured||$p['featured'])&&($beds===0||$p['beds']>=$beds)&&($baths===0||$p['baths']>=$baths)&&$p['price']>=$min&&$p['price']<=$max&&($city===''||$p['city']===$city); }));
-if($sort!=='recommended')usort($visible,fn($a,$b)=>$sort==='price-desc'?$b['price']<=>$a['price']:($sort==='area-desc'?$b['area']<=>$a['area']:$a['price']<=>$b['price']));
+require_once __DIR__.'/includes/property-search.php';
+$pageTitle='Properties'; $activePage='properties'; $mainClass='listing-page';
+$extraCss=['./assets/property-filters.css']; $extraJs=['./assets/listings.js'];
+$properties=listingData();
+$options=listingFilterOptions($properties);
+$filters=listingSearchState($_GET,$options);
+$visible=listingSearchResults($properties,$filters);
+$q=$filters['q']; $purpose=$filters['purpose']; $types=$filters['types'];
+$featured=$filters['featured']; $beds=$filters['beds']; $baths=$filters['baths'];
+$min=$filters['min']; $max=$filters['max']; $city=$filters['city'];
+$sort=$filters['sort']; $view=$filters['view'];
+$availableTypes=$options['types']; $cities=$options['cities'];
+$typeCounts=[];
+foreach($properties as $property){$type=mb_strtolower(trim((string)($property['type']??'')));$typeCounts[$type]=($typeCounts[mb_strtolower($type)]??0)+1;}
 $typeIcons=['Apartment'=>'building','Villa'=>'house','Duplex'=>'layers','House'=>'house','Studio'=>'studio','Penthouse'=>'crown','Shop/Retail'=>'shop'];
-foreach($availableTypes as $availableType)$typeIcons[$availableType]=$typeIcons[$availableType]??'building';
+$query=['q'=>$q,'purpose'=>$purpose,'types'=>$types,'featured'=>$featured?'1':'','beds'=>$beds?:'','baths'=>$baths?:'','min_price'=>$min,'max_price'=>$max,'city'=>$city,'sort'=>$sort,'view'=>$view];
+$filterUrl=static function(array $changes=[])use($query):string{
+    $params=array_replace($query,$changes);
+    $params=array_filter($params,static fn($value)=>$value!==''&&$value!==null&&$value!==[]);
+    return './property-listing'.($params?'?'.http_build_query($params,'','&',PHP_QUERY_RFC3986):'');
+};
+$chips=[];
+if($q!=='')$chips[]=['Search: '.$q,$filterUrl(['q'=>''])];
+if($purpose!=='')$chips[]=[$purpose==='Rent'?'For rent':'For sale',$filterUrl(['purpose'=>''])];
+if($city!=='')$chips[]=[$city,$filterUrl(['city'=>''])];
+foreach($types as $type)$chips[]=[$type,$filterUrl(['types'=>array_values(array_diff($types,[$type]))])];
+if($featured)$chips[]=['Featured',$filterUrl(['featured'=>''])];
+if($beds)$chips[]=[$beds.'+ bedrooms',$filterUrl(['beds'=>''])];
+if($baths)$chips[]=[$baths.'+ bathrooms',$filterUrl(['baths'=>''])];
+if($min!=='')$chips[]=['From Rs '.number_format((float)$min),$filterUrl(['min_price'=>''])];
+if($max!=='')$chips[]=['Up to Rs '.number_format((float)$max),$filterUrl(['max_price'=>''])];
+$resultCount=count($visible); $allCount=count($properties);
 require __DIR__.'/includes/header.php';
 ?>
-<h1 class="visually-hidden">Properties</h1>
-<div class="listing-mobile-toolbar"><button class="filter-mobile-button" type="button" aria-expanded="false" aria-controls="listing-filter"><?= listingIcon('filter') ?> Filters</button><span><?= count($visible) ?> properties</span></div>
+<header class="listing-intro">
+    <div><span class="eyebrow">FIND YOUR NEXT ADDRESS</span><h1>Find a property that <em>feels right.</em></h1><p>Explore available homes and spaces. Refine your search by location, budget and the features that matter to you.</p></div>
+    <span class="listing-total"><?= listingIcon('house') ?><strong><?= $allCount ?></strong> <?= $allCount===1?'property':'properties' ?></span>
+</header>
+<div class="listing-mobile-toolbar"><button class="filter-mobile-button" type="button" aria-expanded="false" aria-controls="listing-filter"><?= listingIcon('filter') ?> Filters<?php if($chips): ?><span class="filter-count"><?= count($chips) ?></span><?php endif; ?></button><span><?= $resultCount ?> <?= $resultCount===1?'property':'properties' ?> found</span></div>
 <div class="listing-layout">
-<aside class="listing-filter" id="listing-filter" aria-label="Property filters"><form method="get" action="./property-listing" id="listing-filter-form">
-<div class="filter-heading"><h2>Filter</h2><div class="listing-view-buttons"><button name="view" value="grid" aria-label="Grid view" aria-pressed="<?= $view==='grid'?'true':'false' ?>"><?= listingIcon('grid') ?></button><button name="view" value="map" aria-label="Map view" aria-pressed="<?= $view==='map'?'true':'false' ?>"><?= listingIcon('map') ?></button></div></div>
-<label class="listing-search"><?= listingIcon('search') ?><span class="visually-hidden">Search properties</span><input type="search" name="q" value="<?= e($q) ?>" placeholder="Search..."></label>
-<label class="featured-toggle"><input type="checkbox" name="featured" value="1" <?= $featured?'checked':'' ?>> Show Only Featured Property</label>
-<fieldset><legend>Property For</legend><div class="purpose-options"><?php foreach([''=>'All','Rent'=>'Rent','Sell'=>'Sell'] as $value=>$label): ?><label><input type="radio" name="purpose" value="<?= e($value) ?>" <?= $purpose===$value?'checked':'' ?>><span><?= e($label) ?></span></label><?php endforeach; ?></div></fieldset>
-<fieldset><legend>Property Type</legend><div class="type-options"><?php foreach($typeIcons as $type=>$icon): ?><label><input type="checkbox" name="types[]" value="<?= e($type) ?>" <?= in_array($type,$types,true)?'checked':'' ?>><span><?= listingIcon($icon) ?><span><?= e($type) ?></span></span></label><?php endforeach; ?></div></fieldset>
-<label class="filter-field">Bedrooms<input type="number" name="beds" min="0" max="20" value="<?= $beds?:'' ?>" placeholder="ex.3 bhk"><small>Minimum bedrooms</small></label>
-<fieldset><legend class="price-legend">Price <span>$<?= number_format($min) ?> - $<?= number_format($max) ?></span></legend><div class="price-inputs"><label><span class="visually-hidden">Minimum price</span><input type="number" name="min_price" min="0" max="<?= e($priceCeiling) ?>" value="<?= $min?:'' ?>" placeholder="Min price"></label><label><span class="visually-hidden">Maximum price</span><input type="number" name="max_price" min="0" max="<?= e($priceCeiling) ?>" value="<?= $max==$priceCeiling?'':e($max) ?>" placeholder="Max price"></label></div></fieldset>
-<label class="filter-field">Location<select name="city"><option value="">All locations</option><?php foreach($cities as $location): ?><option <?= $city===$location?'selected':'' ?>><?= e($location) ?></option><?php endforeach; ?></select></label>
-<label class="filter-field">Bathrooms<input type="number" name="baths" min="0" max="20" value="<?= $baths?:'' ?>" placeholder="Any bathrooms"></label>
-<label class="filter-field">Sort by<select name="sort"><?php foreach(['recommended'=>'Recommended','price-asc'=>'Price: low to high','price-desc'=>'Price: high to low','area-desc'=>'Largest area'] as $value=>$label): ?><option value="<?= e($value) ?>" <?= $sort===$value?'selected':'' ?>><?= e($label) ?></option><?php endforeach; ?></select></label>
-<div class="filter-actions"><button class="button" type="submit">Apply filters</button><a href="./property-listing">Reset all</a></div><input type="hidden" name="current_view" value="<?= e($view) ?>">
-<p class="listing-demo-note">Includes sample listings and properties added through admin. Confirm availability with Royalmark.</p>
-</form></aside>
-<section class="listing-results" aria-label="Property results">
-<?php if($view==='map'&&$visible): ?><section class="listing-map" aria-label="Location overview"><div><h2>City overview</h2><label>Location <select id="listing-map-city"><?php foreach(array_unique(array_column($visible,'city')) as $location): ?><option><?= e($location) ?></option><?php endforeach; ?></select></label></div><iframe id="listing-map-frame" title="Property city overview map" loading="lazy" referrerpolicy="no-referrer" src="about:blank"></iframe><p>Approximate city locations, not exact property addresses. Map requires internet.</p></section><?php endif; ?>
-<?php if(!$visible): ?><div class="listing-empty"><h2><?= !$properties?'No properties available right now.':'No properties match these filters.' ?></h2><p><?= !$properties?'Please check back soon for new listings.':'Try a different location, price or property type.' ?></p><a class="button" href="./property-listing">Reset filters</a></div><?php else: ?><div class="listing-grid"><?php foreach($visible as $property)listingCard($property); ?></div><?php endif; ?>
-<p class="listing-count"><?= count($visible) ?> <?= count($visible)===1?'property':'properties' ?> found <span>&middot; Property showcase</span></p>
-</section></div>
+<aside class="listing-filter" id="listing-filter" aria-label="Property filters">
+<form method="get" action="./property-listing" id="listing-filter-form">
+    <div class="filter-heading"><h2><?= listingIcon('filter') ?> Refine your search</h2><a class="filter-reset" href="./property-listing">Reset</a></div>
+    <label class="filter-label" for="property-keyword">Keyword</label>
+    <div class="listing-search"><?= listingIcon('search') ?><input id="property-keyword" type="search" name="q" value="<?= e($q) ?>" placeholder="Name, area or city" maxlength="150"></div>
+    <fieldset class="filter-group"><legend>Listing purpose</legend><div class="purpose-options"><?php foreach([''=>'Any','Rent'=>'For rent','Sell'=>'For sale'] as $value=>$label): ?><label><input type="radio" name="purpose" value="<?= e($value) ?>" <?= $purpose===$value?'checked':'' ?>><span><?= e($label) ?></span></label><?php endforeach; ?></div></fieldset>
+    <label class="filter-field" for="property-city">Location<select id="property-city" name="city"><option value="">All locations</option><?php foreach($cities as $location): ?><option value="<?= e($location) ?>" <?= $city===$location?'selected':'' ?>><?= e($location) ?></option><?php endforeach; ?></select></label>
+    <fieldset class="filter-group"><legend>Property type</legend><div class="property-type-options"><?php foreach($availableTypes as $type): ?><label class="property-type-option"><input type="checkbox" name="types[]" value="<?= e($type) ?>" <?= in_array($type,$types,true)?'checked':'' ?>><?= listingIcon($typeIcons[$type]??'building') ?><span><?= e($type) ?></span><small aria-label="<?= (int)($typeCounts[mb_strtolower($type)]??0) ?> properties"><?= (int)($typeCounts[mb_strtolower($type)]??0) ?></small></label><?php endforeach; ?><?php if(!$availableTypes): ?><p class="filter-empty-note">Property types will appear as listings are added.</p><?php endif; ?></div></fieldset>
+    <fieldset class="filter-group"><legend>Budget <span class="filter-unit">PKR / Rs</span></legend><div class="price-inputs"><label for="property-min-price">Minimum<input id="property-min-price" type="number" name="min_price" min="0" step="any" inputmode="decimal" value="<?= e($min) ?>" placeholder="No minimum"></label><label for="property-max-price">Maximum<input id="property-max-price" type="number" name="max_price" min="0" step="any" inputmode="decimal" value="<?= e($max) ?>" placeholder="No maximum"></label></div><p class="filter-help">Rental prices are per month.</p></fieldset>
+    <fieldset class="filter-group"><legend>Rooms</legend><div class="room-inputs"><label class="filter-field" for="property-beds">Bedrooms<select id="property-beds" name="beds"><option value="">Any</option><?php foreach(range(1,20) as $amount): ?><option value="<?= $amount ?>" <?= $beds===$amount?'selected':'' ?>><?= $amount ?>+</option><?php endforeach; ?></select></label><label class="filter-field" for="property-baths">Bathrooms<select id="property-baths" name="baths"><option value="">Any</option><?php foreach(range(1,20) as $amount): ?><option value="<?= $amount ?>" <?= $baths===$amount?'selected':'' ?>><?= $amount ?>+</option><?php endforeach; ?></select></label></div></fieldset>
+    <label class="featured-toggle"><input type="checkbox" name="featured" value="1" <?= $featured?'checked':'' ?>><span>Featured properties only</span></label>
+    <input type="hidden" name="current_view" value="<?= e($view) ?>">
+    <div class="filter-actions"><button class="button" type="submit"><?= listingIcon('search') ?> Search properties</button></div>
+</form>
+</aside>
+<section class="listing-results" aria-labelledby="listing-results-title">
+    <div class="listing-results-toolbar"><div><h2 id="listing-results-title"><?= $resultCount ?> <?= $resultCount===1?'property':'properties' ?> found</h2><p><?= $chips?'Selected to match your search.':'Browse all properties.' ?></p></div><div class="listing-result-controls"><label class="listing-sort" for="property-sort">Sort by<select id="property-sort" name="sort" form="listing-filter-form"><?php foreach(['recommended'=>'Recommended','price-asc'=>'Price: low to high','price-desc'=>'Price: high to low','area-desc'=>'Largest area'] as $value=>$label): ?><option value="<?= e($value) ?>" <?= $sort===$value?'selected':'' ?>><?= e($label) ?></option><?php endforeach; ?></select></label><div class="listing-view-buttons" aria-label="Results view"><a href="<?= e($filterUrl(['view'=>'grid'])) ?>" aria-label="Grid view" <?= $view==='grid'?'aria-current="true"':'' ?>><?= listingIcon('grid') ?></a><a href="<?= e($filterUrl(['view'=>'map'])) ?>" aria-label="Map view" <?= $view==='map'?'aria-current="true"':'' ?>><?= listingIcon('map') ?></a></div></div></div>
+    <?php if($chips): ?><div class="listing-active-filters" aria-label="Applied filters"><?php foreach($chips as [$label,$url]): ?><a href="<?= e($url) ?>" aria-label="<?= e('Remove filter: '.$label) ?>"><span><?= e($label) ?></span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg></a><?php endforeach; ?><a class="listing-clear-filters" href="./property-listing">Clear all</a></div><?php endif; ?>
+    <?php if($view==='map'&&$visible): $mapCities=array_values(array_unique(array_column($visible,'city'))); $mapCity=$city!==''?$city:(string)($mapCities[0]??''); ?><section class="listing-map" aria-label="Location overview"><div><h2>Explore the location</h2><label for="listing-map-city">Location<select id="listing-map-city"><?php foreach($mapCities as $location): ?><option value="<?= e($location) ?>" <?= $location===$mapCity?'selected':'' ?>><?= e($location) ?></option><?php endforeach; ?></select></label></div><iframe id="listing-map-frame" title="<?= e($mapCity) ?> city overview map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="<?= e('https://www.google.com/maps?q='.rawurlencode($mapCity).'&output=embed') ?>"></iframe><p>City overview. Contact us to confirm the property's exact address.</p></section><?php endif; ?>
+    <?php if(!$visible): ?><div class="listing-empty"><?= listingIcon('search') ?><h2><?= !$properties?'New properties are on the way.':'No properties match your search.' ?></h2><p><?= !$properties?'Check back soon, or contact us to discuss what you are looking for.':'Try another location, a wider budget or fewer filters.' ?></p><a class="button" href="<?= !$properties?'./contact-us':'./property-listing' ?>"><?= !$properties?'Contact us':'Clear filters' ?></a></div><?php else: ?><div class="listing-grid"><?php foreach($visible as $property)listingCard($property); ?></div><?php endif; ?>
+</section>
+</div>
 <?php require __DIR__.'/includes/footer.php'; ?>
