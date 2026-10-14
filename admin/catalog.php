@@ -2,9 +2,10 @@
 require __DIR__.'/auth.php';requireAdmin();
 require dirname(__DIR__).'/includes/bootstrap.php';
 require dirname(__DIR__).'/includes/listings.php';
-$kinds=['property_type'=>'Property Types','location'=>'Locations'];
+require_once dirname(__DIR__).'/Config/projects-store.php';
+$kinds=['property_type'=>'Property Types','project_type'=>'Project Types','location'=>'Locations'];
 $kind=is_string($_GET['kind']??null)&&isset($kinds[$_GET['kind']])?$_GET['kind']:'property_type';
-$error='';$properties=listingData();
+$error='';$properties=listingData(true);
 if($_SERVER['REQUEST_METHOD']==='POST'){
     adminCsrf();
     $action=$_POST['action']??'';$id=filter_var($_POST['id']??0,FILTER_VALIDATE_INT);
@@ -15,8 +16,9 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         if($action!=='create'){
             $query=adminDb()->prepare('SELECT name FROM catalog_entries WHERE id=? AND kind=?');$query->execute([$id,$kind]);$old=$query->fetchColumn();
             if($old===false)throw new RuntimeException('This entry no longer exists.');
-            foreach($properties as $property){
-                if(($property[$kind==='location'?'city':'type']??'')===$old&&($action==='delete'||$name!==$old))throw new RuntimeException('This entry is used by a property. Keep it and add a new entry instead.');
+            $usedRecords=$kind==='property_type'?$properties:($kind==='project_type'?projectData(true):array_merge($properties,projectData(true)));
+            foreach($usedRecords as $property){
+                if(($property[$kind==='location'?'city':'type']??'')===$old&&($action==='delete'||$name!==$old))throw new RuntimeException('This entry is used by a property or project. Keep it and add a new entry instead.');
             }
         }
         if($action==='create'){$query=adminDb()->prepare('INSERT INTO catalog_entries (kind,name) VALUES (?,?)');$query->execute([$kind,$name]);}
@@ -34,7 +36,7 @@ $notice=$_SESSION['catalog_notice']??'';unset($_SESSION['catalog_notice']);
 $view='catalog';$title='Catalog';require __DIR__.'/header.php';
 ?>
 <link rel="stylesheet" href="./catalog.css"><script src="./catalog.js" defer></script>
-<div class="page-heading"><div><span class="eyebrow">MANAGE YOUR CATALOG</span><h1>Catalog</h1><p>Add property types and locations for your property forms.</p></div><button class="primary-button" type="button" id="catalog-add">+ Add <?= $kind==='location'?'location':'property type' ?></button></div>
+<div class="page-heading"><div><span class="eyebrow">MANAGE YOUR CATALOG</span><h1>Catalog</h1><p>Manage property types, project types and locations for your forms.</p></div><button class="primary-button" type="button" id="catalog-add">+ Add <?= $kind==='location'?'location':($kind==='project_type'?'project type':'property type') ?></button></div>
 <?php if($error||$notice): ?><div class="catalog-notice <?= $error?'is-error':'' ?>" role="<?= $error?'alert':'status' ?>"><?= e($error?:$notice) ?><button type="button" aria-label="Dismiss notification">&times;</button></div><?php endif; ?>
 <section class="panel catalog-panel"><nav class="catalog-tabs" aria-label="Catalog categories"><?php foreach($kinds as $key=>$label): ?><a href="./catalog?kind=<?= $key ?>" <?= $kind===$key?'aria-current="page"':'' ?>><?= listingIcon($key==='location'?'location':'layers') ?><?= e($label) ?></a><?php endforeach; ?></nav>
 <form class="catalog-search" method="get"><input type="hidden" name="kind" value="<?= $kind ?>"><input name="q" value="<?= e($search) ?>" placeholder="Search <?= e(strtolower($kinds[$kind])) ?>" aria-label="Search catalog"><button class="primary-button">Search</button><?php if($search!==''): ?><a href="./catalog?kind=<?= $kind ?>">Reset</a><?php endif; ?></form>

@@ -39,6 +39,7 @@ final class Database
             'password_reset_limits' => 'CREATE TABLE IF NOT EXISTS password_reset_limits (bucket CHAR(64) PRIMARY KEY, attempts INT UNSIGNED NOT NULL DEFAULT 1, window_start DATETIME NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'app_migrations' => 'CREATE TABLE IF NOT EXISTS app_migrations (name VARCHAR(100) PRIMARY KEY, applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'admin_users' => 'CREATE TABLE IF NOT EXISTS admin_users (id INT UNSIGNED PRIMARY KEY, email VARCHAR(254) NOT NULL UNIQUE, password_hash VARCHAR(255) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
+            'projects' => 'CREATE TABLE IF NOT EXISTS projects (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(200) NOT NULL UNIQUE, payload LONGTEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'properties' => 'CREATE TABLE IF NOT EXISTS properties (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(200) NOT NULL UNIQUE, payload LONGTEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'blog_posts' => 'CREATE TABLE IF NOT EXISTS blog_posts (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(180) NOT NULL UNIQUE, payload LONGTEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
             'company_profile' => 'CREATE TABLE IF NOT EXISTS company_profile (id TINYINT UNSIGNED PRIMARY KEY, payload LONGTEXT NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
@@ -66,6 +67,7 @@ final class Database
         self::initializeDefaultAdministrator($connection);
         self::initializeDefaultBlogs($connection);
         self::initializeDefaultProperties($connection);
+        self::initializeDefaultProjects($connection);
     }
 
     private static function initializeDefaultAdministrator(PDO $connection): void
@@ -131,6 +133,23 @@ final class Database
                 $insert=$connection->prepare('INSERT IGNORE INTO properties (slug,payload) VALUES (?,?)');
                 $catalog=$connection->prepare('INSERT IGNORE INTO catalog_entries (kind,name) VALUES (?,?)');
                 foreach($items as $item){$insert->execute([$item['slug'],json_encode($item,JSON_THROW_ON_ERROR)]);$catalog->execute(['property_type',$item['type']]);$catalog->execute(['location',$item['city']]);}
+            }
+            $connection->commit();
+        }catch(Throwable $exception){if($connection->inTransaction())$connection->rollBack();throw $exception;}
+    }
+
+    private static function initializeDefaultProjects(PDO $connection): void
+    {
+        $migration='default_dashboard_projects_v1';
+        $check=$connection->prepare('SELECT 1 FROM app_migrations WHERE name=?');$check->execute([$migration]);if($check->fetchColumn())return;
+        $records=require __DIR__.'/default-projects.php';
+        $connection->beginTransaction();
+        try{
+            $mark=$connection->prepare('INSERT IGNORE INTO app_migrations (name) VALUES (?)');$mark->execute([$migration]);
+            if($mark->rowCount()===1){
+                $insert=$connection->prepare('INSERT IGNORE INTO projects (slug,payload) VALUES (?,?)');
+                $catalog=$connection->prepare('INSERT IGNORE INTO catalog_entries (kind,name) VALUES (?,?)');
+                foreach($records as $record){$insert->execute([$record['slug'],json_encode($record,JSON_THROW_ON_ERROR)]);$catalog->execute(['project_type',$record['type']]);$catalog->execute(['location',$record['city']]);}
             }
             $connection->commit();
         }catch(Throwable $exception){if($connection->inTransaction())$connection->rollBack();throw $exception;}

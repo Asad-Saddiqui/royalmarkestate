@@ -2,6 +2,7 @@
 require __DIR__.'/auth.php';requireLogin();
 require dirname(__DIR__).'/includes/bootstrap.php';
 require dirname(__DIR__).'/includes/listings.php';
+if($_SERVER['REQUEST_METHOD']==='GET'&&(($adminPage??'')==='projects'||($_GET['view']??'')==='projects')){header('Location: ./projects');exit;}
 if($_SERVER['REQUEST_METHOD']==='POST'){
  requireAdmin();adminCsrf();$slug=is_string($_POST['slug']??null)?$_POST['slug']:'';$status=$_POST['status']??'';
  if(!in_array($status,['published','unpublished'],true)){http_response_code(422);exit('Invalid property status.');}

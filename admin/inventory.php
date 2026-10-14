@@ -6,16 +6,19 @@ $status=is_string($_GET['status']??null)?$_GET['status']:'';
 if(!in_array($status,['Upcoming','Under construction','Completed'],true))$status='';
 $items=$filtered;
 if($isProjects){
+ require_once dirname(__DIR__).'/Config/projects-store.php';
  $items=[];
- foreach(require dirname(__DIR__).'/Config/projects.php' as $p){
-  if(($query===''||mb_stripos($p[0].' '.$p[1],$query)!==false)&&($status===''||$p[3]===$status))$items[]=['title'=>$p[0],'city'=>$p[1],'type'=>$p[2],'status'=>$p[3],'progress'=>$p[4],'image'=>'./assets/properties/'.$p[5].'.png'];
+ foreach(projectData(currentUser()['role']==='admin') as $project){
+  if(($query===''||mb_stripos($project['title'].' '.$project['city'],$query)!==false)&&($status===''||$project['development_status']===$status)){
+   $project['status']=$project['development_status'];$items[]=$project;
+  }
  }
 }
 $totalItems=count($items);$perPage=6;$totalPages=max(1,(int)ceil($totalItems/$perPage));
 $page=min($totalPages,max(1,(int)(is_scalar($_GET['page']??null)?$_GET['page']:1)));$offset=($page-1)*$perPage;$items=array_slice($items,$offset,$perPage);
 $pageParams=['layout'=>$layout,'q'=>$query];$pageParams[$isProjects?'status':'purpose']=$isProjects?$status:$purpose;
 $paginationUrl=static fn($number)=>$pageUrl.'?'.http_build_query(array_merge($pageParams,['page'=>$number]));
-function adminItemUrl(array $item,bool $project): string {return $project?'../projects?q='.rawurlencode($item['title']):'../property.php?slug='.rawurlencode($item['slug']);}
+function adminItemUrl(array $item,bool $project): string {return $project?'../project.php?slug='.rawurlencode($item['slug']):'../property.php?slug='.rawurlencode($item['slug']);}
 ?>
 <section class="panel inventory"><div class="panel-title"><div><h2><?= $isProjects?'Project inventory':'Property inventory' ?></h2><p><?= $totalItems ?> <?= $isProjects?'projects':'properties' ?> found</p></div><div class="layout-switch" aria-label="Display layout"><?php foreach(['cards'=>'Cards','list'=>'List'] as $value=>$label): $params=['layout'=>$value,'q'=>$query];if($isProjects)$params['status']=$status;else $params['purpose']=$purpose; ?><a href="<?= e($pageUrl.'?'.http_build_query($params)) ?>" <?= $layout===$value?'aria-current="true"':'' ?>><?= listingIcon($value==='cards'?'grid':'filter') ?><?= e($label) ?></a><?php endforeach; ?></div></div>
 <form class="table-toolbar" method="get" action="<?= e($pageUrl) ?>"><input type="hidden" name="layout" value="<?= e($layout) ?>"><label class="search-field"><?= listingIcon('search') ?><span class="sr-only">Search <?= $isProjects?'projects':'properties' ?></span><input name="q" type="search" value="<?= e($query) ?>" placeholder="Search name or location..."></label><label><span class="sr-only"><?= $isProjects?'Project status':'Listing purpose' ?></span><select name="<?= $isProjects?'status':'purpose' ?>"><option value="">All <?= $isProjects?'statuses':'listings' ?></option><?php foreach($isProjects?['Upcoming','Under construction','Completed']:['Rent','Sell'] as $option): ?><option <?= ($isProjects?$status:$purpose)===$option?'selected':'' ?>><?= e($option) ?></option><?php endforeach; ?></select></label><button class="primary-button" type="submit">Filter</button><?php if($query!==''||($isProjects?$status:$purpose)!==''): ?><a class="text-link" href="<?= e($pageUrl.'?layout='.$layout) ?>">Reset</a><?php endif; ?></form>
