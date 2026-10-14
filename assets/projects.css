@@ -31,5 +31,5 @@
 .project-pagination a:hover,.project-pagination a[aria-current=page]{background:#d70000;color:#fff;border-color:#d70000}.project-pagination nav>span{color:var(--filter-muted);font-size:12px}
 .projects-page :focus-visible{outline:2px solid var(--filter-red);outline-offset:3px}
 html[data-site-theme=dark] .project-card:hover{border-color:#675050;box-shadow:0 8px 25px #0002}
-@media(max-width:767.98px){.projects-page .listing-sort{width:min(260px,100%)}.projects-page .listing-results-toolbar>div:first-child{display:block}.project-card .listing-card-content{padding:18px}.project-card h2{font-size:19px}.project-pagination{justify-content:center;text-align:center}.project-pagination nav{justify-content:center;width:100%}}
+@media(max-width:767.98px){.projects-page .listing-sort{width:min(260px,100%)}.projects-page .listing-results-toolbar>div:first-child{display:none}.project-card .listing-card-content{padding:18px}.project-card h2{font-size:19px}.project-pagination{justify-content:center;text-align:center}.project-pagination nav{justify-content:center;width:100%}}
 @media(prefers-reduced-motion:reduce){.project-card,.project-card img,.project-enquire{transition:none}.project-card:hover .listing-photo img{transform:none}}

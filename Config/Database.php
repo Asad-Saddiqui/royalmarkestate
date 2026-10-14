@@ -68,6 +68,7 @@ final class Database
         self::initializeDefaultBlogs($connection);
         self::initializeDefaultProperties($connection);
         self::initializeDefaultProjects($connection);
+        self::completeDefaultProjectDetails($connection);
     }
 
     private static function initializeDefaultAdministrator(PDO $connection): void
@@ -150,6 +151,44 @@ final class Database
                 $insert=$connection->prepare('INSERT IGNORE INTO projects (slug,payload) VALUES (?,?)');
                 $catalog=$connection->prepare('INSERT IGNORE INTO catalog_entries (kind,name) VALUES (?,?)');
                 foreach($records as $record){$insert->execute([$record['slug'],json_encode($record,JSON_THROW_ON_ERROR)]);$catalog->execute(['project_type',$record['type']]);$catalog->execute(['location',$record['city']]);}
+            }
+            $connection->commit();
+        }catch(Throwable $exception){if($connection->inTransaction())$connection->rollBack();throw $exception;}
+    }
+
+    private static function completeDefaultProjectDetails(PDO $connection): void
+    {
+        $migration='default_complete_project_details_v1';
+        $check=$connection->prepare('SELECT 1 FROM app_migrations WHERE name=?');$check->execute([$migration]);if($check->fetchColumn())return;
+        $defaults=require __DIR__.'/default-projects.php';
+        $connection->beginTransaction();
+        try{
+            $mark=$connection->prepare('INSERT IGNORE INTO app_migrations (name) VALUES (?)');$mark->execute([$migration]);
+            if($mark->rowCount()===1){
+                $read=$connection->prepare('SELECT payload FROM projects WHERE slug=? FOR UPDATE');
+                $write=$connection->prepare('UPDATE projects SET payload=? WHERE slug=?');
+                foreach($defaults as $default){
+                    $read->execute([$default['slug']]);$payload=$read->fetchColumn();if($payload===false)continue;
+                    $record=json_decode($payload,true,512,JSON_THROW_ON_ERROR);if(empty($record['is_sample']))continue;
+                    $legacy=[
+                        'developer_name'=>'Developer to be confirmed',
+                        'developer_description'=>'Developer details have not been provided for this sample concept.',
+                        'noc_description'=>'NOC details and supporting documents have not been provided. Please confirm the applicable approvals with the relevant authority.',
+                        'overview'=>$record['title'].' is an illustrative '.$record['type'].' project concept in '.$record['city'].'. Images and progress are examples. Contact Royalmark Estate to discuss current options and verify project details.',
+                    ];
+                    $sampleVideos=empty($record['videos'])||($record['videos']??[])===$default['videos'];
+                    $sampleNoc=empty($record['noc_status'])||$record['noc_status']==='Not provided';
+                    foreach($default as $key=>$value){
+                        if($key==='videos_are_inspiration'&&!$sampleVideos)continue;
+                        if(in_array($key,['noc_authority','noc_reference','noc_description','noc_documents'],true)&&!$sampleNoc)continue;
+                        if(in_array($key,['slug','title','status','development_status','progress','featured','is_sample'],true))continue;
+                        $current=$record[$key]??null;
+                        $empty=$current===null||$current===''||$current===[];
+                        if(in_array($key,['price_from','price_to','area_from','area_to','total_units','total_floors'],true)&&is_numeric($current)&&(float)$current===0.0)$empty=true;
+                        if($empty||(isset($legacy[$key])&&$current===$legacy[$key]))$record[$key]=$value;
+                    }
+                    $write->execute([json_encode($record,JSON_THROW_ON_ERROR),$default['slug']]);
+                }
             }
             $connection->commit();
         }catch(Throwable $exception){if($connection->inTransaction())$connection->rollBack();throw $exception;}

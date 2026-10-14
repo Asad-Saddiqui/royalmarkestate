@@ -32,6 +32,12 @@ $errors=[];$editSlug=is_string($_GET['slug']??null)?trim($_GET['slug']):'';
 $existing=$editSlug!==''?projectFind($editSlug,true):null;
 if($editSlug!==''&&!$existing){http_response_code(404);exit('Project not found.');}
 $isPost=$_SERVER['REQUEST_METHOD']==='POST';
+$postSetting=trim(ini_get('post_max_size'));
+$postMultiplier=match(strtolower(substr($postSetting,-1))){'g'=>1024**3,'m'=>1024**2,'k'=>1024,default=>1};
+$postLimit=(float)$postSetting*$postMultiplier;
+if($isPost&&$postLimit>0&&(float)($_SERVER['CONTENT_LENGTH']??0)>$postLimit){
+    http_response_code(413);$errors[]='The combined upload exceeds this server\'s '.$postSetting.' request limit. Use fewer or smaller files and try again.';$isPost=false;
+}
 $source=$isPost?$_POST:($existing??[]);
 $limits=['title'=>150,'subtitle'=>220,'city'=>100,'type'=>100,'address'=>300,'state'=>100,'zip'=>30,'overview'=>15000,'developer_name'=>150,'developer_description'=>6000,'developer_email'=>254,'developer_phone'=>40,'developer_website'=>500,'noc_authority'=>150,'noc_reference'=>150,'noc_description'=>6000,'project_size'=>120];
 $fields=array_merge(array_keys($limits),['development_status','status','progress','price_from','price_to','area_from','area_to','total_units','total_floors','completion_date','latitude','longitude','noc_status']);
@@ -118,6 +124,7 @@ if($isPost){
         foreach(['price_from','price_to','area_from','area_to','latitude','longitude'] as $key)$record[$key]=$data[$key]===''?'':(float)$data[$key];
         foreach(['progress','total_units','total_floors'] as $key)$record[$key]=$data[$key]===''?'':(int)$data[$key];
         $record['amenities']=$amenities;$record['nearest_locations']=$nearby;$record['videos']=$videos;
+        if($videos!==($existing['videos']??[]))$record['videos_are_inspiration']=false;
         $record['featured']=(bool)$data['featured'];$record['is_sample']=(bool)$data['is_sample'];
         $savedFiles=[];$saved=false;
         try{
