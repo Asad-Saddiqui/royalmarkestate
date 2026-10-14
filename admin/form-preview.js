@@ -1,4 +1,4 @@
-try{document.documentElement.dataset.theme=localStorage.getItem('royalmark-admin-theme')==='dark'?'dark':'light';}catch(e){}
+document.documentElement.dataset.theme=window.RoyalmarkTheme?.read('admin')||'light';
 (()=>{const input=document.getElementById('property-photo'),image=document.getElementById('photo-preview');let url;input.addEventListener('change',()=>{if(url)URL.revokeObjectURL(url);const file=input.files[0];image.hidden=!file;if(file){url=URL.createObjectURL(file);image.src=url;}});})();
 
 (()=>{const input=document.getElementById('property-gallery'),preview=document.getElementById('property-gallery-preview');if(!input||!preview)return;let urls=[];input.addEventListener('change',()=>{urls.forEach(URL.revokeObjectURL);urls=[];preview.replaceChildren();for(const file of [...input.files].slice(0,5)){const figure=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption');const url=URL.createObjectURL(file);urls.push(url);img.src=url;img.alt='Selected gallery image';caption.textContent=file.name;figure.append(img,caption);preview.append(figure);}});})();

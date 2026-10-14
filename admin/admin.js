@@ -5,6 +5,6 @@
  document.addEventListener('keydown',e=>{if(!document.body.classList.contains('drawer-open'))return;if(e.key==='Escape'){drawer(false);return;}if(e.key==='Tab'){const items=[...sidebar.querySelectorAll('a,button')].filter(el=>el.getClientRects().length),first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
  media.addEventListener('change',()=>{if(media.matches){document.body.classList.remove('drawer-open');mask.hidden=true;menu.setAttribute('aria-expanded','false');}});
  function setTheme(dark){document.documentElement.dataset.theme=dark?'dark':'light';theme.setAttribute('aria-pressed',String(dark));theme.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');theme.firstElementChild.textContent=dark?'☀':'☾';}
- try{setTheme(localStorage.getItem('royalmark-admin-theme')==='dark');}catch(e){}
- theme.addEventListener('click',()=>{const dark=document.documentElement.dataset.theme!=='dark';setTheme(dark);try{localStorage.setItem('royalmark-admin-theme',dark?'dark':'light');}catch(e){}});
+ setTheme(window.RoyalmarkTheme?.read('admin')==='dark');
+ theme.addEventListener('click',()=>{const dark=document.documentElement.dataset.theme!=='dark';setTheme(dark);window.RoyalmarkTheme?.save('admin',dark?'dark':'light');});
 })();

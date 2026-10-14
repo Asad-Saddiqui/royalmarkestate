@@ -22,7 +22,8 @@ try {
 <html lang="en" data-redirect-timezone="1" dir="ltr">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
+<script src="./assets/theme-preference.js?v=<?= filemtime(__DIR__.'/assets/theme-preference.js') ?>" data-theme-scope="site"></script>
+	<meta name="viewport" content="width=device-width,initial-scale=1">
 	
 	<title>Royalmark Estate | Properties &amp; Real Estate</title>
     <meta name="description" content="A smarter way to list, discover, and buy property. Explore trusted listings, find the right spaces, and make confident decisions with ease.">
@@ -60,9 +61,9 @@ try {
 <link rel="stylesheet" href="./assets/site-layout.css">
 
 <link rel="stylesheet" href="./assets/mobile-drawer.css?v=brand-logo-5">
-<script src="./assets/mobile-drawer.js?v=brand-logo-5" defer></script>
-<link rel="stylesheet" href="./assets/custom-select.css"><script src="./assets/custom-select.js" defer></script><link rel="stylesheet" href="./assets/shared-header.css?v=mobile-spacing-5"><script src="./assets/pages.js?v=login-route-2" defer></script>
-<link rel="stylesheet" href="./assets/listings.css"><link rel="icon" type="image/png" href="./assets/royalmark-logo.png?v=brand-1"><link rel="apple-touch-icon" href="./assets/royalmark-logo.png?v=brand-1"><script src="./assets/branding.js?v=1" defer></script><link rel="stylesheet" href="./assets/home-layout.css?v=1"><link rel="stylesheet" href="./assets/home-native.css?v=<?= filemtime(__DIR__.'/assets/home-native.css') ?>"><script src="./assets/home-native.js?v=<?= filemtime(__DIR__.'/assets/home-native.js') ?>" defer></script><link rel="stylesheet" href="./assets/home-property-search.css?v=<?= filemtime(__DIR__.'/assets/home-property-search.css') ?>"><link rel="stylesheet" href="./assets/home-projects.css?v=<?= filemtime(__DIR__.'/assets/home-projects.css') ?>"></head>
+<script src="./assets/mobile-drawer.js?v=<?= filemtime(__DIR__.'/assets/mobile-drawer.js') ?>" defer></script>
+<link rel="stylesheet" href="./assets/custom-select.css"><script src="./assets/custom-select.js" defer></script><script src="./assets/pages.js?v=<?= filemtime(__DIR__.'/assets/pages.js') ?>" defer></script>
+<link rel="stylesheet" href="./assets/listings.css"><link rel="icon" type="image/png" href="./assets/royalmark-logo.png?v=brand-1"><link rel="apple-touch-icon" href="./assets/royalmark-logo.png?v=brand-1"><script src="./assets/branding.js?v=1" defer></script><link rel="stylesheet" href="./assets/home-layout.css?v=<?= filemtime(__DIR__.'/assets/home-layout.css') ?>"><link rel="stylesheet" href="./assets/home-native.css?v=<?= filemtime(__DIR__.'/assets/home-native.css') ?>"><script src="./assets/home-native.js?v=<?= filemtime(__DIR__.'/assets/home-native.js') ?>" defer></script><link rel="stylesheet" href="./assets/home-property-search.css?v=<?= filemtime(__DIR__.'/assets/home-property-search.css') ?>"><link rel="stylesheet" href="./assets/home-projects.css?v=<?= filemtime(__DIR__.'/assets/home-projects.css') ?>"><link rel="stylesheet" href="./assets/shared-header.css?v=<?= filemtime(__DIR__.'/assets/shared-header.css') ?>"><link rel="stylesheet" href="./assets/account-menu.css?v=<?= filemtime(__DIR__.'/assets/account-menu.css') ?>"><script src="./assets/account-menu.js?v=<?= filemtime(__DIR__.'/assets/account-menu.js') ?>" defer></script></head>
 <body>
 <?php require __DIR__.'/includes/site-header.php'; ?>
 	

@@ -34,7 +34,20 @@
         '<div class="rm-drawer-actions"><button type="button" class="rm-drawer-theme" aria-pressed="false"><span class="rm-theme-icon">☀</span><span class="rm-theme-label">Light mode</span></button><a href="./admin/login">' + icon('login') + 'Login</a><a href="./admin/login">' + icon('plus') + 'Add Properties</a></div></div>';
     document.body.appendChild(dialog);
     const account=document.querySelector('.page-account'),logout=document.querySelector('.page-logout');
-    if(account&&logout){const actions=dialog.querySelector('.rm-drawer-actions');actions.querySelector('a[href="./admin/login"]')?.remove();actions.append(account.cloneNode(true));const logoutCopy=logout.cloneNode(true);const label=document.createElement('span');label.textContent='Logout';logoutCopy.querySelector('button').append(label);actions.append(logoutCopy);const add=actions.querySelector('a[href="./admin/login"]');if(add)add.href=document.querySelector('.page-add').href;}
+    if(account&&logout){
+        const actions=dialog.querySelector('.rm-drawer-actions');
+        actions.querySelector('a[href="./admin/login"]')?.remove();
+        const accountLink=document.createElement('a');
+        accountLink.className='page-account';
+        accountLink.href=account.dataset.dashboard||'./admin/';
+        const name=document.createElement('span');
+        name.className='account-name';
+        name.textContent=account.dataset.userName||'My account';
+        accountLink.append(name);
+        actions.append(accountLink,logout.cloneNode(true));
+        const add=actions.querySelector('a[href="./admin/login"]');
+        if(add)add.href=document.querySelector('.page-add').href;
+    }
 
     const drawerActions=dialog.querySelector('.rm-drawer-actions');
     drawerActions.querySelectorAll('a').forEach(a=>{if(a.classList.contains('page-account'))return;if(a.textContent.includes('Add Properties'))a.classList.add('rm-drawer-primary');else a.classList.add('rm-drawer-signin');});
@@ -86,7 +99,7 @@
         if (location.hash === '#projects') return 'projects';
         if (location.hash === '#contact-us') return 'contact';
         const path = location.pathname.replace(/\/$/, '');
-        if (path.endsWith('/projects') || path.endsWith('/projects.php')) return 'projects';
+        if (path.endsWith('/projects') || path.endsWith('/projects.php') || path.endsWith('/project.php') || path.includes('/project-listing/')) return 'projects';
         if (path.endsWith('/contact-us') || path.endsWith('/contact.php')) return 'contact';
         if ((path.includes('/property-listing') || path.endsWith('/properties.php'))) return 'properties';
         if ((path.endsWith('/about-us') || path.endsWith('/about.php'))) return 'about';
