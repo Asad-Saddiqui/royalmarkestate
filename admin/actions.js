@@ -3,7 +3,7 @@ function notify(message,error=false){let region=document.querySelector('.action-
 document.addEventListener('submit',async event=>{
  const form=event.target;if(form.method.toLowerCase()!=='post'||form.classList.contains('logout-form')||event.defaultPrevented)return;
  if((form.classList.contains('delete-user-form')||form.classList.contains('delete-agent-form'))&&form.dataset.confirmed!=='true')return;
- const url=new URL(form.getAttribute('action')||location.href,location.href);if(url.origin!==location.origin||!url.pathname.includes('/admin/'))return;
+ const url=new URL(form.getAttribute('action')||location.href,document.baseURI);if(url.origin!==location.origin||(!url.pathname.includes('/admin/')&&!/\/user\/bookings\/?$/.test(url.pathname)))return;
  event.preventDefault();if(form.dataset.saving==='true')return;form.dataset.saving='true';
  const payload=new FormData(form);if(event.submitter?.name)payload.append(event.submitter.name,event.submitter.value);
  const buttons=[...form.querySelectorAll('button[type="submit"],button:not([type])')],previous=buttons.map(button=>({button,disabled:button.disabled,text:button.textContent}));buttons.forEach(button=>{button.disabled=true;button.textContent='Saving...';});form.setAttribute('aria-busy','true');
