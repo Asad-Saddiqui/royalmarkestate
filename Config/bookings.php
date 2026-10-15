@@ -101,6 +101,9 @@ function bookingCreate(string $kind, array $listing, array $input, ?int $userId)
         $message = $values['message'] !== '' ? $values['message'] : 'I would like more information about this '.$kind.'.';
         $message .= "\n\nRequest: ".$reference."\nPreferred date: ".$values['preferred_date'].($values['preferred_time'] !== '' ? ' '.$values['preferred_time'] : '').' (Pakistan time)';
         $db->prepare('INSERT INTO contact_messages (name,email,phone,interest,message) VALUES (?,?,?,?,?)')->execute([$values['name'],$values['email'],$values['phone'],mb_substr(($kind === 'project' ? 'Project: ' : '').($record['title'] ?? $slug),0,120),$message]);
+        $contactId=(int)$db->lastInsertId();
+        $visitorId=function_exists('visitorCurrentId')?visitorCurrentId():null;
+        $db->prepare("INSERT INTO contact_message_meta (message_id,user_id,visitor_id,source,status,admin_note,updated_at) VALUES (?,?,?,?,'new','',?)")->execute([$contactId,$userId,$visitorId,$kind,$stamp]);
         $read = $db->prepare('SELECT * FROM bookings WHERE id=?');$read->execute([$id]);$result = $read->fetch();
         $db->commit();return $result;
     } catch (Throwable $error) {
