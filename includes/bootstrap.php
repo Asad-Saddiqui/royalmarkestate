@@ -13,6 +13,7 @@ function menuIcon(string $name): string {
         'home'=>'<path d="m3 10 9-7 9 7v10H15v-7H9v7H3z"/>',
         'properties'=>'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
         'projects'=>'<path d="M3 21V7l6-3v17M9 21V3h8v18M17 9h4v12M2 21h20M12 7h2M12 11h2M12 15h2"/>',
+        'calendar'=>'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18M8 15h.01M12 15h.01M16 15h.01M8 18h.01M12 18h.01"/>',
         'agents'=>'<circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M17 4a3 3 0 0 1 0 6M18 21v-3a6 6 0 0 0-2-4"/>',
         'contact'=>'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
         'about'=>'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',

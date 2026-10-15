@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteCond %{THE_REQUEST} \s/+[^?\s]*admin/(properties|projects|agents|create-agent|login|create-property|create-project|logout|users|catalog|settings|company|blog|forgot-password|reset-password|user-dashboard)\.php[?\s] [NC]
-RewriteCond %{REQUEST_URI} ^(.*/admin)/(?:properties|projects|agents|create-agent|login|create-property|create-project|logout|users|catalog|settings|company|blog|forgot-password|reset-password|user-dashboard)\.php$
-RewriteRule ^(properties|projects|agents|create-agent|login|create-property|create-project|logout|users|catalog|settings|company|blog|forgot-password|reset-password|user-dashboard)\.php$ %1/$1 [R=302,L]
-RewriteRule ^(properties|projects|agents|create-agent|login|create-property|create-project|logout|users|catalog|settings|company|blog|forgot-password|reset-password|user-dashboard)/?$ $1.php [END]
+RewriteCond %{THE_REQUEST} \s/+[^?\s]*admin/(properties|projects|agents|create-agent|bookings|login|create-property|create-project|logout|users|catalog|settings|company|blog|forgot-password|reset-password|user-dashboard)\.php[?\s] [NC]
+RewriteCond %{REQUEST_URI} ^(.*/admin)/(?:properties|projects|agents|create-agent|bookings|login|create-property|create-project|logout|users|catalog|settings|company|blog|forgot-password|reset-password|user-dashboard)\.php$
+RewriteRule ^(properties|projects|agents|create-agent|bookings|login|create-property|create-project|logout|users|catalog|settings|company|blog|forgot-password|reset-password|user-dashboard)\.php$ %1/$1 [R=302,L]
+RewriteRule ^(properties|projects|agents|create-agent|bookings|login|create-property|create-project|logout|users|catalog|settings|company|blog|forgot-password|reset-password|user-dashboard)/?$ $1.php [END]

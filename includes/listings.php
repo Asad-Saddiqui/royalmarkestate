@@ -13,6 +13,7 @@ function listingIcon(string $name): string {
         'bed'=>'<path d="M3 18V7m18 11V9M3 14h18M3 9h6v5m0-4h12v4M3 18v3m18-3v3"/>',
         'bath'=>'<path d="M3 12h18v3a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5zm2 8v2m14-2v2M5 12V5a3 3 0 0 1 6 0M9 5h4"/>',
         'area'=>'<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>',
+        'calendar'=>'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18M8 15h.01M12 15h.01M16 15h.01M8 18h.01M12 18h.01"/>',
         'agents'=>'<circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M17 4a3 3 0 0 1 0 6M18 21v-3a6 6 0 0 0-2-4"/>',
         'grid'=>'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
         'map'=>'<path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2zm6-2v16m6-14v16"/>',

@@ -4,21 +4,20 @@ $userEntryPath=parse_url($_SERVER['REQUEST_URI'],PHP_URL_PATH);
 $isPublicUserRoute=(bool)preg_match('~/user/?$~',$userEntryPath);
 if($isPublicUserRoute){$adminBase=preg_replace('~/user/?$~','/admin',$userEntryPath);}
 $account=requireLogin();
+header('Cache-Control: private, no-store');
 if(!$isPublicUserRoute){header('Location: ../user');exit;}
 if($account['role']==='admin'){header('Location: '.$adminBase.'/');exit;}
 require dirname(__DIR__).'/includes/bootstrap.php';
 require dirname(__DIR__).'/includes/listings.php';
-$properties=listingData();$view='overview';$title='My dashboard';
-$rent=count(array_filter($properties,fn($p)=>$p['purpose']==='Rent'));
+require_once dirname(__DIR__).'/Config/bookings.php';
+$myBookings=bookingList((int)$account['id']);$recentBookings=array_slice($myBookings,0,3);
+$properties=[];$view='overview';$title='My dashboard';
 require __DIR__.'/header.php';
 ?>
-<link rel="stylesheet" href="./user-dashboard.css?v=1">
-<section class="page-heading"><div><span class="eyebrow">ROYALMARK ESTATE &middot; YOUR ACCOUNT</span><h1>Welcome, <?= e($account['name']?:'there') ?>.</h1><p>Explore properties, discover projects and find your next place.</p></div><span class="preview-badge">Active account</span></section>
-<section class="stats" aria-label="Available properties">
-<?php foreach([['Available properties',count($properties),'house','Explore published listings'],['For rent',$rent,'building','Find a place to call home'],['For sale',count($properties)-$rent,'layers','Discover your next investment']] as $stat): ?>
-<article class="stat-card"><div><span><?= e($stat[0]) ?></span><div class="stat-icon"><?= listingIcon($stat[2]) ?></div></div><strong><?= $stat[1] ?></strong><p><?= e($stat[3]) ?></p></article>
-<?php endforeach; ?></section>
-<section class="user-dashboard-panels"><article class="workspace-card"><span class="eyebrow">FIND YOUR NEXT ADDRESS</span><h2>Your next chapter<br>starts with a place.</h2><p>Browse property photos, pricing documents and nearby locations, all in one place.</p><a href="./properties">Browse properties <span>&rarr;</span></a></article>
-<article class="panel user-account-panel"><div class="panel-title"><div><h2>My account</h2><p>Your Royalmark profile</p></div><span class="subtle-tag">User</span></div><dl><div><dt>Name</dt><dd><?= e($account['name']?:'Not provided') ?></dd></div><div><dt>Email</dt><dd><?= e($account['email']) ?></dd></div><div><dt>Account status</dt><dd>Active</dd></div></dl><a class="text-link" href="./settings">Account settings &nearr;</a></article></section>
-<section class="panel user-quick-links"><div class="panel-title"><div><h2>Explore Royalmark</h2><p>Everything you need for your property search.</p></div></div><div><a href="./properties"><?= listingIcon('house') ?><span><strong>Properties</strong><small>View photos, prices and details</small></span><b>&rarr;</b></a><a href="./projects"><?= listingIcon('building') ?><span><strong>Projects</strong><small>Explore our project showcase</small></span><b>&rarr;</b></a><a href="../contact-us"><?= listingIcon('search') ?><span><strong>Contact our team</strong><small>Get help with your property search</small></span><b>&rarr;</b></a></div></section>
+<link rel="stylesheet" href="./user-dashboard.css?v=<?= filemtime(__DIR__.'/user-dashboard.css') ?>">
+<link rel="stylesheet" href="./bookings.css?v=<?= filemtime(__DIR__.'/bookings.css') ?>">
+<section class="page-heading"><div><span class="eyebrow">ROYALMARK ESTATE &middot; YOUR ACCOUNT</span><h1>Welcome, <?= e($account['name']?:'there') ?>.</h1><p>Track your requests, view team updates and manage your account.</p></div><span class="preview-badge">Active account</span></section>
+<section class="user-dashboard-panels user-account-only"><article class="panel user-account-panel"><div class="panel-title"><div><h2>My account</h2><p>Your Royalmark profile</p></div><span class="subtle-tag">User</span></div><dl><div><dt>Name</dt><dd><?= e($account['name']?:'Not provided') ?></dd></div><div><dt>Email</dt><dd><?= e($account['email']) ?></dd></div><div><dt>Account status</dt><dd>Active</dd></div></dl><a class="text-link" href="./settings">Account settings &nearr;</a></article></section>
+<section class="panel booking-summary-panel"><div class="panel-title"><div><h2>My bookings</h2><p>Your property and project visit requests.</p></div><a class="text-link" href="../user/bookings">View all <?= count($myBookings) ?> bookings &nearr;</a></div><div class="booking-summary-stats"><?php foreach(['pending'=>'Pending','confirmed'=>'Confirmed','completed'=>'Completed'] as $status=>$label): ?><div><strong><?= count(array_filter($myBookings,fn($booking)=>$booking['status']===$status)) ?></strong><span><?= $label ?></span></div><?php endforeach; ?></div><?php if($recentBookings): ?><div class="booking-recent-list"><?php foreach($recentBookings as $booking): ?><a href="../user/bookings?kind=<?= e($booking['kind']) ?>#booking-<?= (int)$booking['id'] ?>"><span><strong><?= e($booking['listing_title']) ?></strong><small><?= e($booking['reference']) ?> &middot; <?= ucfirst(e($booking['kind'])) ?></small></span><span class="booking-status is-<?= e($booking['status']) ?>"><?= ucfirst(e($booking['status'])) ?></span></a><?php endforeach; ?></div><?php else: ?><div class="booking-summary-empty">No bookings yet. Explore a property or project and send a request to arrange a visit. <a href="../user/bookings">Open my bookings &nearr;</a></div><?php endif; ?></section>
+<section class="panel user-quick-links"><div class="panel-title"><div><h2>Need a hand?</h2><p>Get help with an appointment or your account.</p></div></div><div><a href="../contact-us"><?= listingIcon('search') ?><span><strong>Contact our team</strong><small>Ask a question or discuss your request</small></span><b>&rarr;</b></a><a href="./settings"><?= listingIcon('agents') ?><span><strong>Account settings</strong><small>View your profile and appearance preferences</small></span><b>&rarr;</b></a></div></section>
 <?php require __DIR__.'/footer.php'; ?>

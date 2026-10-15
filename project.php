@@ -1,30 +1,14 @@
 <?php
 require __DIR__.'/includes/bootstrap.php';
-require __DIR__.'/includes/listings.php';
+require __DIR__.'/includes/listings.php';require_once __DIR__.'/includes/booking-form.php';
 require_once __DIR__.'/Config/projects-store.php';
 $slug=is_string($_GET['slug']??null)?trim($_GET['slug']):'';
 $project=projectFind($slug);
 $activePage='projects'; $pageTitle=$project?$project['title']:'Project unavailable'; $mainClass='project-detail-page';
-$extraCss=['./assets/property-detail.css','./assets/property-media.css','./assets/project-detail.css'];
-$extraJs=['./assets/property-detail.js','./assets/property-media.js'];
+$extraCss=['./assets/property-detail.css','./assets/property-media.css','./assets/booking-form.css','./assets/booking-captcha.css','./assets/project-detail.css'];
+$extraJs=['./assets/property-detail.js','./assets/property-media.js','./assets/booking-form.js','./assets/booking-captcha.js'];
 if(!$project)http_response_code(404);
-$_SESSION['project_csrf']??=bin2hex(random_bytes(32));
-$errors=[]; $values=['name'=>'','email'=>'','phone'=>'','message'=>''];
-if($project&&($_SERVER['REQUEST_METHOD']??'GET')==='POST'){
-    foreach($values as $key=>$value)$values[$key]=is_string($_POST[$key]??null)?trim($_POST[$key]):'';
-    if(!is_string($_POST['csrf']??null)||!hash_equals($_SESSION['project_csrf'],$_POST['csrf']))$errors[]='Your form expired. Reload the page and try again.';
-    if($values['name']===''||mb_strlen($values['name'])>100)$errors[]='Enter your name (up to 100 characters).';
-    if(!filter_var($values['email'],FILTER_VALIDATE_EMAIL)||strlen($values['email'])>254)$errors[]='Enter a valid email address.';
-    if(mb_strlen($values['phone'])>40||mb_strlen($values['message'])>5000)$errors[]='Your phone number or message is too long.';
-    if(!$errors){
-        try{
-            Database::getConnection()->prepare('INSERT INTO contact_messages (name,email,phone,interest,message) VALUES (?,?,?,?,?)')->execute([$values['name'],$values['email'],$values['phone'],mb_substr('Project: '.$project['title'],0,120),$values['message']?:'I would like more information about this project.']);
-            $_SESSION['project_sent']=$slug;
-            header('Location: ./project.php?slug='.rawurlencode($slug).'#contact-project',true,303);exit;
-        }catch(PDOException $error){$errors[]='Unable to send your enquiry. Please try again.';}
-    }else http_response_code(422);
-}
-$sent=($_SESSION['project_sent']??'')===$slug;unset($_SESSION['project_sent']);
+$bookingState=$project?bookingFormHandle('project',$project,'./project.php?slug='.rawurlencode($slug),'contact-project'):null;
 require __DIR__.'/includes/header.php';
 if(!$project): ?>
 <section class="pd-unavailable" aria-labelledby="project-unavailable-title"><div class="pd-unavailable-icon"><?= listingIcon('building') ?></div><span class="pd-unavailable-label">PROJECT UNAVAILABLE</span><h1 id="project-unavailable-title">Explore your next opportunity.</h1><p>This project is no longer available or the link may have changed. Browse our current projects or contact our team for help.</p><div class="pd-unavailable-actions"><a class="button" href="./projects">Browse projects <span aria-hidden="true">&rarr;</span></a><a class="pd-unavailable-home" href="./">Back to home</a></div><a class="pd-unavailable-contact" href="./contact-us">Contact Royalmark Estate</a></section>
@@ -72,7 +56,7 @@ if(!filter_var($developerWebsite,FILTER_VALIDATE_URL)||!in_array(strtolower(pars
     <section class="pd-section" id="project-location"><h2>Map &amp; Location</h2><?php if($location!==''): ?><p class="pd-location"><?= listingIcon('location') ?><?= e($location) ?></p><?php endif; ?><?php if($mapQuery!==''): ?><a class="text-link" href="<?= e('https://www.google.com/maps/search/?api=1&query='.rawurlencode($mapQuery)) ?>" target="_blank" rel="noopener noreferrer">Open location in Maps &nearr;</a><iframe class="pd-map" title="<?= e($project['title']) ?> location map" loading="lazy" referrerpolicy="no-referrer" src="<?= e('https://maps.google.com/maps?q='.rawurlencode($mapQuery).'&output=embed') ?>"></iframe><p class="pd-disclaimer"><?= $sample?'Illustrative location for a sample concept.':'The map uses the address or coordinates supplied for this project.' ?> Contact our team to confirm the site entrance.</p><?php else: ?><p>The exact map location will be available soon.</p><?php endif; ?></section>
     <?php require __DIR__.'/includes/project-detail-media.php'; ?>
 </div>
-<aside class="pd-sidebar"><section class="pd-contact-card"><h2>Project information</h2><div class="pd-agent"><img src="./assets/royalmark-logo.png" alt="Royalmark Estate" width="80" height="48"><div><strong>Royalmark Estate</strong><p>Enquiries &amp; viewings</p></div></div><p>Discuss available units, pricing and viewing arrangements with our team.</p><a class="button" href="#contact-project">Contact our team</a></section><section class="pd-contact-card" id="contact-project"><h2>Enquire about this project</h2><p>Tell us what you are looking for.</p><?php if($sent): ?><p class="pd-success" role="status">Your enquiry has been received. Our team will be in touch.</p><?php endif; ?><?php foreach($errors as $error): ?><p class="pd-error" role="alert"><?= e($error) ?></p><?php endforeach; ?><form method="post" action="./project.php?slug=<?= rawurlencode($slug) ?>#contact-project"><input type="hidden" name="csrf" value="<?= e($_SESSION['project_csrf']) ?>"><?php foreach(['name'=>['Your name','text',100],'email'=>['Email address','email',254],'phone'=>['Phone number (optional)','tel',40]] as $key=>[$label,$inputType,$length]): ?><label><span class="visually-hidden"><?= e($label) ?></span><input name="<?= e($key) ?>" type="<?= e($inputType) ?>" placeholder="<?= e($label) ?>" maxlength="<?= $length ?>" value="<?= e($values[$key]) ?>" <?= $key!=='phone'?'required':'' ?>></label><?php endforeach; ?><label><span class="visually-hidden">Your message</span><textarea name="message" rows="4" maxlength="5000" placeholder="Tell us about your requirements"><?= e($values['message']) ?></textarea></label><button class="button" type="submit">Send enquiry</button></form></section></aside>
+<aside class="pd-sidebar"><section class="pd-contact-card"><h2>Project information</h2><div class="pd-agent"><img src="./assets/royalmark-logo.png" alt="Royalmark Estate" width="80" height="48"><div><strong>Royalmark Estate</strong><p>Enquiries &amp; viewings</p></div></div><p>Discuss available units, pricing and viewing arrangements with our team.</p><a class="button" href="#contact-project">Contact our team</a></section><?php bookingFormRender($bookingState); ?></aside>
 </div>
 <dialog id="pd-document-viewer" class="pd-document-viewer" aria-labelledby="pd-document-viewer-title"><header><h2 id="pd-document-viewer-title">Project document</h2><button type="button" aria-label="Close document viewer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header><div class="pd-document-viewer-body"></div><footer><a data-document-external target="_blank" rel="noopener">Open in new tab &nearr;</a><a data-document-download download>Download document</a></footer></dialog>
 <?php endif; require __DIR__.'/includes/footer.php'; ?>

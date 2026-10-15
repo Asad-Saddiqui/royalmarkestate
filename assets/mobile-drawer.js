@@ -7,6 +7,7 @@
         home: '<path d="m3 10 9-7 9 7v10H15v-7H9v7H3z"/>',
         properties: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
         projects: '<path d="M3 21V7l6-3v17M9 21V3h8v18M17 9h4v12M2 21h20M12 7h2M12 11h2M12 15h2"/>',
+        calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18M8 15h.01M12 15h.01M16 15h.01M8 18h.01M12 18h.01"/>',
         agents: '<circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M17 4a3 3 0 0 1 0 6M18 21v-3a6 6 0 0 0-2-4"/>',
         contact: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
         about: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
@@ -32,7 +33,7 @@
         '<button type="button" class="rm-drawer-close" aria-label="Close menu">' + icon('close') + '</button></div>' +
         '<h2 class="rm-drawer-title" id="rm-drawer-title">Menu</h2><nav class="rm-drawer-nav" aria-label="Mobile navigation">' +
         routes.map(([route, href, label]) => '<a href="' + href + '" data-route="' + route + '">' + icon(route) + '<span>' + label + '</span></a>').join('') + '</nav>' +
-        '<div class="rm-drawer-actions"><button type="button" class="rm-drawer-theme" aria-pressed="false"><span class="rm-theme-icon">☀</span><span class="rm-theme-label">Light mode</span></button><a href="./admin/login">' + icon('login') + 'Login</a><a href="./admin/login">' + icon('plus') + 'Add Properties</a></div></div>';
+        '<div class="rm-drawer-actions"><button type="button" class="rm-drawer-theme" aria-pressed="false"><span class="rm-theme-icon">☀</span><span class="rm-theme-label">Light mode</span></button><a href="./admin/login">' + icon('login') + 'Login</a></div></div>';
     document.body.appendChild(dialog);
     const account=document.querySelector('.page-account'),logout=document.querySelector('.page-logout');
     if(account&&logout){
@@ -45,19 +46,21 @@
         name.className='account-name';
         name.textContent=account.dataset.userName||'My account';
         accountLink.append(name);
-        actions.append(accountLink,logout.cloneNode(true));
-        const add=actions.querySelector('a[href="./admin/login"]');
-        if(add)add.href=document.querySelector('.page-add').href;
+        const bookings=document.createElement('a');
+        bookings.href=account.dataset.bookings||'./admin/bookings';
+        bookings.innerHTML=icon('calendar')+'<span>My bookings</span>';
+        actions.append(accountLink,bookings,logout.cloneNode(true));
+
     }
 
     const drawerActions=dialog.querySelector('.rm-drawer-actions');
-    drawerActions.querySelectorAll('a').forEach(a=>{if(a.classList.contains('page-account'))return;if(a.textContent.includes('Add Properties'))a.classList.add('rm-drawer-primary');else a.classList.add('rm-drawer-signin');});
+    drawerActions.querySelectorAll('a').forEach(a=>{if(!a.classList.contains('page-account'))a.classList.add('rm-drawer-signin');});
     const drawerAccount=drawerActions.querySelector('.page-account');if(drawerAccount)drawerActions.prepend(drawerAccount);
-    const primary=drawerActions.querySelector('.rm-drawer-primary');if(primary)drawerActions.append(primary);
+
     const tagline=document.createElement('span');tagline.className='rm-drawer-brand-caption';tagline.textContent='Your next address starts here';tagline.innerHTML=icon('about')+'<span>Your next address starts here</span>';dialog.querySelector('.rm-drawer-top').after(tagline);
     const accountTitle=document.createElement('h2');accountTitle.className='rm-drawer-title rm-account-title';accountTitle.textContent='Account';drawerActions.prepend(accountTitle);
     if(drawerAccount){const name=drawerAccount.querySelector('.account-name')?.textContent.trim()||'My account';const avatar=document.createElement('span');avatar.className='rm-account-avatar';avatar.textContent=name.split(/\s+/).slice(0,2).map(word=>word[0]).join('').toUpperCase();const details=document.createElement('span');details.className='rm-account-details';const title=document.createElement('strong');title.textContent=name;const email=document.createElement('small');email.textContent=account.dataset.userEmail||'Your Royalmark account';details.append(title,email);drawerAccount.replaceChildren(avatar,details);const settings=document.createElement('span');settings.className='rm-account-settings';settings.innerHTML=icon('properties');drawerAccount.append(settings);}
-    const footer=document.createElement('div');footer.className='rm-drawer-footer';if(primary)footer.append(primary);const footnote=document.createElement('small');footnote.textContent='Royalmark Estate \u00b7 Your property partner';footer.append(footnote);dialog.querySelector('.rm-drawer-inner').append(footer);
+    const footer=document.createElement('div');footer.className='rm-drawer-footer';const footnote=document.createElement('small');footnote.textContent='Royalmark Estate \u00b7 Your property partner';footer.append(footnote);dialog.querySelector('.rm-drawer-inner').append(footer);
     const themeControl = dialog.querySelector('.rm-drawer-theme');
     function sourceThemeButton() {
         const buttons = [...document.querySelectorAll('.framer-nzj1qu-container button[title],.rm-page-theme[title]')].filter(button => /Switch to (dark|light) mode/i.test(button.title));

@@ -27,6 +27,10 @@ $results=array_values(array_filter($agents,static function(array $agent)use($fil
 $total=count($results);$perPage=6;$pageCount=max(1,(int)ceil($total/$perPage));
 $requestedPage=filter_var($_GET['page']??1,FILTER_VALIDATE_INT,['options'=>['min_range'=>1]]);
 $currentPage=min($pageCount,$requestedPage?:1);
+$requestedProfile=$readFilter('agent');
+if(!isset($_GET['page'])&&$requestedProfile!==''&&agentValidSlug($requestedProfile)){
+    foreach($results as $index=>$agent){if($agent['slug']===$requestedProfile){$currentPage=(int)floor($index/$perPage)+1;break;}}
+}
 $visible=array_slice($results,($currentPage-1)*$perPage,$perPage);
 $filterUrl=static function(array $changes=[])use($filters):string{
     $params=array_filter(array_replace($filters,$changes),static fn($value)=>$value!==''&&$value!==null);
@@ -37,9 +41,9 @@ $companyPayload=Database::getConnection()->query('SELECT payload FROM company_pr
 $company=json_decode($companyPayload?:'{}',true);$company=is_array($company)?$company:[];
 $companyEmail=trim((string)($company['email']??''));
 if(!filter_var($companyEmail,FILTER_VALIDATE_EMAIL)||str_ends_with(strtolower($companyEmail),'@example.com'))$companyEmail='royalmarkestate@gmail.com';
-$phoneDigits=static function($value):string{
+$phoneDigits=static function($value,bool $international=true):string{
     $digits=preg_replace('/[^0-9]/','',is_scalar($value)?(string)$value:'');
-    return preg_match('/^[1-9][0-9]{7,14}$/',$digits)?$digits:'';
+    return preg_match($international?'/^[1-9][0-9]{7,14}$/':'/^[0-9]{7,15}$/',$digits)?$digits:'';
 };
 $companyWhatsapp=$phoneDigits($company['whatsapp']??'');
 $safeUrl=static function($value,bool $asset=false):string{
@@ -66,9 +70,9 @@ $agentIcon=static function(string $name):string{
 };
 $contacts=static function(array $agent)use($companyEmail,$companyWhatsapp,$phoneDigits):array{
     $email=trim((string)($agent['email']??''));$directEmail=(bool)filter_var($email,FILTER_VALIDATE_EMAIL);
-    $phone=$phoneDigits($agent['phone']??'');$whatsapp=$phoneDigits($agent['whatsapp']??'');
+    $phone=$phoneDigits($agent['phone']??'',false);$whatsapp=$phoneDigits($agent['whatsapp']??'');
     $items=[];
-    if($phone!=='')$items[]=['phone','tel:+'.$phone,'Call '.$agent['name'],false];
+    if($phone!=='')$items[]=['phone','tel:'.(str_starts_with(trim((string)$agent['phone']),'+')?'+':'').$phone,'Call '.$agent['name'],false];
     $items[]=['email','mailto:'.($directEmail?$email:$companyEmail),$directEmail?'Email '.$agent['name']:'Email Royalmark Estate',false];
     if($whatsapp!==''||$companyWhatsapp!=='')$items[]=['whatsapp','https://wa.me/'.($whatsapp?:$companyWhatsapp),$whatsapp!==''?'Message '.$agent['name'].' on WhatsApp':'Message Royalmark Estate on WhatsApp',true];
     return $items;
@@ -101,7 +105,7 @@ require __DIR__.'/includes/header.php';
             <div class="agent-portrait"><?php if($photo!==''): ?><img src="<?= e($photo) ?>" alt="<?= e($agent['photo_alt']??$name) ?>" width="560" height="440" loading="lazy"><?php else: ?><span class="agent-photo-placeholder" aria-label="Profile photo not provided"><?= e($initials) ?></span><?php endif; ?><?php if($sample): ?><span class="agent-sample-label">Sample profile</span><?php endif; ?></div>
             <div class="agent-card-body"><span class="agent-position"><?= e($agent['position']??'Property agent') ?></span><h3><?= e($name) ?></h3><?php if(!empty($agent['city'])): ?><p class="agent-location"><?= $agentIcon('location') ?><?= e($agent['city']) ?></p><?php endif; ?><p class="agent-excerpt"><?= e($excerpt?:'Connect with Royalmark Estate to learn more about this agent.') ?></p>
                 <?php if(!empty($agent['specialities'])): ?><ul class="agent-tags" aria-label="Areas of focus"><?php foreach(array_slice($agent['specialities'],0,3) as $value): ?><li><?= e($value) ?></li><?php endforeach; ?><?php if(count($agent['specialities'])>3): ?><li class="agent-tag-more">+<?= count($agent['specialities'])-3 ?> more</li><?php endif; ?></ul><?php endif; ?>
-                <div class="agent-card-footer"><a class="agent-profile-link" href="#profile-<?= e($slug) ?>" data-agent-open="profile-<?= e($slug) ?>" aria-label="View <?= e($name) ?>'s profile">View profile <?= $agentIcon('arrow') ?></a><div class="agent-contact-icons" aria-label="Contact options for <?= e($name) ?>"><?php foreach($agentContacts as [$kind,$url,$label,$external]): ?><a class="agent-contact-<?= e($kind) ?>" href="<?= e($url) ?>" aria-label="<?= e($label) ?>" title="<?= e($label) ?>" <?= $external?'target="_blank" rel="noopener noreferrer"':'' ?>><?= $agentIcon($kind) ?></a><?php endforeach; ?></div></div>
+                <div class="agent-card-footer"><a class="agent-profile-link" href="#profile-<?= e($slug) ?>" data-agent-open="profile-<?= e($slug) ?>" aria-haspopup="dialog" aria-controls="profile-<?= e($slug) ?>" aria-label="View <?= e($name) ?>'s profile">View profile <?= $agentIcon('arrow') ?></a><div class="agent-contact-icons" aria-label="Contact options for <?= e($name) ?>"><?php foreach($agentContacts as [$kind,$url,$label,$external]): ?><a class="agent-contact-<?= e($kind) ?>" href="<?= e($url) ?>" aria-label="<?= e($label) ?>" title="<?= e($label) ?>" <?= $external?'target="_blank" rel="noopener noreferrer"':'' ?>><?= $agentIcon($kind) ?></a><?php endforeach; ?></div></div>
             </div>
         </article>
         <?php endforeach; ?>

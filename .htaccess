@@ -1,6 +1,7 @@
 RewriteEngine On
 # Separate user dashboard entry point.
 RewriteRule ^user/?$ admin/user-dashboard.php [END]
+RewriteRule ^user/bookings/?$ admin/bookings.php [END]
 # Legacy template login always opens the real login, under any install folder.
 RewriteCond %{REQUEST_URI} ^(.*)/sign-in(?:\.html)?/?$ [NC]
 RewriteRule ^sign-in(?:\.html)?/?$ %1/admin/login [R=302,L,NE]
@@ -22,7 +23,8 @@ RewriteRule ^projects/?$ projects.php [END]
 RewriteRule ^agents/?$ agents.php [END]
 RewriteRule ^project-listing/([a-z0-9-]+)/?$ project.php?slug=$1 [END,QSA]
 RewriteCond %{THE_REQUEST} \s/+(?:[^\s?]+/)?agents\.php[?\s] [NC]
-RewriteRule ^agents\.php$ agents [R=302,L]
+RewriteCond %{REQUEST_URI} ^(.*/)agents\.php$
+RewriteRule ^agents\.php$ %1agents [R=302,L,NE]
 RewriteRule ^contact-us/?$ contact.php [END]
 RewriteRule ^about-us/?$ about.php [END]
 RewriteRule ^blog/?$ blog.php [END]
