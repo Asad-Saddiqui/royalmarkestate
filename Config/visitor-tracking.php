@@ -92,8 +92,15 @@ function visitorTrackView(string $candidateId,string $eventId,string $kind,strin
     if (!preg_match('/^[a-f0-9]{32}$/D',$eventId)) throw new InvalidArgumentException('Invalid page view.');
     $page = visitorResolvePage($kind,$key);
     if (!$page) throw new InvalidArgumentException('This page cannot be recorded.');
+    $attempts=$_SESSION['visitor_tracking_attempts']??[];
+    $attempts=is_array($attempts)?array_values(array_filter($attempts,static fn($stamp)=>is_int($stamp)&&$stamp>time()-60)):[];
+    if(count($attempts)>=90)throw new InvalidArgumentException('Too many page views. Try again shortly.');
+    $attempts[]=time();$_SESSION['visitor_tracking_attempts']=$attempts;
     $visitor = visitorAuthenticated();$db = Database::getConnection();
     $stamp = (new DateTimeImmutable('now',new DateTimeZone('Asia/Karachi')))->format('Y-m-d H:i:s');
+    $cookieToSet=null;
+    $db->beginTransaction();
+    try {
     if (!$visitor) {
         $id = visitorValidId($candidateId) ? $candidateId : visitorNewId();
         $exists = $db->prepare('SELECT 1 FROM site_visitors WHERE id=?');$exists->execute([$id]);
@@ -105,13 +112,15 @@ function visitorTrackView(string $candidateId,string $eventId,string $kind,strin
             if (($error->errorInfo[1] ?? null)!==1062) throw $error;
             $id = visitorNewId();$db->prepare('INSERT INTO site_visitors (id,token_hash,linked_user_id,first_seen,last_seen) VALUES (?,?,NULL,?,?)')->execute([$id,hash('sha256',$secret),$stamp,$stamp]);
         }
-        $cookie = $id.'.'.$secret;
-        setcookie('royalmark_visitor',$cookie,['expires'=>time()+365*86400,'path'=>visitorBasePath(),'httponly'=>true,'secure'=>!empty($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!=='off','samesite'=>'Lax']);
-        $_COOKIE['royalmark_visitor']=$cookie;$visitor=['id'=>$id,'linked_user_id'=>null];
+        $cookieToSet = $id.'.'.$secret;
+        $visitor=['id'=>$id,'linked_user_id'=>null];
     }
+    $lock = $db->prepare('SELECT id,linked_user_id FROM site_visitors WHERE id=? FOR UPDATE');$lock->execute([$visitor['id']]);$visitor=$lock->fetch();
+    if(!$visitor)throw new InvalidArgumentException('This browser is no longer registered.');
     $loggedIn = visitorLoggedInUser();
     if ($loggedIn) {
-        visitorLinkLogin((int)$loggedIn['id']);
+        $db->prepare('UPDATE site_visitors SET linked_user_id=? WHERE id=?')->execute([(int)$loggedIn['id'],$visitor['id']]);
+        $db->prepare('UPDATE site_page_views SET user_id=? WHERE visitor_id=? AND user_id IS NULL')->execute([(int)$loggedIn['id'],$visitor['id']]);
         $visitor['linked_user_id']=(int)$loggedIn['id'];
     }
     $owner = $visitor['linked_user_id'] !== null ? (int)$visitor['linked_user_id'] : null;
@@ -119,12 +128,9 @@ function visitorTrackView(string $candidateId,string $eventId,string $kind,strin
         $validOwner = $db->prepare('SELECT 1 FROM admin_users WHERE id=?');$validOwner->execute([$owner]);
         if (!$validOwner->fetchColumn()) $owner=null;
     }
-    $db->beginTransaction();
-    try {
-        $lock = $db->prepare('SELECT id FROM site_visitors WHERE id=? FOR UPDATE');$lock->execute([$visitor['id']]);
-        $duplicate = $db->prepare('SELECT visitor_id FROM site_page_views WHERE view_key=?');$duplicate->execute([$eventId]);$prior=$duplicate->fetchColumn();
-        if ($prior !== false && $prior !== $visitor['id']) throw new InvalidArgumentException('Invalid page view token.');
-        if ($prior === false) {
+        $duplicate = $db->prepare('SELECT visitor_id,page_kind,page_key FROM site_page_views WHERE view_key=?');$duplicate->execute([$eventId]);$prior=$duplicate->fetch();
+        if ($prior && ($prior['visitor_id'] !== $visitor['id']||$prior['page_kind']!==$kind||$prior['page_key']!==$key)) throw new InvalidArgumentException('Invalid page view token.');
+        if (!$prior) {
             $since=(new DateTimeImmutable('now',new DateTimeZone('Asia/Karachi')))->modify('-1 minute')->format('Y-m-d H:i:s');
             $rate=$db->prepare('SELECT COUNT(*) FROM site_page_views WHERE visitor_id=? AND viewed_at>?');$rate->execute([$visitor['id'],$since]);
             if ((int)$rate->fetchColumn()>=60) throw new InvalidArgumentException('Too many page views. Try again shortly.');
@@ -133,5 +139,9 @@ function visitorTrackView(string $candidateId,string $eventId,string $kind,strin
         $db->prepare('UPDATE site_visitors SET last_seen=? WHERE id=?')->execute([$stamp,$visitor['id']]);
         $db->commit();
     } catch (Throwable $error) {if ($db->inTransaction()) $db->rollBack();throw $error;}
+    if($cookieToSet!==null){
+        setcookie('royalmark_visitor',$cookieToSet,['expires'=>time()+365*86400,'path'=>visitorBasePath(),'httponly'=>true,'secure'=>!empty($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!=='off','samesite'=>'Lax']);
+        $_COOKIE['royalmark_visitor']=$cookieToSet;
+    }
     return ['visitor_id'=>$visitor['id'],'stats'=>visitorViewStats($kind,$key)];
 }
