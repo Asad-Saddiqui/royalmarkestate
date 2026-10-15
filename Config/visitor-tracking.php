@@ -73,9 +73,9 @@ function visitorResolvePage(string $kind,string $key): ?array
     $record = $payload !== false ? json_decode($payload,true) : null;
     if (!is_array($record) || ($record['status'] ?? ($kind === 'property' ? 'published' : 'draft')) !== 'published') return null;
     if ($kind === 'blog') {
-        try {$published = new DateTimeImmutable((string)($record['published_at'] ?? ''),new DateTimeZone('Asia/Karachi'));}
-        catch (Throwable $error) {return null;}
-        if (empty($record['published_at']) || $published > new DateTimeImmutable('now',new DateTimeZone('Asia/Karachi'))) return null;
+        $date=is_string($record['published_at']??null)?$record['published_at']:'';
+        $published=DateTimeImmutable::createFromFormat('!Y-m-d\TH:i',$date,new DateTimeZone('Asia/Karachi'));
+        if(!$published||$published->format('Y-m-d\TH:i')!==$date||$published>new DateTimeImmutable('now',new DateTimeZone('Asia/Karachi')))return null;
     }
     $path = ['property'=>'property.php?slug=','project'=>'project.php?slug=','blog'=>'blog?article='][$kind];
     return ['title'=>mb_substr((string)($record['title'] ?? $key),0,220),'url'=>$base.$path.rawurlencode($key)];
