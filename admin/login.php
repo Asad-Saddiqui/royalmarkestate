@@ -15,10 +15,10 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
  if(($_SESSION['login_retry_after']??0)>time())$error='Too many attempts. Try again in a few minutes.';
  elseif(!filter_var($email,FILTER_VALIDATE_EMAIL)||(strlen($password)<12||strlen($password)>200))$error='Enter a valid email and a password of at least 12 characters.';
  elseif(!$hasAccount){
-  try{adminDb()->prepare('INSERT INTO admin_users (id,email,password_hash) VALUES (1,?,?)')->execute([$email,password_hash($password,PASSWORD_DEFAULT)]);session_regenerate_id(true);$_SESSION['admin_id']=1;header('Location: ./');exit;}catch(PDOException $e){$error='An administrator already exists. Reload to sign in.';}
+  try{adminDb()->prepare('INSERT INTO admin_users (id,email,password_hash) VALUES (1,?,?)')->execute([$email,password_hash($password,PASSWORD_DEFAULT)]);session_regenerate_id(true);$_SESSION['admin_id']=1;$_SESSION['admin_session_version']=0;try{visitorLinkLogin(1);}catch(Throwable $trackingError){error_log('Visitor login link could not be updated.');}header('Location: ./');exit;}catch(PDOException $e){$error='An administrator already exists. Reload to sign in.';}
  }else{
   $statement=adminDb()->prepare('SELECT id,password_hash,is_blocked,session_version FROM admin_users WHERE email=?');$statement->execute([$email]);$user=$statement->fetch();
-  if($user&&!$user['is_blocked']&&password_verify($password,$user['password_hash'])){session_regenerate_id(true);$_SESSION['admin_id']=$user['id'];$_SESSION['admin_session_version']=(int)$user['session_version'];unset($_SESSION['login_failures'],$_SESSION['login_retry_after']);header('Location: ./');exit;}
+  if($user&&!$user['is_blocked']&&password_verify($password,$user['password_hash'])){session_regenerate_id(true);$_SESSION['admin_id']=$user['id'];$_SESSION['admin_session_version']=(int)$user['session_version'];try{visitorLinkLogin((int)$user['id']);}catch(Throwable $trackingError){error_log('Visitor login link could not be updated.');}unset($_SESSION['login_failures'],$_SESSION['login_retry_after']);header('Location: ./');exit;}
   $_SESSION['login_failures']=($_SESSION['login_failures']??0)+1;if($_SESSION['login_failures']>=5)$_SESSION['login_retry_after']=time()+300;$error='Email or password is incorrect.';
  }
 }

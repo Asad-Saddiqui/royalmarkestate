@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__.'/Database.php';
 require_once __DIR__.'/bookings.php';
 require_once __DIR__.'/booking-captcha.php';
+require_once __DIR__.'/blog-store.php';
 
 function commentCsrfToken(): string
 {
@@ -40,15 +41,18 @@ function commentSubmit(int $postId, array $input, ?int $userId = null): void
     $db = Database::getConnection();
     $db->beginTransaction();
     try {
-        $query = $db->prepare('SELECT slug,payload FROM blog_posts WHERE id=? FOR UPDATE');
+        $query = $db->prepare('SELECT id,slug,payload FROM blog_posts WHERE id=? FOR UPDATE');
         $query->execute([$postId]); $row = $query->fetch();
-        $post = $row ? json_decode($row['payload'], true) : null;
-        $published = is_array($post) && ($post['status'] ?? '') === 'published' ? strtotime((string)($post['published_at'] ?? '')) : false;
-        if (!$row || $published === false || $published > time()) throw new InvalidArgumentException('This article is no longer accepting comments.');
-        if (!bookingCaptchaVerify('blog:'.$row['slug'], $values['captcha_id'], $values['captcha_answer'])) throw new InvalidArgumentException('The security code is incorrect or expired. Enter the new code below.');
+        if (!$row || !blogIsPublic(blogRecord($row))) throw new InvalidArgumentException('This article is no longer accepting comments.');
         // Visitor association may only come from a server-verified identity, never POST.
         $visitorId = function_exists('visitorCurrentId') ? visitorCurrentId() : null;
         if (!is_string($visitorId) || !preg_match('/^[a-f0-9-]{36}$/D', $visitorId)) $visitorId = null;
+        if ($userId !== null || $visitorId !== null) {
+            $rate = $db->prepare('SELECT COUNT(*) FROM blog_comments WHERE created_at>? AND '.($userId !== null ? 'user_id=?' : 'visitor_id=?'));
+            $rate->execute([date('Y-m-d H:i:s',time()-900),$userId ?? $visitorId]);
+            if ((int)$rate->fetchColumn() >= 5) throw new InvalidArgumentException('Please wait 15 minutes before adding another comment.');
+        }
+        if (!bookingCaptchaVerify('blog:'.$row['slug'], $values['captcha_id'], $values['captcha_answer'])) throw new InvalidArgumentException('The security code is incorrect or expired. Enter the new code below.');
         $stamp = date('Y-m-d H:i:s');
         $insert = $db->prepare("INSERT INTO blog_comments (post_id,user_id,visitor_id,name,email,body,status,created_at,updated_at) VALUES (?,?,?,?,?,?,'pending',?,?)");
         $insert->execute([$postId,$userId,$visitorId,$values['name'],$values['email'],$values['body'],$stamp,$stamp]);

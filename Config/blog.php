@@ -37,7 +37,7 @@ function blogCleanupUploads(array $old,array $kept=[]): void {
                 $query=Database::getConnection()->prepare('SELECT COUNT(*) FROM '.$table.' WHERE payload LIKE ?');
                 $query->execute(['%'.basename($url).'%']);if((int)$query->fetchColumn()){$referenced=true;break;}
             }
-            $booking=Database::getConnection()->prepare('SELECT COUNT(*) FROM bookings WHERE listing_image=?');$booking->execute([$url]);if((int)$booking->fetchColumn())$referenced=true;
+            $booking=Database::getConnection()->prepare('SELECT COUNT(*) FROM bookings WHERE listing_image LIKE ?');$booking->execute(['%'.basename($url).'%']);if((int)$booking->fetchColumn())$referenced=true;
             if($referenced)continue;
             $path=realpath($base.'/'.basename($url));
             if($path&&str_starts_with(str_replace('\\','/',$path),str_replace('\\','/',$base).'/')&&is_file($path))@unlink($path);

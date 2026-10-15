@@ -25,7 +25,7 @@
             const feedback = form.querySelector('.journal-comment-feedback');
             const original = submit.innerHTML;
             submit.disabled = true;
-            submit.textContent = 'Sending comment?';
+            submit.textContent = 'Sending comment...';
             form.setAttribute('aria-busy', 'true');
             feedback.hidden = true;
             try {

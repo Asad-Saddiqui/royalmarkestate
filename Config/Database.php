@@ -76,6 +76,7 @@ final class Database
         self::initializeDefaultProjects($connection);
         self::completeDefaultProjectDetails($connection);
         self::initializeDefaultAgents($connection);
+        self::initializeDefaultPublicBlogs($connection);
     }
 
     private static function initializeDefaultAdministrator(PDO $connection): void
@@ -221,5 +222,18 @@ final class Database
             if ($connection->inTransaction()) $connection->rollBack();
             throw $exception;
         }
+    }
+
+    private static function initializeDefaultPublicBlogs(PDO $connection): void
+    {
+        $migration='default_public_blogs_v1';
+        $check=$connection->prepare('SELECT 1 FROM app_migrations WHERE name=?');$check->execute([$migration]);if($check->fetchColumn())return;
+        $records=require __DIR__.'/default-public-blogs.php';
+        $connection->beginTransaction();
+        try{
+            $mark=$connection->prepare('INSERT IGNORE INTO app_migrations (name) VALUES (?)');$mark->execute([$migration]);
+            if($mark->rowCount()===1){$insert=$connection->prepare('INSERT IGNORE INTO blog_posts (slug,payload) VALUES (?,?)');foreach($records as $record)$insert->execute([$record['slug'],json_encode($record,JSON_THROW_ON_ERROR)]);}
+            $connection->commit();
+        }catch(Throwable $error){if($connection->inTransaction())$connection->rollBack();throw $error;}
     }
 }
