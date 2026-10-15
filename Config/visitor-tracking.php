@@ -98,7 +98,7 @@ function visitorTrackView(string $candidateId,string $eventId,string $kind,strin
     $attempts[]=time();$_SESSION['visitor_tracking_attempts']=$attempts;
     $visitor = visitorAuthenticated();$db = Database::getConnection();
     $stamp = (new DateTimeImmutable('now',new DateTimeZone('Asia/Karachi')))->format('Y-m-d H:i:s');
-    $cookieToSet=null;
+    $cookieToSet=$visitor?$_COOKIE['royalmark_visitor']:null;
     $db->beginTransaction();
     try {
     if (!$visitor) {

@@ -23,7 +23,18 @@
         try {
             const body = new FormData();
             Object.entries({visitor_id:id,view_key:viewKey,kind:config.kind,key:config.key,csrf:config.csrf}).forEach(([key,value]) => body.set(key,value));
-            const response = await fetch(new URL(config.endpoint,document.baseURI),{method:'POST',body,credentials:'same-origin',keepalive:true});
+            const endpoint=new URL(config.endpoint,document.baseURI);
+            let response = await fetch(endpoint,{method:'POST',body,credentials:'same-origin',keepalive:true});
+            if(response.status===403){
+                // A restored tab may hold a nonce from before login or logout.
+                const tokenUrl=new URL(endpoint);tokenUrl.searchParams.set('action','token');
+                const tokenResponse=await fetch(tokenUrl,{credentials:'same-origin',cache:'no-store'});
+                if(!tokenResponse.ok)return;
+                const token=await tokenResponse.json();
+                if(typeof token.csrf!=='string')return;
+                config.csrf=token.csrf;body.set('csrf',token.csrf);
+                response=await fetch(endpoint,{method:'POST',body,credentials:'same-origin',keepalive:true});
+            }
             if (!response.ok) return;
             const result = await response.json();
             if (typeof result.visitor_id !== 'string') return;

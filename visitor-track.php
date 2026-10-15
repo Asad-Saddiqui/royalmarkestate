@@ -5,6 +5,9 @@ require_once __DIR__.'/Config/visitor-tracking.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: private, no-store');
 header('X-Content-Type-Options: nosniff');
+if($_SERVER['REQUEST_METHOD']==='GET'&&($_GET['action']??'')==='token'){
+    echo json_encode(['csrf'=>$_SESSION['visitor_tracking_csrf']??=bin2hex(random_bytes(32))],JSON_THROW_ON_ERROR);exit;
+}
 if ($_SERVER['REQUEST_METHOD']!=='POST') {header('Allow: POST');http_response_code(405);echo json_encode(['error'=>'POST required.']);exit;}
 if ((int)($_SERVER['CONTENT_LENGTH'] ?? 0)>4096) {http_response_code(413);echo json_encode(['error'=>'Request too large.']);exit;}
 $csrf=$_POST['csrf']??null;
