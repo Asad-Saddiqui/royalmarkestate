@@ -19,7 +19,7 @@ function bookingCaptchaPrune(): void
 
 function bookingCaptchaScopeValid(string $scope): bool
 {
-    return strlen($scope) <= 210 && preg_match('/^(?:property|project):[a-z0-9]+(?:-[a-z0-9]+)*$/D', $scope) === 1;
+    return strlen($scope) <= 210 && preg_match('/^(?:property|project|blog):[a-z0-9]+(?:-[a-z0-9]+)*$/D', $scope) === 1;
 }
 
 function bookingCaptchaCreate(string $scope): string
