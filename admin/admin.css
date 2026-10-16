@@ -22,3 +22,7 @@ html[data-theme="dark"] .sidebar-brand img{background:transparent;border-radius:
 .search-field:focus-within{border-color:var(--brand)}
 .search-field input:focus,.search-field input:focus-visible,input[type="search"]:focus,input[type="search"]:focus-visible,.catalog-search input:focus,.catalog-search input:focus-visible,.rm-select-search:focus,.rm-select-search:focus-visible{outline:none;box-shadow:none}
 input[type="search"]:not(.search-field input):focus,.catalog-search input:focus,.rm-select-search:focus{border-color:var(--brand)}
+
+/* Keep every navigation item reachable on shorter screens and longer menus. */
+.sidebar{height:100vh;height:100dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
+.sidebar>*{flex-shrink:0}
