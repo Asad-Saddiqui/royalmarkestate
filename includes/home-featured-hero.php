@@ -63,7 +63,7 @@ $featuredHeroEmailIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentCo
                 <div class="rm-featured-hero-actions">
                     <a class="rm-featured-hero-primary" href="<?= e($projectUrl) ?>">Explore project <?= $featuredHeroArrow ?></a>
                     <a class="rm-featured-hero-secondary" href="./contact-us">Contact Us</a>
-                    <a class="rm-featured-hero-email" href="mailto:<?= e($featuredHeroEmail) ?>"><?= $featuredHeroEmailIcon ?>Email Us</a>
+                    <a data-email-kind="project" data-email-slug="<?= e($slug) ?>" class="rm-featured-hero-email" href="mailto:<?= e($featuredHeroEmail) ?>"><?= $featuredHeroEmailIcon ?>Email Us</a>
                 </div>
                 <?php if ($isSample): ?><p class="rm-featured-hero-disclaimer">Illustrative concept only. Project details and pricing are subject to confirmation.</p><?php endif; ?>
             </div>

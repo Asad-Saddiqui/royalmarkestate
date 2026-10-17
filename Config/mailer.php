@@ -6,7 +6,7 @@ require_once dirname(__DIR__).'/vendor/phpmailer/src/Exception.php';
 require_once dirname(__DIR__).'/vendor/phpmailer/src/PHPMailer.php';
 require_once dirname(__DIR__).'/vendor/phpmailer/src/SMTP.php';
 
-function sendPasswordResetEmail(string $recipient, string $link): void
+function royalmarkMailer(): PHPMailer\PHPMailer\PHPMailer
 {
     $mail=new PHPMailer\PHPMailer\PHPMailer(true);
     $host=getenv('MAIL_HOST')?:'';$username=getenv('MAIL_USERNAME')?:'';$password=getenv('MAIL_PASSWORD')?:'';
@@ -16,7 +16,13 @@ function sendPasswordResetEmail(string $recipient, string $link): void
     if(!in_array($encryption,['tls','ssl'],true))throw new RuntimeException('SMTP encryption must be tls or ssl.');
     $mail->isSMTP();$mail->Host=$host;$mail->SMTPAuth=true;$mail->Username=$username;$mail->Password=$password;
     $mail->Port=(int)(getenv('MAIL_PORT')?:587);$mail->SMTPSecure=$encryption==='ssl'?PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS:PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Timeout=15;$mail->CharSet='UTF-8';$mail->setFrom($from,getenv('MAIL_FROM_NAME')?:'Royalmark Estate');$mail->addAddress($recipient);
+    $mail->Timeout=15;$mail->CharSet='UTF-8';$mail->setFrom($from,getenv('MAIL_FROM_NAME')?:'Royalmark Estate');
+    return $mail;
+}
+
+function sendPasswordResetEmail(string $recipient, string $link): void
+{
+    $mail=royalmarkMailer();$mail->addAddress($recipient);
     $mail->isHTML(true);$mail->Subject='Reset your Royalmark Estate password';
     $mail->addEmbeddedImage(dirname(__DIR__).'/assets/royalmark-logo.png','royalmark-logo','royalmark-logo.png');
     $mail->Body=passwordResetEmailHtml($link);

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 require __DIR__.'/includes/bootstrap.php';
 require_once __DIR__.'/Config/contacts.php';
+require_once __DIR__.'/Config/enquiry-email.php';
 require_once __DIR__.'/includes/contact-form.php';
 
 header('Cache-Control: private, no-store');
@@ -54,7 +55,12 @@ if(!$isContactPost){
         if(!$contactState['errors']){
             try{
                 $saved=contactCreate($values+['request_id'=>$nonce],$contactUser?(int)$contactUser['id']:null);
-                $contactState['success']=['id'=>(int)$saved['id'],'reference'=>(string)($saved['reference']??'')];
+                $emailSent=$_SESSION['contact_email_sent'][(int)$saved['id']]??false;
+                if(!$emailSent){
+                    try{sendEnquiryEmail(enquiryContext('company'),enquiryValues(['name'=>$values['name'],'email'=>$values['email'],'phone'=>$values['phone'],'subject'=>$values['interest']?:'Contact Us enquiry','message'=>$values['message']]));$emailSent=true;$_SESSION['contact_email_sent'][(int)$saved['id']]=true;}
+                    catch(Throwable $mailError){error_log('Contact email failed for message '.$saved['id'].': '.$mailError->getMessage());}
+                }
+                $contactState['success']=['email_sent'=>$emailSent,'id'=>(int)$saved['id'],'reference'=>(string)($saved['reference']??'')];
                 $contactState['values']=$emptyValues;
                 $contactState['request_id']=$newContactNonce();
                 $status=200;
@@ -72,7 +78,7 @@ if(!$isContactPost){
         ob_start();contactFormRender($contactState);$html=ob_get_clean();
         http_response_code($status);
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(['ok'=>!$contactState['errors'],'message'=>$contactState['errors']?$contactState['errors'][0]:'Message received. Our team will review it.','reference'=>$contactState['success']['reference']??null,'html'=>$html],JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR);
+        echo json_encode(['ok'=>!$contactState['errors'],'message'=>$contactState['errors']?$contactState['errors'][0]:(($contactState['success']['email_sent']??false)?'Your message was saved and emailed to our team.':'Your message was saved. Email notification is currently unavailable; our team can read it in the dashboard.'),'reference'=>$contactState['success']['reference']??null,'html'=>$html],JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR);
         exit;
     }
     if($contactState['success']){

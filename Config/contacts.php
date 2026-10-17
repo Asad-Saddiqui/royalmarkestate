@@ -46,7 +46,7 @@ function contactCreate(array $input,?int $userId): array
     $db->beginTransaction();
     try{
         $duplicate=$db->prepare('SELECT message_id FROM contact_message_meta WHERE request_key=? FOR UPDATE');$duplicate->execute([$requestKey]);$oldId=$duplicate->fetchColumn();
-        if($oldId!==false){$db->commit();return ['id'=>(int)$oldId,'reference'=>'RM-C-'.$oldId];}
+        if($oldId!==false){$db->commit();return ['id'=>(int)$oldId,'reference'=>'RM-C-'.$oldId,'created'=>false];}
         $db->prepare('INSERT IGNORE INTO booking_limits (bucket,window_start,attempts) VALUES (?,?,0)')->execute([$bucket,$stamp]);
         $read=$db->prepare('SELECT window_start,attempts FROM booking_limits WHERE bucket=? FOR UPDATE');$read->execute([$bucket]);$limit=$read->fetch();
         $fresh=(new DateTimeImmutable($limit['window_start'],$zone))>$now->modify('-15 minutes');
@@ -55,7 +55,7 @@ function contactCreate(array $input,?int $userId): array
         $db->prepare('INSERT INTO contact_messages (name,email,phone,interest,message,created_at) VALUES (?,?,?,?,?,?)')->execute([$values['name'],$values['email'],$values['phone'],$values['interest'],$values['message'],$stamp]);
         $id=(int)$db->lastInsertId();$visitorId=visitorCurrentId();
         $db->prepare("INSERT INTO contact_message_meta (message_id,user_id,visitor_id,source,status,admin_note,request_key,updated_at) VALUES (?,?,?,'contact','new','',?,?)")->execute([$id,$userId,$visitorId,$requestKey,$stamp]);
-        $db->commit();return ['id'=>$id,'reference'=>'RM-C-'.$id];
+        $db->commit();return ['id'=>$id,'reference'=>'RM-C-'.$id,'created'=>true];
     }catch(Throwable $error){if($db->inTransaction())$db->rollBack();throw $error;}
 }
 
