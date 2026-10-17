@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/card-rating.php';
 // Home showcases only published projects explicitly selected by the administrator.
 $featuredHomeProjects = projectFeaturedData(is_array($homeProjects ?? null) ? $homeProjects : []);
 $homeProjectArrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>';
@@ -60,6 +61,7 @@ $homeProjectImage = static function ($value): string {
             <div class="rm-home-project-content">
                 <span class="rm-home-project-type"><?= listingIcon('building') ?><?= e($homeProjectText($homeProject['type'] ?? '') ?: 'Development project') ?></span>
                 <h3><a href="<?= e($projectUrl) ?>"><?= e($projectTitle) ?></a></h3>
+                <?php listingCardRating('project', $projectSlug); ?>
                 <a class="rm-home-project-location" href="<?= e($projectUrl.'#project-location') ?>"><?= listingIcon('location') ?><span><?= e($projectLocation ?: 'Location to be confirmed') ?></span><?= $homeProjectArrow ?></a>
                 <?php if ($homeProjectText($homeProject['developer_name'] ?? '')): ?><a class="rm-home-project-developer" href="<?= e($projectUrl.'#project-developer') ?>">By <?= e($homeProjectText($homeProject['developer_name'])) ?></a><?php else: ?><p class="rm-home-project-developer">Developer information coming soon</p><?php endif; ?>
                 <div class="rm-home-project-price"><span><?= $projectFrom > 0 || $projectTo > 0 ? ($projectSample ? 'Illustrative price range · PKR' : 'Price range · PKR') : 'Contact us for current pricing' ?></span><strong><?= e($projectPrice) ?></strong></div>

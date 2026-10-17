@@ -11,3 +11,22 @@ buttons.forEach((button,i)=>button.addEventListener('click',()=>{stop();index=i;
 
 (()=>{'use strict';const feedback=document.querySelector('.pd-share-feedback');let timeout;function message(text){feedback.textContent=text;clearTimeout(timeout);timeout=setTimeout(()=>feedback.textContent='',5000);}function link(){const url=new URL(location.href);url.hash='';const slug=url.searchParams.get('slug');url.search='';if(slug)url.searchParams.set('slug',slug);return url.href;}async function copy(url){try{await navigator.clipboard.writeText(url);return true;}catch{const field=document.createElement('textarea');field.value=url;field.style.cssText='position:fixed;left:-9999px';document.body.append(field);field.select();const result=document.execCommand('copy');field.remove();return result;}}
 document.querySelectorAll('[data-property-share]').forEach(button=>button.addEventListener('click',async()=>{const platform=button.dataset.propertyShare,url=link();if(platform==='facebook'||platform==='whatsapp'){const target=platform==='facebook'?'https://www.facebook.com/sharer/sharer.php?u=':'https://wa.me/?text=';window.open(target+encodeURIComponent(url),'_blank','noopener,noreferrer');return;}if(platform!=='copy'&&navigator.share){try{await navigator.share({url});return;}catch(error){if(error.name==='AbortError')return;}}const copied=await copy(url);message(copied?(platform==='copy'?'Property link copied.':'Link copied. Paste it into '+(platform==='tiktok'?'TikTok':'Instagram')+'.'):'Could not copy. Copy the link from your address bar.');}));})();
+
+// Follow manual and automatic photo changes within the thumbnail strip only.
+(() => {
+    'use strict';
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    document.querySelectorAll('.pd-thumbnails').forEach(strip => {
+        function follow() {
+            const active = strip.querySelector('[aria-pressed="true"]');
+            if (!active || !strip.clientWidth) return;
+            const bounds = strip.getBoundingClientRect();
+            const thumb = active.getBoundingClientRect();
+            const left = strip.scrollLeft + thumb.left - bounds.left - (strip.clientWidth - thumb.width) / 2;
+            strip.scrollTo({left: Math.max(0, Math.min(left, strip.scrollWidth - strip.clientWidth)), behavior: reduced.matches ? 'auto' : 'smooth'});
+        }
+        new MutationObserver(follow).observe(strip, {subtree: true, attributes: true, attributeFilter: ['aria-pressed']});
+        if ('ResizeObserver' in window) new ResizeObserver(follow).observe(strip);
+        follow();
+    });
+})();

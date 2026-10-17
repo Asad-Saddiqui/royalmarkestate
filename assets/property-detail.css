@@ -23,3 +23,8 @@
 .pd-overview-actions>a:not(.button){color:#202020}
 html[data-site-theme=dark] :is(.pd-subtitle,.pd-location,.pd-price small,.pd-facts p,.pd-facts p span,.pd-section p,.pd-disclaimer,.pd-details dt,.pd-details dd,.pd-amenities>div>span,.pd-contact-card>p,.pd-agent p,.pd-contact-card small,.pd-recommended>p,.pd-quick-overview dt,.pd-quick-overview>p,.pd-breadcrumb>span:last-child,.pd-unavailable>p,.pd-unavailable-contact){color:#eee!important}
 html[data-site-theme=dark] .pd-overview-actions>a:not(.button){color:#eee}
+
+/* Keep the gallery strip scrollable without displaying a scrollbar. */
+.pd-hero>*,.pd-gallery{min-width:0}
+.pd-thumbnails{max-width:100%;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain}
+.pd-thumbnails::-webkit-scrollbar{display:none;width:0;height:0}

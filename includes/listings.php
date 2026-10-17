@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/card-rating.php';
 function listingData(bool $includeUnpublished=false): array {
     require_once dirname(__DIR__).'/Config/Database.php';
     $items=[];
@@ -32,6 +33,6 @@ function listingPrice(array $property): string { return 'Rs '.number_format($pro
 function listingCard(array $property): void { ?>
 <article class="listing-card">
 <a class="listing-photo" href="./property.php?slug=<?= rawurlencode($property['slug']) ?>" aria-label="View <?= e($property['title']) ?>"><img src="<?= e($property['image']) ?>" alt="<?= e($property['title']) ?>" width="512" height="340" loading="lazy"><span class="listing-badge"><?= e($property['purpose']) ?></span></a>
-<div class="listing-card-content"><h2><a href="./property.php?slug=<?= rawurlencode($property['slug']) ?>"><?= e($property['title']) ?></a></h2><p class="listing-city"><?= listingIcon('location') ?><?= e($property['city']) ?></p><div class="listing-facts"><span><?= listingIcon('bed') ?><?= e($property['beds']) ?> BHK</span><span><?= listingIcon('bath') ?><?= e($property['baths']) ?> Bath</span><span><?= listingIcon('area') ?>Sq.ft : <?= e($property['area']) ?></span></div><div class="listing-price"><p><?= e(listingPrice($property)) ?><?php if($property['purpose']==='Rent'): ?><small> /Months</small><?php endif; ?></p><span><?= e($property['type']) ?></span></div></div>
+<div class="listing-card-content"><h2><a href="./property.php?slug=<?= rawurlencode($property['slug']) ?>"><?= e($property['title']) ?></a></h2><?php listingCardRating('property', (string)$property['slug']); ?><p class="listing-city"><?= listingIcon('location') ?><?= e($property['city']) ?></p><div class="listing-facts"><span><?= listingIcon('bed') ?><?= e($property['beds']) ?> BHK</span><span><?= listingIcon('bath') ?><?= e($property['baths']) ?> Bath</span><span><?= listingIcon('area') ?>Sq.ft : <?= e($property['area']) ?></span></div><div class="listing-price"><p><?= e(listingPrice($property)) ?><?php if($property['purpose']==='Rent'): ?><small> /Months</small><?php endif; ?></p><span><?= e($property['type']) ?></span></div></div>
 </article>
 <?php }

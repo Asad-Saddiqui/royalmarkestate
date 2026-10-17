@@ -11,12 +11,22 @@ function listingReviewCsrf(): string
 
 function listingReviewSummary(string $kind, string $slug): array
 {
-    $query = Database::getConnection()->prepare("SELECT id,name,rating,body,created_at FROM listing_reviews WHERE kind=? AND listing_slug=? AND status='approved' ORDER BY created_at DESC,id DESC");
+    $query = Database::getConnection()->prepare("SELECT COUNT(*) AS review_count,AVG(rating) AS average_rating FROM listing_reviews WHERE kind=? AND listing_slug=? AND status='approved'");
     $query->execute([$kind,$slug]);
-    $reviews = $query->fetchAll();
-    $count = count($reviews);
-    $average = $count ? array_sum(array_column($reviews,'rating')) / $count : 0.0;
+    $summary = $query->fetch();
+    $reviews = listingReviewPage($kind, $slug, 0);
+    $count = (int)$summary['review_count'];
+    $average = (float)($summary['average_rating'] ?? 0);
     return ['reviews'=>$reviews,'count'=>$count,'average'=>$average];
+}
+
+function listingReviewPage(string $kind, string $slug, int $offset, int $limit = 10): array
+{
+    $offset = max(0, $offset);
+    $limit = max(1, min(10, $limit));
+    $query = Database::getConnection()->prepare("SELECT id,name,rating,body,created_at FROM listing_reviews WHERE kind=? AND listing_slug=? AND status='approved' ORDER BY created_at DESC,id DESC LIMIT $limit OFFSET $offset");
+    $query->execute([$kind, $slug]);
+    return $query->fetchAll();
 }
 
 function listingReviewSubmit(string $kind, array $listing, array $input): void

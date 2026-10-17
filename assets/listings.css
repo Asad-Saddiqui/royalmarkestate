@@ -7,3 +7,14 @@ html[data-site-theme="dark"] :is(.listing-filter,.listing-card,.listing-map,.lis
 @media(max-width:767.98px){.listing-layout{display:block}.listing-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.listing-filter{display:none;position:static;max-height:none;margin-bottom:20px}.listing-filter.is-open{display:block}.listing-mobile-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;font-size:13px;color:#777}.filter-mobile-button{display:flex;align-items:center;gap:7px;padding:9px 14px;border:1px solid #f0aaaa;background:#fff;color:#d70000;border-radius:6px;cursor:pointer}.type-options{grid-template-columns:repeat(3,minmax(0,1fr))}.type-options label>span{font-size:13px}.listing-price>p{font-size:16px}.listing-card h2{font-size:16px}.property-detail-heading,.property-detail-bottom{align-items:flex-start;flex-direction:column}.detail-price{font-size:24px}.listing-map iframe{height:280px}.listing-count>span{display:block}.listing-photo{aspect-ratio:1.45}}
 @media(max-width:479.98px){.listing-grid{grid-template-columns:1fr}.listing-card h2{font-size:20px}.listing-card-content{padding:17px}.listing-facts{font-size:12px;gap:9px}.listing-price>p{font-size:19px}.listing-price small{font-size:14px}.listing-city{font-size:13px}.listing-price>span{font-size:11px}.listing-photo{aspect-ratio:1.55}}
 @media(prefers-reduced-motion:reduce){.listing-card,.listing-photo img{transition:none!important}}
+
+/* Shared rating link for property and project cards, including home sections. */
+.listing-card-rating{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:0 0 13px;color:var(--rm-home-ink,#30343d);text-decoration:none;font-size:12px;line-height:1.6;width:fit-content}
+.listing-card-rating:hover{color:#d70000}
+.listing-card-rating:focus-visible{outline:2px solid #d70000;outline-offset:4px;border-radius:2px}
+.listing-card-rating-stars{position:relative;display:inline-block;flex:none;color:#959ca6;font-size:17px;line-height:1;letter-spacing:1px;white-space:nowrap}
+.listing-card-rating-fill{position:absolute;left:0;top:0;overflow:hidden;color:#d58b08;white-space:nowrap;height:100%}
+.listing-card-rating strong{font-size:12px;font-weight:650;color:inherit}
+.listing-card-rating-count{color:var(--rm-home-muted,#697380);font-size:11px}
+html[data-site-theme=dark] .listing-card-rating{color:#e5e7eb}
+html[data-site-theme=dark] .listing-card-rating-count{color:#b4bdc8}

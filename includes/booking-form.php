@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__).'/Config/bookings.php';
-require_once dirname(__DIR__).'/Config/booking-captcha.php';
 
 function bookingFormNonce(string $scope): string
 {
@@ -45,13 +44,8 @@ function bookingFormHandle(string $kind,array $listing,string $action,string $an
     }elseif(!is_string($_POST['website']??'')||trim((string)($_POST['website']??''))!==''){
         $state['errors'][]='We could not verify this request. Please try again.';
     }elseif(!$validNonce){
-        $state['errors'][]='This request form expired. Check your details and submit the new security code below.';
+        $state['errors'][]='This request form expired. Please check your details and try again.';
     }else{
-        $captchaId=is_string($_POST['captcha_id']??null)?$_POST['captcha_id']:'';
-        $captchaAnswer=is_string($_POST['captcha_answer']??null)?$_POST['captcha_answer']:'';
-        if(!bookingCaptchaVerify($scope,$captchaId,$captchaAnswer)){
-            $state['errors'][]='The security code was incorrect or expired. Please enter the new code below.';
-        }else{
             try{
                 $result=bookingCreate($kind,$listing,array_merge($state['values'],['request_id'=>$nonce]),$user?(int)$user['id']:null);
                 $state['success']=['reference'=>(string)($result['reference']??''),'id'=>(int)($result['id']??0)];
@@ -65,7 +59,6 @@ function bookingFormHandle(string $kind,array $listing,string $action,string $an
                 $state['errors'][]='We could not save your request. Please try again shortly.';
                 $status=503;
             }
-        }
     }
     $isAjax=strtolower((string)($_SERVER['HTTP_X_REQUESTED_WITH']??''))==='xmlhttprequest'||str_contains((string)($_SERVER['HTTP_ACCEPT']??''),'application/json');
     if($isAjax){
@@ -88,7 +81,6 @@ function bookingFormRender(array $state): void
 {
     $values=$state['values'];$anchor=$state['anchor'];$kind=$state['kind'];
     $today=new DateTimeImmutable('today');
-    $bookingCaptchaScope=$state['scope'];
     ?>
 <section class="pd-contact-card booking-card" id="<?= e($anchor) ?>" aria-labelledby="<?= e($anchor) ?>-title">
     <span class="booking-eyebrow">LET US PLAN YOUR NEXT STEP</span><h2 id="<?= e($anchor) ?>-title">Request a viewing or callback</h2><p class="booking-intro">Choose a preferred day to discuss this <?= $kind==='project'?'project':'property' ?> with Royalmark Estate.</p>
@@ -104,7 +96,6 @@ function bookingFormRender(array $state): void
         <div class="booking-schedule"><label for="<?= e($anchor) ?>-date"><span class="booking-field-label">Preferred date <b aria-hidden="true">*</b></span><input id="<?= e($anchor) ?>-date" name="preferred_date" type="date" min="<?= $today->format('Y-m-d') ?>" max="<?= $today->modify('+365 days')->format('Y-m-d') ?>" value="<?= e($values['preferred_date']) ?>" required></label><label for="<?= e($anchor) ?>-time"><span class="booking-field-label">Preferred time <small>(optional)</small></span><input id="<?= e($anchor) ?>-time" name="preferred_time" type="time" value="<?= e($values['preferred_time']) ?>"></label></div>
         <p class="booking-time-note">All times are Pakistan Standard Time (PKT).</p>
         <label for="<?= e($anchor) ?>-message"><span class="booking-field-label">Your message <small>(optional)</small></span><textarea id="<?= e($anchor) ?>-message" name="message" rows="3" maxlength="5000" placeholder="Tell us what you would like to know"><?= e($values['message']) ?></textarea></label>
-        <?php require __DIR__.'/booking-captcha.php'; ?>
         <button class="button booking-submit" type="submit"><svg class="booking-send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 3-7 18-4-7-7-4L21 3ZM21 3 10 14"/></svg><span>Send request</span></button>
         <small class="booking-confirmation-note">Our team will review your request and confirm the details with you.</small>
     </form>

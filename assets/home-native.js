@@ -81,3 +81,92 @@
         if(href==='./sign-in')link.href='./admin/login';
     });
 })();
+
+// Featured projects: shared-size slides prevent layout jumps between projects.
+(() => {
+    'use strict';
+    const slider=document.querySelector('[data-rm-featured-slider]');
+    if(!slider)return;
+    const slides=[...slider.querySelectorAll('[data-rm-featured-slide]')];
+    if(slides.length<2)return;
+    const dots=[...slider.querySelectorAll('[data-rm-featured-dot]')];
+    const toggle=slider.querySelector('[data-rm-featured-toggle]');
+    const live=slider.querySelector('.rm-featured-hero-slides');
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+    let current=0,timer,paused=reduced.matches,visible=true,startX=null,startY=null;
+    let changing=false,request=0;
+    const imageReady=new Map();
+    function prepare(index){
+        if(imageReady.has(index))return imageReady.get(index);
+        const img=slides[index].querySelector('.rm-featured-hero-image');
+        const ready=(async()=>{
+            if(!img)return true;
+            img.loading='eager';
+            try{
+                if(img.decode)await img.decode();
+                else if(!img.complete)await new Promise((resolve,reject)=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',reject,{once:true});});
+                return img.naturalWidth>0;
+            }catch{return false;}
+        })();
+        imageReady.set(index,ready);return ready;
+    }
+    slides.forEach((slide,index)=>{slide.hidden=false;slide.inert=index!==0;});
+    function schedule(){
+        clearTimeout(timer);
+        if(!paused&&!document.hidden&&visible&&!slider.contains(document.activeElement))timer=setTimeout(()=>show(current+1),6000);
+    }
+    async function show(index){
+        if(changing)return;
+        const target=(index+slides.length)%slides.length;
+        if(target===current){prepare((current+1)%slides.length);schedule();return;}
+        clearTimeout(timer);
+        const token=++request;
+        const ready=await prepare(target);
+        if(token!==request)return;
+        if(!ready){schedule();return;}
+        changing=true;
+        const outgoing=slides[current];
+        outgoing.classList.add('is-leaving');
+        current=target;
+        slides.forEach((slide,i)=>{
+            slide.classList.toggle('is-active',i===current);
+            slide.inert=i!==current;
+            slide.setAttribute('aria-hidden',String(i!==current));
+        });
+        dots.forEach((dot,i)=>dot.setAttribute('aria-current',String(i===current)));
+        prepare((current+1)%slides.length);
+        setTimeout(()=>{outgoing.classList.remove('is-leaving');changing=false;schedule();},reduced.matches?0:1050);
+    }
+    function updateToggle(){
+        toggle.setAttribute('aria-label',paused?'Play slideshow':'Pause slideshow');
+        toggle.setAttribute('aria-pressed',String(paused));
+        toggle.firstElementChild.textContent=paused?'\u25B6':'\u2161';
+        live.setAttribute('aria-live',paused?'polite':'off');
+        schedule();
+    }
+    slider.querySelector('[data-rm-featured-prev]').addEventListener('click',()=>show(current-1));
+    slider.querySelector('[data-rm-featured-next]').addEventListener('click',()=>show(current+1));
+    dots.forEach((dot,i)=>dot.addEventListener('click',()=>show(i)));
+    toggle.addEventListener('click',()=>{paused=!paused;updateToggle();});
+    slider.addEventListener('keydown',event=>{
+        if(event.target.matches('input,textarea,select'))return;
+        if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();show(current+(event.key==='ArrowRight'?1:-1));}
+    });
+    slider.addEventListener('pointerdown',event=>{if(event.isPrimary){startX=event.clientX;startY=event.clientY;}});
+    slider.addEventListener('pointerup',event=>{
+        if(startX===null)return;
+        const dx=event.clientX-startX,dy=event.clientY-startY;
+        if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.4)show(current+(dx<0?1:-1));
+        startX=null;
+    });
+    slider.addEventListener('pointercancel',()=>{startX=null;});
+    slider.addEventListener('click',event=>{
+        if(startX!==null)startX=null;
+    });
+    slider.addEventListener('focusin',()=>clearTimeout(timer));
+    slider.addEventListener('focusout',()=>setTimeout(schedule,0));
+    document.addEventListener('visibilitychange',schedule);
+    reduced.addEventListener('change',()=>{paused=reduced.matches;updateToggle();});
+    if('IntersectionObserver' in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;schedule();},{threshold:.1}).observe(slider);
+    show(0);updateToggle();
+})();

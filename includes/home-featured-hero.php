@@ -19,7 +19,7 @@ $featuredHeroLocationIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="curren
 $featuredHeroEmailIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
 ?>
 <section class="rm-featured-hero" data-rm-featured-slider aria-label="Featured projects" aria-roledescription="carousel" tabindex="0">
-    <div class="rm-featured-hero-slides" aria-live="polite">
+    <div class="rm-featured-hero-slides" aria-live="off">
         <?php foreach ($homeFeaturedProjects as $index => $project):
             $slug = $project['slug'];
             $title = $featuredHeroText($project['title'] ?? '') ?: 'Featured project';
@@ -38,12 +38,14 @@ $featuredHeroEmailIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentCo
                 $image = $featuredHeroImage($candidate);
                 if ($image !== '') break;
             }
+            $imageSize = str_starts_with($image, './assets/')
+                ? @getimagesize(dirname(__DIR__).'/'.substr($image, 2)) : false;
             $projectUrl = './project.php?slug='.rawurlencode($slug);
         ?>
-        <article class="rm-featured-hero-slide" data-rm-featured-slide role="group" aria-roledescription="slide" aria-label="<?= e(($index + 1).' of '.count($homeFeaturedProjects)) ?>" <?= $index > 0 ? 'hidden' : '' ?>>
+        <article class="rm-featured-hero-slide <?= $index === 0 ? 'is-active' : '' ?>" data-rm-featured-slide role="group" aria-roledescription="slide" aria-label="<?= e(($index + 1).' of '.count($homeFeaturedProjects)) ?>" <?= $index > 0 ? 'hidden inert aria-hidden="true"' : 'aria-hidden="false"' ?>>
             <a class="rm-featured-hero-media" href="<?= e($projectUrl) ?>" aria-label="<?= e('View '.$title) ?>">
                 <?php if ($image !== ''): ?>
-                <img class="rm-featured-hero-image" src="<?= e($image) ?>" alt="" <?= $index === 0 ? 'fetchpriority="high"' : 'loading="lazy"' ?> decoding="async">
+                <img class="rm-featured-hero-image" src="<?= e($image) ?>" alt="" <?= $imageSize ? 'width="'.(int) $imageSize[0].'" height="'.(int) $imageSize[1].'"' : '' ?> <?= $index === 0 ? 'fetchpriority="high"' : 'loading="lazy"' ?> decoding="async">
                 <?php else: ?>
                 <span class="rm-featured-hero-no-image" aria-hidden="true">ROYALMARK ESTATE</span>
                 <?php endif; ?>
@@ -78,6 +80,7 @@ $featuredHeroEmailIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentCo
             <?php endforeach; ?>
         </div>
         <button type="button" data-rm-featured-next aria-label="Next featured project"><?= $featuredHeroArrow ?></button>
+        <button type="button" class="rm-featured-hero-toggle" data-rm-featured-toggle aria-label="Pause slideshow" aria-pressed="false"><span aria-hidden="true">Ⅱ</span></button>
     </nav>
     <?php endif; ?>
 </section>

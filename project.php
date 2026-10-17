@@ -5,8 +5,8 @@ require_once __DIR__.'/Config/projects-store.php';
 $slug=is_string($_GET['slug']??null)?trim($_GET['slug']):'';
 $project=projectFind($slug);
 $activePage='projects'; $pageTitle=$project?$project['title']:'Project unavailable'; $mainClass='project-detail-page';
-$extraCss=['./assets/property-detail.css','./assets/property-media.css','./assets/booking-form.css','./assets/booking-captcha.css','./assets/project-detail.css','./assets/listing-reviews.css'];
-$extraJs=['./assets/property-detail.js','./assets/property-media.js','./assets/booking-form.js','./assets/booking-captcha.js'];
+$extraCss=['./assets/property-detail.css','./assets/property-media.css','./assets/booking-form.css','./assets/project-detail.css','./assets/listing-reviews.css'];
+$extraJs=['./assets/property-detail.js','./assets/property-media.js','./assets/booking-form.js','./assets/listing-reviews.js'];
 if(!$project)http_response_code(404);
 $bookingState=$project?bookingFormHandle('project',$project,'./project.php?slug='.rawurlencode($slug),'contact-project'):null;
 $reviewState=$project?listingReviewHandle('project',$project):null;
@@ -59,5 +59,6 @@ if(!filter_var($developerWebsite,FILTER_VALIDATE_URL)||!in_array(strtolower(pars
 </div>
 <aside class="pd-sidebar"><section class="pd-contact-card"><h2>Project information</h2><div class="pd-agent"><img src="./assets/royalmark-logo.png" alt="Royalmark Estate" width="80" height="48"><div><strong>Royalmark Estate</strong><p>Enquiries &amp; viewings</p></div></div><p>Discuss available units, pricing and viewing arrangements with our team.</p><a class="button" href="#contact-project">Contact our team</a></section><?php bookingFormRender($bookingState); ?><?php listingReviewRender($reviewState); ?></aside>
 </div>
+
 <dialog id="pd-document-viewer" class="pd-document-viewer" aria-labelledby="pd-document-viewer-title"><header><h2 id="pd-document-viewer-title">Project document</h2><button type="button" aria-label="Close document viewer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header><div class="pd-document-viewer-body"></div><footer><a data-document-external target="_blank" rel="noopener">Open in new tab &nearr;</a><a data-document-download download>Download document</a></footer></dialog>
 <?php endif; require __DIR__.'/includes/footer.php'; ?>
