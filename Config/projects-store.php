@@ -5,9 +5,13 @@ require_once __DIR__.'/catalog.php';
 function projectDefaults(): array {
     return ['slug'=>'','title'=>'','subtitle'=>'','city'=>'','type'=>'','development_status'=>'Upcoming','status'=>'unpublished','progress'=>0,'price_from'=>0,'price_to'=>'','area_from'=>'','area_to'=>'','project_size'=>'','total_units'=>'','total_floors'=>'','completion_date'=>'','address'=>'','state'=>'','zip'=>'','latitude'=>'','longitude'=>'','overview'=>'','developer_name'=>'','developer_description'=>'','developer_email'=>'','developer_phone'=>'','developer_website'=>'','noc_status'=>'Not provided','noc_authority'=>'','noc_reference'=>'','noc_description'=>'','image'=>'','gallery'=>[],'amenities'=>[],'nearest_locations'=>[],'videos'=>[],'noc_documents'=>[],'pricing_documents'=>[],'floor_plans'=>[],'featured'=>false,'is_sample'=>false];
 }
+function projectIsFeatured(array $record): bool {
+    return filter_var($record['featured']??false,FILTER_VALIDATE_BOOLEAN);
+}
 function projectRecord(array $row): array {
     $record=array_merge(projectDefaults(),json_decode($row['payload'],true,512,JSON_THROW_ON_ERROR));
     $record['slug']=$row['slug'];$record['id']=(int)$row['id'];
+    $record['featured']=projectIsFeatured($record);
     return $record;
 }
 function projectData(bool $includeUnpublished=false): array {
@@ -17,6 +21,12 @@ function projectData(bool $includeUnpublished=false): array {
         if($includeUnpublished||$record['status']==='published')$items[]=$record;
     }
     return $items;
+}
+/** The home page only promotes projects explicitly featured and published. */
+function projectFeaturedData(array $projects,int $limit=6): array {
+    $items=array_values(array_filter($projects,static fn($record)=>is_array($record)&&($record['status']??'unpublished')==='published'&&projectIsFeatured($record)));
+    usort($items,static fn($a,$b)=>(int)($b['id']??0)<=>(int)($a['id']??0));
+    return array_slice($items,0,max(0,$limit));
 }
 function projectFind(string $slug,bool $includeUnpublished=false): ?array {
     $statement=Database::getConnection()->prepare('SELECT id,slug,payload FROM projects WHERE slug=?');$statement->execute([$slug]);
@@ -28,6 +38,7 @@ function projectSave(array $record,?string $existingSlug=null): void {
     $db=Database::getConnection();
     $slug=(string)($record['slug']??'');
     if(!preg_match('/^[a-z0-9][a-z0-9-]{0,199}$/',$slug)||!in_array($record['status']??'', ['published','unpublished'],true))throw new InvalidArgumentException('Invalid project.');
+    $record['featured']=projectIsFeatured($record);
     unset($record['id']);$payload=json_encode($record,JSON_THROW_ON_ERROR);
     $db->beginTransaction();
     try{
@@ -51,6 +62,16 @@ function projectSetPublication(string $slug,string $status): void {
         $query=$db->prepare('SELECT payload FROM projects WHERE slug=? FOR UPDATE');$query->execute([$slug]);$payload=$query->fetchColumn();
         if($payload===false)throw new RuntimeException('Project not found.');
         $record=json_decode($payload,true,512,JSON_THROW_ON_ERROR);$record['status']=$status;
+        $db->prepare('UPDATE projects SET payload=? WHERE slug=?')->execute([json_encode($record,JSON_THROW_ON_ERROR),$slug]);$db->commit();
+    }catch(Throwable $exception){if($db->inTransaction())$db->rollBack();throw $exception;}
+}
+function projectSetFeatured(string $slug,bool $featured): void {
+    if(!preg_match('/^[a-z0-9][a-z0-9-]{0,199}$/',$slug))throw new InvalidArgumentException('Invalid project.');
+    $db=Database::getConnection();$db->beginTransaction();
+    try{
+        $query=$db->prepare('SELECT payload FROM projects WHERE slug=? FOR UPDATE');$query->execute([$slug]);$payload=$query->fetchColumn();
+        if($payload===false)throw new RuntimeException('Project not found.');
+        $record=json_decode($payload,true,512,JSON_THROW_ON_ERROR);$record['featured']=$featured;
         $db->prepare('UPDATE projects SET payload=? WHERE slug=?')->execute([json_encode($record,JSON_THROW_ON_ERROR),$slug]);$db->commit();
     }catch(Throwable $exception){if($db->inTransaction())$db->rollBack();throw $exception;}
 }

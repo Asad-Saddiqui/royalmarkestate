@@ -43,7 +43,7 @@ $limits=['title'=>150,'subtitle'=>220,'city'=>100,'type'=>100,'address'=>300,'st
 $fields=array_merge(array_keys($limits),['development_status','status','progress','price_from','price_to','area_from','area_to','total_units','total_floors','completion_date','latitude','longitude','noc_status']);
 $data=[];foreach($fields as $field)$data[$field]=projectFormText($field,$source);
 if(!$isPost&&!$existing){$data['status']='unpublished';$data['development_status']='Upcoming';$data['noc_status']='Not provided';$data['progress']='0';}
-$data['featured']=$isPost?isset($_POST['featured']):!empty($existing['featured']);
+$data['featured']=$isPost?($_POST['featured']??null)==='1':projectIsFeatured($existing??[]);
 $data['is_sample']=$isPost?isset($_POST['is_sample']):!empty($existing['is_sample']);
 $data['amenities']=is_array($source['amenities']??null)?$source['amenities']:[];
 $data['nearest_locations']=is_array($source['nearest_locations']??null)?$source['nearest_locations']:[];
@@ -173,7 +173,9 @@ require __DIR__.'/header.php';
 <label>Project size / land area<input name="project_size" maxlength="120" placeholder="e.g. 15 acres" value="<?= e($data['project_size']) ?>"></label>
 <?php foreach(['total_units'=>['Total units',1000000],'total_floors'=>['Total floors',1000],'progress'=>['Construction progress (%)',100]] as $key=>$field): ?><label><?= e($field[0]) ?><input name="<?= $key ?>" type="number" min="0" max="<?= $field[1] ?>" step="1" value="<?= e($data[$key]) ?>" <?= $key==='progress'?'required':'' ?>></label><?php endforeach; ?>
 <label>Expected completion<input type="date" name="completion_date" value="<?= e($data['completion_date']) ?>"></label>
-</div><label>Project overview<textarea name="overview" rows="6" maxlength="15000" required><?= e($data['overview']) ?></textarea></label><label class="checkbox-label"><input type="checkbox" name="featured" value="1" <?= $data['featured']?'checked':'' ?>> Feature this project</label><label class="checkbox-label"><input type="checkbox" name="is_sample" value="1" <?= $data['is_sample']?'checked':'' ?>> Sample project / illustrative content</label>
+</div><label>Project overview<textarea name="overview" rows="6" maxlength="15000" required><?= e($data['overview']) ?></textarea></label>
+<div class="project-featured-setting"><label class="checkbox-label"><input type="checkbox" id="project-featured" name="featured" value="1" aria-describedby="project-featured-help" <?= $data['featured']?'checked':'' ?>> Featured project on home page</label><p id="project-featured-help">Show this project in the home page's Featured Projects section. It must also be published; unpublished projects stay hidden.</p></div>
+<label class="checkbox-label"><input type="checkbox" name="is_sample" value="1" <?= $data['is_sample']?'checked':'' ?>> Sample project / illustrative content</label>
 <p class="project-help">Unpublished projects remain available in your dashboard and are hidden from the public website.</p></section>
 
 <section class="panel form-section"><div class="project-section-heading"><span class="project-section-number">02</span><div><h2>Developer information</h2><p>Help buyers identify and contact the developer.</p></div></div><div class="form-grid">
