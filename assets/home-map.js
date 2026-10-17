@@ -15,6 +15,7 @@
         const visible=items.filter(item=>(kind==='all'||item.kind===kind)&&(!city.value||item.city===city.value));
         const keys=new Set(visible.map(item=>item.kind+':'+item.slug));
         section.querySelectorAll('[data-map-result]').forEach(row=>row.hidden=!keys.has(row.dataset.mapResult));
+        section.querySelector('.rm-map-results').scrollLeft=0;
         const groups=new Map();
         visible.forEach(item=>{const key=item.lat+','+item.lng;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(item);});
         const bounds=[];
@@ -48,7 +49,40 @@
     section.querySelectorAll('[data-map-filter]').forEach(button=>button.addEventListener('click',()=>{kind=button.dataset.mapFilter;section.querySelectorAll('[data-map-filter]').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));render();}));
     city.addEventListener('change',render);
     section.querySelector('[data-map-reset]').addEventListener('click',()=>{city.value='';section.querySelector('[data-map-filter="all"]').click();});
-    section.querySelectorAll('[data-map-locate]').forEach(button=>button.addEventListener('click',()=>{const marker=markers.get(button.dataset.mapLocate);if(marker){map.setView(marker.getLatLng(),12,{animate:!matchMedia('(prefers-reduced-motion: reduce)').matches});marker.openPopup();}}));
+    section.querySelectorAll('[data-map-locate]').forEach(button=>button.addEventListener('click',()=>{const marker=markers.get(button.dataset.mapLocate);if(marker){
+        map.setView(marker.getLatLng(),12,{animate:!matchMedia('(prefers-reduced-motion: reduce)').matches});marker.openPopup();
+        if(matchMedia('(max-width:800px)').matches){const canvas=document.getElementById('rm-listings-map');const bounds=canvas.getBoundingClientRect();if(bounds.top<90||bounds.bottom>innerHeight)canvas.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
+    }}));
     if('ResizeObserver' in window)new ResizeObserver(()=>map.invalidateSize({pan:false})).observe(section);
     render();
+    // Advance the mobile cards from right to left; leave time for reading and selection.
+    const rail=section.querySelector('.rm-map-results');
+    const mobile=matchMedia('(max-width:800px)'),reduced=matchMedia('(prefers-reduced-motion:reduce)');
+    let railTimer,railVisible=true,interacting=false,resumeTimer,railPaused=false;
+    const pause=document.createElement('button');pause.type='button';pause.className='rm-map-rail-toggle';pause.textContent='Pause cards';pause.setAttribute('aria-pressed','false');
+    section.querySelector('.rm-map-status').after(pause);
+    function scheduleRail(){
+        clearTimeout(railTimer);
+        if(reduced.matches||document.hidden||!railVisible||interacting||railPaused||rail.contains(document.activeElement))return;
+        railTimer=setTimeout(()=>{
+            const cards=[...rail.querySelectorAll('[data-map-result]:not([hidden])')];
+            if(cards.length>1){
+                const bounds=rail.getBoundingClientRect();
+                const next=cards.find(card=>card.getBoundingClientRect().left>bounds.left+24);
+                if(next)rail.scrollTo({left:rail.scrollLeft+next.getBoundingClientRect().left-bounds.left-14,behavior:'smooth'});
+                else rail.scrollTo({left:0,behavior:'smooth'});
+            }
+            scheduleRail();
+        },4000);
+    }
+    pause.addEventListener('click',()=>{railPaused=!railPaused;pause.textContent=railPaused?'Play cards':'Pause cards';pause.setAttribute('aria-pressed',String(railPaused));scheduleRail();});
+    rail.addEventListener('pointerenter',()=>{interacting=true;scheduleRail();});
+    rail.addEventListener('pointerleave',()=>{interacting=false;scheduleRail();});
+    rail.addEventListener('pointerdown',()=>{interacting=true;clearTimeout(resumeTimer);scheduleRail();});
+    function resumeRail(){clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{interacting=false;scheduleRail();},6000);}
+    rail.addEventListener('pointerup',resumeRail);rail.addEventListener('pointercancel',resumeRail);
+    rail.addEventListener('focusin',scheduleRail);rail.addEventListener('focusout',()=>setTimeout(scheduleRail,0));
+    document.addEventListener('visibilitychange',scheduleRail);mobile.addEventListener('change',scheduleRail);reduced.addEventListener('change',scheduleRail);
+    if('IntersectionObserver' in window)new IntersectionObserver(entries=>{railVisible=entries[0].isIntersecting;scheduleRail();}).observe(rail);
+    scheduleRail();
 })();
