@@ -1,6 +1,7 @@
 <?php
 // Complete illustrative concepts. These figures and plans are samples, not live offers or approvals.
 $records=[];
+$pakistanLocations=require __DIR__.'/pakistan-locations.php';
 $propertySamples=json_decode(file_get_contents(__DIR__.'/properties.json'),true,512,JSON_THROW_ON_ERROR);
 $sampleBySlug=array_column($propertySamples,null,'slug');
 $specs=[
@@ -14,6 +15,7 @@ $specs=[
 foreach(require __DIR__.'/projects.php' as $index=>$row){
     [$title,$city,$type,$stage,$progress,$imageSlug]=$row;
     [$priceFrom,$priceTo,$areaFrom,$areaTo,$size,$units,$floors,$completion,$state,$latitude,$longitude]=$specs[$index];
+    $state=$pakistanLocations[$city]['state'];$latitude=$pakistanLocations[$city]['latitude'];$longitude=$pakistanLocations[$city]['longitude'];
     $slug=trim(strtolower(preg_replace('/[^a-z0-9]+/i','-',$title)),'-');
     $base='./assets/documents/projects/'.$slug;
     $records[]=[
@@ -21,7 +23,7 @@ foreach(require __DIR__.'/projects.php' as $index=>$row){
         'development_status'=>$stage,'status'=>'published','progress'=>$progress,
         'price_from'=>$priceFrom,'price_to'=>$priceTo,'area_from'=>$areaFrom,'area_to'=>$areaTo,'project_size'=>$size.' (sample)',
         'total_units'=>$units,'total_floors'=>$floors,'completion_date'=>$completion,
-        'address'=>'Sample development site - city centre','state'=>$state,'zip'=>'To be confirmed','latitude'=>$latitude,'longitude'=>$longitude,
+        'country'=>'Pakistan','location_precision'=>'city','address'=>'Sample location - '.$city.', Pakistan','state'=>$state,'zip'=>'To be confirmed','latitude'=>$latitude,'longitude'=>$longitude,
         'overview'=>$title.' is a sample '.$type.' community concept in '.$city.'. It brings together thoughtfully planned homes, landscaped shared spaces and everyday facilities in one place.' . "\n\n" . 'The concept includes a selection of unit sizes, parking, security and recreation areas. Browse the sample pricing guide and indicative floor plan to explore the presentation, then speak with Royalmark Estate about current project options.' . "\n\n" . 'All prices, unit counts, areas, dates, facilities, maps and distances are illustrative examples. They do not describe a verified development or an available offer.',
         'developer_name'=>'Royalmark Concept Studio (sample)',
         'developer_description'=>'A sample developer profile for this concept presentation. Royalmark Estate is the enquiry contact; the actual developer, delivery record and project specifications should be confirmed for any real development.',

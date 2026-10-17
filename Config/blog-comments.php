@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__.'/Database.php';
 require_once __DIR__.'/bookings.php';
-require_once __DIR__.'/booking-captcha.php';
+
 require_once __DIR__.'/blog-store.php';
 
 function commentCsrfToken(): string
@@ -11,9 +11,10 @@ function commentCsrfToken(): string
 }
 
 /** Only approved comments are ever returned to the public. Email stays private. */
-function commentPublished(int $postId): array
+function commentPublished(int $postId, int $offset = 0): array
 {
-    $query = Database::getConnection()->prepare("SELECT id,name,body,created_at FROM blog_comments WHERE post_id=? AND status='approved' ORDER BY created_at DESC,id DESC");
+    $offset=max(0,$offset);
+    $query = Database::getConnection()->prepare("SELECT id,name,body,created_at FROM blog_comments WHERE post_id=? AND status='approved' ORDER BY created_at DESC,id DESC LIMIT 10 OFFSET $offset");
     $query->execute([$postId]);
     return $query->fetchAll();
 }
@@ -26,7 +27,7 @@ function commentSubmit(int $postId, array $input, ?int $userId = null): void
     $current = bookingCurrentUser();
     if (($userId !== null && (!$current || (int)$current['id'] !== $userId)) || ($current && $userId === null)) throw new InvalidArgumentException('Your account session changed. Reload this page before commenting.');
     $values = [];
-    foreach (['name'=>100,'email'=>254,'body'=>2000,'captcha_id'=>32,'captcha_answer'=>5] as $field=>$limit) {
+    foreach (['name'=>100,'email'=>254,'body'=>2000] as $field=>$limit) {
         $value = $input[$field] ?? '';
         if (!is_string($value) || mb_strlen(trim($value)) > $limit || preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $value)) throw new InvalidArgumentException('Enter a valid '.str_replace('_',' ',$field).'.');
         $values[$field] = trim($value);
@@ -52,7 +53,6 @@ function commentSubmit(int $postId, array $input, ?int $userId = null): void
             $rate->execute([date('Y-m-d H:i:s',time()-900),$userId ?? $visitorId]);
             if ((int)$rate->fetchColumn() >= 5) throw new InvalidArgumentException('Please wait 15 minutes before adding another comment.');
         }
-        if (!bookingCaptchaVerify('blog:'.$row['slug'], $values['captcha_id'], $values['captcha_answer'])) throw new InvalidArgumentException('The security code is incorrect or expired. Enter the new code below.');
         $stamp = date('Y-m-d H:i:s');
         $insert = $db->prepare("INSERT INTO blog_comments (post_id,user_id,visitor_id,name,email,body,status,created_at,updated_at) VALUES (?,?,?,?,?,?,'pending',?,?)");
         $insert->execute([$postId,$userId,$visitorId,$values['name'],$values['email'],$values['body'],$stamp,$stamp]);
@@ -62,4 +62,9 @@ function commentSubmit(int $postId, array $input, ?int $userId = null): void
         if ($db->inTransaction()) $db->rollBack();
         throw $error;
     }
+}
+
+function commentPublishedCount(int $postId): int {
+    $query=Database::getConnection()->prepare("SELECT COUNT(*) FROM blog_comments WHERE post_id=? AND status='approved'");
+    $query->execute([$postId]);return (int)$query->fetchColumn();
 }

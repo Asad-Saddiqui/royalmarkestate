@@ -31,12 +31,7 @@
             try {
                 const response = await fetch(form.action, {method:'POST', body:new FormData(form), credentials:'same-origin', headers:{Accept:'application/json'}});
                 const result = await response.json();
-                if (result.captcha && /^[a-f0-9]{32}$/.test(result.captcha.id)) {
-                    form.querySelector('[name="captcha_id"]').value = result.captcha.id;
-                    form.querySelector('[data-captcha-image]').src = './booking-captcha.php?action=image&id=' + result.captcha.id;
-                    form.querySelector('[data-captcha-answer]').value = '';
-                    form.querySelector('[data-captcha-feedback]').textContent = 'A new security code is ready.';
-                }
+
                 feedback.textContent = result.message || 'Your comment could not be saved. Please try again.';
                 feedback.className = 'journal-comment-feedback ' + (response.ok && result.ok ? 'is-success' : 'is-error');
                 if (response.ok && result.ok) form.querySelector('[name="body"]').value = '';
@@ -111,5 +106,30 @@
         dialog.removeAttribute('aria-busy');
         document.body.style.overflow = originalOverflow;
         returnFocus?.focus({preventScroll:true});
+    });
+})();
+
+(() => {
+    const section=document.getElementById('comments');
+    const more=section?.querySelector('[data-blog-comments-more]');
+    if(!more)return;
+    const list=section.querySelector('.journal-comment-list');
+    const status=section.querySelector('[data-blog-comments-status]');
+    let busy=false;
+    more.addEventListener('click',async event=>{
+        event.preventDefault();if(busy)return;busy=true;
+        more.setAttribute('aria-disabled','true');more.textContent='Loading...';
+        try{
+            const response=await fetch(more.href,{headers:{Accept:'text/html'}});
+            if(!response.ok)throw Error();
+            const page=new DOMParser().parseFromString(await response.text(),'text/html');
+            const incoming=page.querySelector('#comments .journal-comment-list');
+            if(!incoming)throw Error();
+            [...incoming.children].forEach(comment=>list.append(document.importNode(comment,true)));
+            status.textContent=page.querySelector('[data-blog-comments-status]')?.textContent||'';
+            const next=page.querySelector('[data-blog-comments-more]');
+            if(next)more.href=next.getAttribute('href');else more.hidden=true;
+        }catch{status.textContent='Could not load comments. Please try again.';}
+        finally{busy=false;more.removeAttribute('aria-disabled');more.textContent='Load more comments';}
     });
 })();

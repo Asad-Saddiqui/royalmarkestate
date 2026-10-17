@@ -6,7 +6,7 @@ $aboutCompany=publicCompanyProfile();
 $pageTitle='About';
 $activePage='about';
 $mainClass='company-about';
-$extraCss=['./assets/about.css'];
+$extraCss=['./assets/about.css','./assets/company-team.css'];
 $extraJs=['./assets/about-scroll.js'];
 $aboutIcon=static function(string $name):string{
     $paths=[
@@ -92,5 +92,6 @@ require __DIR__.'/includes/header.php';
     </dl>
 </section>
 
+<?php require __DIR__.'/includes/about-team.php'; ?>
 <section class="company-about-cta about-reveal" aria-labelledby="about-contact-title"><div><h2 id="about-contact-title">Let us talk about your next move.</h2><p>Tell us what you are looking for. The next step starts with a conversation.</p></div><div class="company-about-actions"><a class="button" href="./contact-us">Contact us <?= $aboutIcon('arrow') ?></a><a class="company-about-secondary" href="mailto:<?= e($aboutCompany['email']) ?>"><?= $aboutIcon('email') ?> Email us</a></div></section>
 <?php require __DIR__.'/includes/footer.php'; ?>

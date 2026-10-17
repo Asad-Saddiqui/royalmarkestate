@@ -2,15 +2,14 @@
 declare(strict_types=1);
 require __DIR__.'/includes/bootstrap.php';
 require_once __DIR__.'/Config/contacts.php';
-require_once __DIR__.'/Config/booking-captcha.php';
 require_once __DIR__.'/includes/contact-form.php';
 
 header('Cache-Control: private, no-store');
 $pageTitle='Contact Us';
 $activePage='contact';
 $mainClass='contact-page';
-$extraCss=['./assets/booking-captcha.css','./assets/contact.css'];
-$extraJs=['./assets/booking-captcha.js','./assets/contact.js'];
+$extraCss=['./assets/contact.css'];
+$extraJs=['./assets/contact.js'];
 $_SESSION['contact_csrf']??=bin2hex(random_bytes(32));
 $contactUser=contactCurrentUser();
 $emptyValues=['name'=>(string)($contactUser['name']??''),'email'=>(string)($contactUser['email']??''),'phone'=>'','interest'=>'','message'=>''];
@@ -39,16 +38,13 @@ if(!$isContactPost){
     $csrf=is_string($_POST['csrf_token']??null)?$_POST['csrf_token']:'';
     $status=422;
     if(!hash_equals($_SESSION['contact_csrf'],$csrf)){
-        $contactState['errors'][]='Your form session expired. Please enter the new security code and try again.';
+        $contactState['errors'][]='Your form session expired. Please refresh the page and try again.';
         $status=403;
     }elseif(!is_string($_POST['website']??'')||trim((string)($_POST['website']??''))!==''){
         $contactState['errors'][]='We could not verify this message. Please try again.';
     }elseif(!$validNonce){
-        $contactState['errors'][]='This form expired. Check your details and enter the new security code below.';
+        $contactState['errors'][]='This form expired. Please check your details and try again.';
     }else{
-        $captchaId=is_string($_POST['captcha_id']??null)?$_POST['captcha_id']:'';
-        $captchaAnswer=is_string($_POST['captcha_answer']??null)?$_POST['captcha_answer']:'';
-        if(!bookingCaptchaVerify('contact:general',$captchaId,$captchaAnswer))$contactState['errors'][]='The security code was incorrect or expired. Please enter the new code below.';
         $values=$contactState['values'];
         if($values['name']===''||mb_strlen($values['name'])>100)$contactState['errors'][]='Enter your full name using up to 100 characters.';
         if(!filter_var($values['email'],FILTER_VALIDATE_EMAIL)||strlen($values['email'])>254)$contactState['errors'][]='Enter a valid email address.';

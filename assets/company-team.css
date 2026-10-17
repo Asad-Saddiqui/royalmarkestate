@@ -1,0 +1,20 @@
+.company-team{scroll-margin-top:110px}
+.company-team-heading{max-width:700px;margin-bottom:32px}
+.company-team-heading h2{font-size:clamp(28px,3vw,42px);line-height:1.2;margin:14px 0}
+.company-team-heading p,.company-team-bio{line-height:1.8;color:var(--rm-home-muted,#667085);overflow-wrap:anywhere}
+.company-team-ceo{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);border:1px solid #ddd;border-radius:12px;overflow:hidden;margin-bottom:32px;background:#fff}
+.company-team-portrait{background:linear-gradient(140deg,#f8eeee,#e6e9ed);overflow:hidden;aspect-ratio:1;display:grid;place-items:center}
+.company-team-portrait img{display:block;width:100%;height:100%;object-fit:cover;object-position:center top}
+.company-team-portrait>span{font-size:80px;font-weight:700;color:#bd0000}
+.company-team-ceo .company-team-portrait{aspect-ratio:auto;min-height:360px}
+.company-team-ceo-copy{padding:clamp(24px,4vw,48px);align-self:center;min-width:0}
+.company-team h3{font-size:24px;line-height:1.3;margin:12px 0 8px;overflow-wrap:anywhere}
+.company-team-position{font-size:14px;color:#c60000;margin:0 0 14px;font-weight:600}
+.company-team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.company-team-card{min-width:0;border:1px solid #ddd;border-radius:10px;overflow:hidden;background:#fff}
+.company-team-card-copy{padding:22px}.company-team-card h3{font-size:21px}.company-team-card .company-team-bio{font-size:14px}
+.company-team-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}.company-team-links a{font-size:13px;font-weight:600;color:#bd0000;text-underline-offset:4px;overflow-wrap:anywhere}
+html[data-site-theme=dark] .company-team-ceo,html[data-site-theme=dark] .company-team-card{background:#25282d;border-color:#444;color:#eee}
+html[data-site-theme=dark] .company-team-bio{color:#bdc5cf}html[data-site-theme=dark] .company-team-links a,html[data-site-theme=dark] .company-team-position{color:#ff8282}
+@media(max-width:900px){.company-team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.company-team-ceo,.company-team-grid{grid-template-columns:1fr}.company-team-ceo .company-team-portrait{aspect-ratio:1;min-height:0}.company-team-ceo-copy{padding:24px}}

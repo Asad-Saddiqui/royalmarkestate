@@ -1,0 +1,10 @@
+.team-admin-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;align-items:start}
+.team-admin-layout>.panel{padding:24px;min-width:0}.team-editor{display:grid;gap:16px;scroll-margin-top:100px}
+.team-editor>label{display:grid;gap:7px;font-size:13px;font-weight:600}
+.team-editor :is(input:not([type=checkbox]),select,textarea){box-sizing:border-box;width:100%;min-width:0;border:1px solid #ddd;border-radius:5px;padding:11px;background:transparent;color:inherit;font:inherit}
+.team-editor textarea{resize:vertical}.team-editor-photo{width:100px;height:120px;object-fit:cover;border-radius:6px}
+.team-admin-cards{display:grid;gap:16px}.team-admin-cards article{padding:18px;border:1px solid #ddd;border-radius:8px;min-width:0}
+.team-admin-person{display:flex;align-items:center;gap:14px;margin-bottom:14px}.team-admin-person>img,.team-admin-person>span{flex:none;width:64px;height:72px;object-fit:cover;border-radius:6px}.team-admin-person>span{display:grid;place-items:center;background:#fff0f0;color:#bd0000;font-size:26px}
+.team-admin-person h3{margin:0;font-size:17px;overflow-wrap:anywhere}.team-admin-person p{font-size:13px;margin:5px 0}.team-admin-person small{font-size:11px}
+.team-admin-cards form{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:14px;font-size:12px}.team-admin-cards button{cursor:pointer;padding:7px 10px;border:1px solid #e1bbbb;border-radius:4px;color:#bd0000;background:transparent}
+@media(max-width:1000px){.team-admin-layout{grid-template-columns:1fr}}

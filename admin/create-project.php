@@ -122,6 +122,7 @@ if($isPost){
         $baseSlug=trim(strtolower(preg_replace('/[^a-z0-9]+/i','-',$data['title'])),'-')?:'project';
         $record['slug']=$existing['slug']??($baseSlug.'-'.bin2hex(random_bytes(4)));
         foreach(['price_from','price_to','area_from','area_to','latitude','longitude'] as $key)$record[$key]=$data[$key]===''?'':(float)$data[$key];
+        $record['location_precision']=($existing['latitude']??null)===$record['latitude']&&($existing['longitude']??null)===$record['longitude']?($existing['location_precision']??'exact'):'exact';
         foreach(['progress','total_units','total_floors'] as $key)$record[$key]=$data[$key]===''?'':(int)$data[$key];
         $record['amenities']=$amenities;$record['nearest_locations']=$nearby;$record['videos']=$videos;
         if($videos!==($existing['videos']??[]))$record['videos_are_inspiration']=false;

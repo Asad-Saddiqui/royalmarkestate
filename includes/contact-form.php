@@ -4,7 +4,6 @@ declare(strict_types=1);
 function contactFormRender(array $state):void
 {
     $values=$state['values'];
-    $bookingCaptchaScope='contact:general';
     ?>
 <section class="contact-message-panel" id="contact-message" aria-labelledby="contact-form-title">
     <div class="contact-form-heading"><span class="contact-kicker">WE'RE HERE TO HELP</span><h2 id="contact-form-title">Send us a message</h2><p>Fields marked <span aria-hidden="true">*</span> are required.</p></div>
@@ -20,7 +19,7 @@ function contactFormRender(array $state):void
             <label for="contact-interest">Subject <small>(optional)</small><input id="contact-interest" name="interest" maxlength="120" value="<?= e($values['interest']) ?>" placeholder="Property, project or general question"></label>
         </div>
         <label for="contact-message-body">Your message <span aria-hidden="true">*</span><textarea id="contact-message-body" name="message" rows="5" minlength="10" maxlength="5000" required placeholder="Tell us how we can help..."><?= e($values['message']) ?></textarea><small>10&ndash;5,000 characters. Please include details that will help us answer your question.</small></label>
-        <?php require __DIR__.'/booking-captcha.php'; ?>
+        
         <div class="contact-submit-row"><button class="button contact-submit" type="submit"><span>Send message</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 3-7 18-4-7-7-4L21 3ZM21 3 10 14"/></svg></button><p>Your contact details stay with your message so our team can follow up.</p></div>
         <div class="contact-network-feedback contact-feedback is-error" hidden role="alert" tabindex="-1"></div>
     </form>
