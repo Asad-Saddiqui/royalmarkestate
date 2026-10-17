@@ -4,13 +4,13 @@
     const root = document.getElementById('main');
     if (!root) return;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-    const reveal = [...root.querySelectorAll('[data-framer-appear-id], [style*="will-change:transform"], .rm-native-heading, .rm-home-gallery-grid > a, .rm-service-card, .rm-home-stories article, .rm-home-counts a, .home-property-inventory .listing-card, .rm-home-project-card, .rm-home-projects-heading, .rm-home-projects-empty, .rm-benefits-points article, .rm-home-journey > img')].filter(el => !el.closest('.framer-nzj1qu-container'));
+    const reveal = [...root.querySelectorAll('[data-framer-appear-id], [style*="will-change:transform"], .rm-native-heading, .rm-home-gallery-grid > a, .rm-service-card, .rm-home-stories article, .rm-home-counts a, .home-property-inventory .listing-card, .rm-home-project-card, .rm-home-projects-heading, .rm-home-projects-empty, .rm-home-insight-card, .rm-home-insights-heading, .rm-home-insights-empty, .rm-benefits-points article, .rm-home-journey > img')].filter(el => !el.closest('.framer-nzj1qu-container'));
     if (!reduced.matches && 'IntersectionObserver' in window) {
         const observer = new IntersectionObserver(entries => entries.forEach(entry => {
             if (entry.isIntersecting) { entry.target.classList.add('rm-revealed'); observer.unobserve(entry.target); }
         }), {threshold: .06, rootMargin: '0px 0px -20px 0px'});
         reveal.forEach(el => {
-            if(el.matches('.listing-card,.rm-home-project-card,.rm-home-gallery-grid > a,.rm-home-stories article,.rm-home-counts a,.rm-benefits-points article')) {
+            if(el.matches('.listing-card,.rm-home-project-card,.rm-home-insight-card,.rm-home-gallery-grid > a,.rm-home-stories article,.rm-home-counts a,.rm-benefits-points article')) {
                 const order=[...el.parentElement.children].indexOf(el);
                 el.style.setProperty('--rm-reveal-delay', ((order % 3) * 85)+'ms');
             }

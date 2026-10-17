@@ -52,3 +52,4 @@ if($footerCompany['address']!==''&&$footerCompany['zip']!=='')$footerOffice.=' '
         <div class="rm-footer-bottom"><small>&copy; <?= date('Y') ?> <?= e($footerCompany['name']) ?>. All rights reserved.</small><a href="./about-us">About our company <?= $footerIcon('arrow') ?></a></div>
     </div>
 </footer>
+<script src="./assets/company-footer.js?v=<?= filemtime(dirname(__DIR__).'/assets/company-footer.js') ?>" defer></script>

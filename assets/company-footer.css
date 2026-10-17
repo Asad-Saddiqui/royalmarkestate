@@ -564,3 +564,11 @@ html[data-site-theme="dark"] .rm-company-footer .rm-footer-socials a[data-social
         transition: none !important;
     }
 }
+
+@media (max-width: 899.98px) {
+    .rm-contact-shortcuts.is-footer-visible {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+    }
+}
