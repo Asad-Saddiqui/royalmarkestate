@@ -68,12 +68,15 @@ $agentIcon=static function(string $name):string{
     if($name==='whatsapp')return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 21 1.5-5a9 9 0 1 1 3.7 3.6L3 21Z"/><path d="m9 7-1 1c0 4 4 8 8 8l1-1-2-2-1 1a7 7 0 0 1-4-4l1-1-2-2Z"/></svg>';
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'.($paths[$name]??'').'</svg>';
 };
+require_once __DIR__.'/Config/email-compose.php';
 $contacts=static function(array $agent)use($companyEmail,$companyWhatsapp,$phoneDigits):array{
     $email=trim((string)($agent['email']??''));$directEmail=(bool)filter_var($email,FILTER_VALIDATE_EMAIL);
     $phone=$phoneDigits($agent['phone']??'',false);$whatsapp=$phoneDigits($agent['whatsapp']??'');
     $items=[];
     if($phone!=='')$items[]=['phone','tel:'.(str_starts_with(trim((string)$agent['phone']),'+')?'+':'').$phone,'Call '.$agent['name'],false];
-    $items[]=['email','mailto:'.($directEmail?$email:$companyEmail),$directEmail?'Email '.$agent['name']:'Email Royalmark Estate',false];
+    $recipient=$directEmail?$email:$companyEmail;
+    $compose=emailComposeUrl($recipient,'Enquiry for '.$agent['name'],'Hello, I would like to discuss a property enquiry with '.$agent['name'].'.');
+    $items[]=['email',$compose,$directEmail?'Email '.$agent['name']:'Email Royalmark Estate',str_starts_with($compose,'https://')];
     if($whatsapp!==''||$companyWhatsapp!=='')$items[]=['whatsapp','https://wa.me/'.($whatsapp?:$companyWhatsapp),$whatsapp!==''?'Message '.$agent['name'].' on WhatsApp':'Message Royalmark Estate on WhatsApp',true];
     return $items;
 };
@@ -105,7 +108,7 @@ require __DIR__.'/includes/header.php';
             <div class="agent-portrait"><?php if($photo!==''): ?><img src="<?= e($photo) ?>" alt="<?= e($agent['photo_alt']??$name) ?>" width="560" height="440" loading="lazy"><?php else: ?><span class="agent-photo-placeholder" aria-label="Profile photo not provided"><?= e($initials) ?></span><?php endif; ?><?php if($sample): ?><span class="agent-sample-label">Sample profile</span><?php endif; ?></div>
             <div class="agent-card-body"><span class="agent-position"><?= e($agent['position']??'Property agent') ?></span><h3><?= e($name) ?></h3><?php if(!empty($agent['city'])): ?><p class="agent-location"><?= $agentIcon('location') ?><?= e($agent['city']) ?></p><?php endif; ?><p class="agent-excerpt"><?= e($excerpt?:'Connect with Royalmark Estate to learn more about this agent.') ?></p>
                 <?php if(!empty($agent['specialities'])): ?><ul class="agent-tags" aria-label="Areas of focus"><?php foreach(array_slice($agent['specialities'],0,3) as $value): ?><li><?= e($value) ?></li><?php endforeach; ?><?php if(count($agent['specialities'])>3): ?><li class="agent-tag-more">+<?= count($agent['specialities'])-3 ?> more</li><?php endif; ?></ul><?php endif; ?>
-                <div class="agent-card-footer"><a class="agent-profile-link" href="#profile-<?= e($slug) ?>" data-agent-open="profile-<?= e($slug) ?>" aria-haspopup="dialog" aria-controls="profile-<?= e($slug) ?>" aria-label="View <?= e($name) ?>'s profile">View profile <?= $agentIcon('arrow') ?></a><div class="agent-contact-icons" aria-label="Contact options for <?= e($name) ?>"><?php foreach($agentContacts as [$kind,$url,$label,$external]): ?><a class="agent-contact-<?= e($kind) ?>" <?= $kind==='email'?'data-email-kind="agent" data-email-slug="'.e($slug).'"':'' ?> href="<?= e($url) ?>" aria-label="<?= e($label) ?>" title="<?= e($label) ?>" <?= $external?'target="_blank" rel="noopener noreferrer"':'' ?>><?= $agentIcon($kind) ?></a><?php endforeach; ?></div></div>
+                <div class="agent-card-footer"><a class="agent-profile-link" href="#profile-<?= e($slug) ?>" data-agent-open="profile-<?= e($slug) ?>" aria-haspopup="dialog" aria-controls="profile-<?= e($slug) ?>" aria-label="View <?= e($name) ?>'s profile">View profile <?= $agentIcon('arrow') ?></a><div class="agent-contact-icons" aria-label="Contact options for <?= e($name) ?>"><?php foreach($agentContacts as [$kind,$url,$label,$external]): ?><a class="agent-contact-<?= e($kind) ?>" <?= $kind==='email'?'data-email-direct':'' ?> href="<?= e($url) ?>" aria-label="<?= e($label) ?>" title="<?= e($label) ?>" <?= $external?'target="_blank" rel="noopener noreferrer"':'' ?>><?= $agentIcon($kind) ?></a><?php endforeach; ?></div></div>
             </div>
         </article>
         <?php endforeach; ?>
@@ -126,7 +129,7 @@ require __DIR__.'/includes/header.php';
         <?php if(!empty($agent['specialities'])): ?><section class="agent-profile-section"><h3>Areas of focus</h3><ul class="agent-tags"><?php foreach($agent['specialities'] as $value): ?><li><?= e($value) ?></li><?php endforeach; ?></ul></section><?php endif; ?>
         <?php if(!empty($agent['languages'])): ?><section class="agent-profile-section"><h3>Languages</h3><p><?= e(implode(' · ',$agent['languages'])) ?></p></section><?php endif; ?>
         <?php if($sample): ?><p class="agent-profile-note">This is an illustrative sample profile. For property enquiries, please contact Royalmark Estate.</p><?php endif; ?>
-        <div class="agent-profile-contact"><a class="button" href="./contact-us">Make an enquiry <?= $agentIcon('arrow') ?></a><div class="agent-contact-icons"><?php foreach($agentContacts as [$kind,$url,$label,$external]): ?><a class="agent-contact-<?= e($kind) ?>" <?= $kind==='email'?'data-email-kind="agent" data-email-slug="'.e($slug).'"':'' ?> href="<?= e($url) ?>" title="<?= e($label) ?>" aria-label="<?= e($label) ?>" <?= $external?'target="_blank" rel="noopener noreferrer"':'' ?>><?= $agentIcon($kind) ?></a><?php endforeach; ?></div></div>
+        <div class="agent-profile-contact"><a class="button" href="./contact-us">Make an enquiry <?= $agentIcon('arrow') ?></a><div class="agent-contact-icons"><?php foreach($agentContacts as [$kind,$url,$label,$external]): ?><a class="agent-contact-<?= e($kind) ?>" <?= $kind==='email'?'data-email-direct':'' ?> href="<?= e($url) ?>" title="<?= e($label) ?>" aria-label="<?= e($label) ?>" <?= $external?'target="_blank" rel="noopener noreferrer"':'' ?>><?= $agentIcon($kind) ?></a><?php endforeach; ?></div></div>
         <?php $socials=[];foreach(['facebook'=>'Facebook','instagram'=>'Instagram','linkedin'=>'LinkedIn'] as $key=>$label){$url=$safeUrl($agent[$key]??'');if($url!=='')$socials[]=[$key,$label,$url];}if($socials): ?><nav class="agent-socials" aria-label="<?= e($name) ?>'s social profiles"><?php foreach($socials as [$key,$label,$url]): ?><a href="<?= e($url) ?>" target="_blank" rel="noopener noreferrer" aria-label="<?= e($name.' on '.$label) ?>" title="<?= e($label) ?>"><?= $agentIcon($key) ?></a><?php endforeach; ?></nav><?php endif; ?>
     </div></div>
 </dialog>

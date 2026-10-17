@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__DIR__).'/Config/email-compose.php';
 if (empty($homeFeaturedProjects)) return;
 require_once __DIR__.'/company-profile.php';
 $featuredHeroEmail = publicCompanyProfile()['email'];
@@ -63,7 +64,7 @@ $featuredHeroEmailIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentCo
                 <div class="rm-featured-hero-actions">
                     <a class="rm-featured-hero-primary" href="<?= e($projectUrl) ?>">Explore project <?= $featuredHeroArrow ?></a>
                     <a class="rm-featured-hero-secondary" href="./contact-us">Contact Us</a>
-                    <a data-email-kind="project" data-email-slug="<?= e($slug) ?>" class="rm-featured-hero-email" href="mailto:<?= e($featuredHeroEmail) ?>"><?= $featuredHeroEmailIcon ?>Email Us</a>
+                    <a data-email-direct class="rm-featured-hero-email" href="<?= e(emailComposeUrl($featuredHeroEmail,'Enquiry about '.$title,'Project: '.$title."\nLocation: ".$city."\n\nI would like more information about this project.")) ?>" target="_blank" rel="noopener noreferrer"><?= $featuredHeroEmailIcon ?>Email Us</a>
                 </div>
                 <?php if ($isSample): ?><p class="rm-featured-hero-disclaimer">Illustrative concept only. Project details and pricing are subject to confirmation.</p><?php endif; ?>
             </div>

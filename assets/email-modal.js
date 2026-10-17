@@ -11,7 +11,7 @@
     fitViewport();
     function message(text,error=false){feedback.textContent=text;feedback.classList.toggle('is-error',error);}
     document.addEventListener('click',async event=>{
-        const link=event.target.closest('a[href^="mailto:"]');if(!link)return;
+        const link=event.target.closest('a[href^="mailto:"]');if(!link||link.hasAttribute('data-email-direct'))return;
         event.preventDefault();if(busy)return;
         opener=link;const token=++load;
         const source=link.closest('[data-email-kind]');
