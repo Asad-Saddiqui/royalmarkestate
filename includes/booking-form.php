@@ -26,7 +26,7 @@ function bookingFormHandle(string $kind,array $listing,string $action,string $an
     $requests=array_filter($requests,static fn($item)=>is_array($item)&&(int)($item['created']??0)>time()-7200);
     if(count($requests)>50)$requests=array_slice($requests,-50,null,true);
     $_SESSION['booking_form_requests']=$requests;
-    $isPost=($_SERVER['REQUEST_METHOD']??'GET')==='POST';
+    $isPost=($_SERVER['REQUEST_METHOD']??'GET')==='POST'&&!isset($_POST['review_form']);
     if(!$isPost){
         $state['success']=$_SESSION['booking_form_success'][$scope]??null;
         unset($_SESSION['booking_form_success'][$scope]);

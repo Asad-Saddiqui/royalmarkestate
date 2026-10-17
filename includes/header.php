@@ -10,7 +10,7 @@ $versionAsset=static function(string $asset): string {
 <base href="<?= e(rtrim(str_replace('\\','/',dirname($_SERVER['SCRIPT_NAME']??'/index.php')),'/').'/') ?>"><title><?= e($pageTitle) ?> | Royalmark Estate</title>
 <script src="<?= e($versionAsset('./assets/theme-preference.js')) ?>" data-theme-scope="site"></script>
 <link rel="stylesheet" href="./assets/pages.css">
-<link rel="stylesheet" href="./assets/listings.css"><link rel="stylesheet" href="<?= e($versionAsset('./assets/mobile-drawer.css')) ?>">
+<link rel="stylesheet" href="<?= e($versionAsset('./assets/listings.css')) ?>"><link rel="stylesheet" href="<?= e($versionAsset('./assets/mobile-drawer.css')) ?>">
 <script src="<?= e($versionAsset('./assets/pages.js')) ?>" defer></script><script src="<?= e($versionAsset('./assets/mobile-drawer.js')) ?>" defer></script>
 <?php foreach (($extraCss ?? []) as $asset): ?><link rel="stylesheet" href="<?= e($versionAsset($asset)) ?>"><?php endforeach; ?>
 <?php foreach (($extraJs ?? []) as $asset): ?><script src="<?= e($versionAsset($asset)) ?>" defer></script><?php endforeach; ?>
